@@ -3,5 +3,5 @@ from ResourceApp import views
 
 urlpatterns = [
     path('',views.getresources,name= "getResources"),
-    path('add',views.addresources, name = 'addResources')
+    path('add/<lab_id>',views.addresources, name = 'addResources')
 ]
