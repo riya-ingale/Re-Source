@@ -1,9 +1,11 @@
 from django.contrib import admin
-from Institutes.models import *
-from ResourceApp.models import *
+from django.apps import apps
 
-# Register your models here.
-admin.site.register(Resources)
-admin.site.register(Institutes)
-admin.site.register(WorkForce)
-admin.site.register(Labs)
+
+models = apps.get_models()
+
+for model in models:
+    try:
+        admin.site.register(model)
+    except:
+        pass   
