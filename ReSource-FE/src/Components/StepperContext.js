@@ -14,6 +14,5 @@ export function UseContextProvider({ children }) {
 
 export function useStepperContext() {
   const { userData, setUserData } = useContext(StepperContext);
-
   return { userData, setUserData };
 }

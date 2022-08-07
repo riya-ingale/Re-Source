@@ -6,6 +6,7 @@ export default function Details() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
+    sessionStorage.setItem(name,value);
   };
   return (
     <div className="flex flex-col ">
@@ -48,7 +49,7 @@ export default function Details() {
             value={userData["Dimensions"] || ""}
             name="Dimensions"
             placeholder="Length x Breadth x Height"
-            type="number"
+            type="Text"
             className="p-1 px-2 appearance-none outline-none w-full text-gray-800"
           />
         </div>

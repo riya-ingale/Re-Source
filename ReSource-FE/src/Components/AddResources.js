@@ -3,7 +3,6 @@ import { useState } from "react";
 import Stepper from "./Stepper";
 import StepperControl from "./StepperControl";
 import { UseContextProvider } from "./StepperContext";
-
 import Resources from "./steps/Resources";
 import Details from "./steps/Details";
 import Cost from "./steps/Cost";
@@ -13,7 +12,7 @@ import '../Css/addres.css';
 
 export default function AddResources() {
     const [currentStep, setCurrentStep] = useState(1);
-
+    // console.log(sessionStorage.getItem('username'));
   const steps = [
     "Resources",
     "Details",

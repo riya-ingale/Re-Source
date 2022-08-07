@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap');
+.nav-link{
+    color: #000000 !important;
+}
+.logoutbtn {
+    /* Button Blue */
+    background-color: #00BFFF;
+    color: #ffffff;
+    /* background-color: transparent;
+    color: #000000; */
+}
+.logoutbtn:hover {
+    /* Button Blue */
+    background-color: #0b9ccc;
+    color: #ffffff;
+}
+.portalname {
+    font-family: 'Bree Serif', serif;
+    font-size: 2em;
+    font-weight: bolder;
+}
+#dropdown-basic{
+    padding: 0%;
+    margin: 0%;
+    color: rgba(0,0,0);
+}
+.navbar{
+    background-color: rgb(255, 255, 255) !important;
+}
+nav {
+    width: 100vw;
+    overflow-x: hidden;
+}

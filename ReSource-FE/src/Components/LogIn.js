@@ -56,10 +56,16 @@ export default class LogIn extends Component {
       const data = await response.json();
       console.log(data)
       if(data['status'] == 200){
-        sessionStorage.setItem('username',data['username']);//role id update require wait for landing page
+        sessionStorage.setItem('username',data['username']);
+        sessionStorage.setItem('role_id',data['Role']);//role id update require wait for landing page
         const cookies = new Cookies();
         cookies.set('username', data['username'], { path: '/' });
         window.location.href = '/'
+        cookies.set('role_id', data['Role'], { path: '/' });
+        window.location.href = '/'
+        // const cookies = new Cookies();
+        // cookies.set('username', data['username'], { path: '/' });
+        // window.location.href = '/'
       }
       else{
         console.log(data['message'])

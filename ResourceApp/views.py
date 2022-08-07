@@ -11,26 +11,30 @@ import json
 # Create your views here.
 
 @csrf_exempt
-def addresources(request,lab_id):
+def addresources(request,username):
     if request.method == "POST":
-        data = json.loads(request.body)
-        data['lab'] = lab_id
-        print(data)
-        serializer = ResourcesSerializer(data = data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(data={
-            'message':'SUCCESS',
-            'data': serializer.data
-        })
-        else:
-            print("serializer.data not valid") 
-            return JsonResponse(data={
-            'message':'INVALID',
-            'data': serializer.errors
-        })  
-    elif request.method == 'GET':
-        return HttpResponse('FORM TO ADD A RESOURCE')
+        print(json.loads(request.body),username)
+        return JsonResponse({'status':200,'username':username})
+        #cost and quantity int
+        # t = Students.objects.get(email = username)
+        # data = json.loads(request.body)
+        # data['lab'] = t['id']
+        # print(data)
+        # serializer = ResourcesSerializer(data = data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return JsonResponse(data={
+        #     'message':'SUCCESS',
+        #     'data': serializer.data
+        # })
+        # else:
+        #     print("serializer.data not valid") 
+        #     return JsonResponse(data={
+        #     'message':'INVALID',
+        #     'data': serializer.errors
+        # })  
+    # elif request.method == 'GET':
+    #     return HttpResponse('FORM TO ADD A RESOURCE')
 
 
 def getresources(request):

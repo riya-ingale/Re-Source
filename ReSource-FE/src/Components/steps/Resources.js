@@ -2,11 +2,13 @@ import { useStepperContext } from "../StepperContext";
 
 export default function Resources() {
   const { userData, setUserData } = useStepperContext();
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
+    console.log(name,value);
+    sessionStorage.setItem(name,value);
   };
+
 
   return (
     <div className="flex flex-col ">
