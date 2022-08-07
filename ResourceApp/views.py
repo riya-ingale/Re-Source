@@ -35,5 +35,12 @@ def addresources(request,lab_id):
 
 def getresources(request):
     if request.method == 'GET':
-        resources = Resources.objects.all()
-        return HttpResponse("GET ALL RESOURCES")
+        resources_objs = Resources.objects.all()
+        serializer = ResourcesSerializer(resources_objs,many = True)
+        return JsonResponse({
+            'status':True,
+            'message':"All Resources fetched",
+            'data':serializer.data,
+        })
+
+
