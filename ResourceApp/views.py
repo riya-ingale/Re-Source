@@ -7,6 +7,7 @@ from Institutes.models import *
 from ResourceApp.models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
+from sqlalchemy import or_
 
 # Create your views here.
 
@@ -36,15 +37,32 @@ def addresources(request,username):
     # elif request.method == 'GET':
     #     return HttpResponse('FORM TO ADD A RESOURCE')
 
-
+@csrf_exempt
 def getresources(request):
     if request.method == 'GET':
-        resources_objs = Resources.objects.all()
-        serializer = ResourcesSerializer(resources_objs,many = True)
+        resourcesobjs = Resources.objects.all()
+        serializer = ResourcesSerializer(resourcesobjs,many = True)
         return JsonResponse({
-            'status':True,
+            'status':200,
             'message':"All Resources fetched",
             'data':serializer.data,
         })
-
-
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        search = data['searchtext']
+        resourcesobjs = Resources.objects.filter(name__contains=search).all()
+        print("Resources",resourcesobjs)
+        if len(resourcesobjs) == 0:
+            return JsonResponse({
+            'status':404,
+            'message':"No such Resource Found",
+        })
+        else: 
+            serializer = ResourcesSerializer(resourcesobjs,many = True)
+            return JsonResponse({
+                'status':200,
+                'message':"Resources Found",
+                'count': len(resourcesobjs),
+                'data':serializer.data,
+            })
+    
