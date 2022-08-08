@@ -3,7 +3,11 @@ export default function Final() {
   {
     const name = sessionStorage.getItem("Resource Name");
     const specification = sessionStorage.getItem("Weight");
-    const img = sessionStorage.getItem("Resource Image");
+    // const img = sessionStorage.getItem("Resource Image");
+    const img = [];
+    for (let i = 0;i<localStorage['quantity'];i++){
+      img[i] = localStorage["fileBase64-image-"+i];
+    }
     const subject = sessionStorage.getItem("Domain");
     const dimension = sessionStorage.getItem("Dimensions");
     const details = sessionStorage.getItem("Description");
@@ -12,9 +16,11 @@ export default function Final() {
     // const lab_id = sessionStorage.getItem("username");
     const username = "riya@gmail.com"; //sessionStorage.getItem("username")
     const req_approval = 0;
-    const logindata = {name,specification,subject,dimension,details,quantity,cost,req_approval,img};
+    const role_id = 4; //sessionStorage.getItem("role_id")
+    const logindata = {name,specification,subject,dimension,details,quantity,cost,req_approval,img,role_id};
     console.log(logindata);
-    const url = 'http://127.0.0.1:8000/resource/add/'+username;
+    const lab_id = 2
+    const url = 'http://127.0.0.1:8000/resource/add/'+username+"/"+lab_id;
     
     fetch(url, {//role id update require wait for landing page
       method: 'POST',

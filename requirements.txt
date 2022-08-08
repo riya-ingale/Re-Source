@@ -1,10 +1,6 @@
 asgiref==3.5.2
 Django==4.0.6
 django-cors-headers==3.13.0
-<<<<<<< HEAD
-=======
-django-cors-middleware==1.5.0
->>>>>>> 8495d0bea87d6462f0860acfbdc48e38fc290c28
 djangorestframework==3.13.1
 greenlet==1.1.2
 pytz==2022.1
