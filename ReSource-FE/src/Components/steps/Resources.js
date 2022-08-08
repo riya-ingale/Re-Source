@@ -1,12 +1,34 @@
 import { useStepperContext } from "../StepperContext";
 
 export default function Resources() {
+
+  const getBase64 = (file) => {
+    return new Promise((resolve,reject) => {
+       const reader = new FileReader();
+       reader.onload = () => resolve(reader.result);
+       reader.onerror = error => reject(error);
+       reader.readAsDataURL(file);
+    });
+  }
   const { userData, setUserData } = useStepperContext();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
-    console.log(name,value);
-    sessionStorage.setItem(name,value);
+    if (name != "Resource Image"){
+      console.log(name,value);
+      sessionStorage.setItem(name,value);
+    }
+    else{
+      localStorage['quantity'] = e.target.files.length;
+      
+     for(let i = 0;i<e.target.files.length;i++){
+        const file = e.target.files[i];
+        getBase64(file).then(base64 => {
+          localStorage["fileBase64-image-"+i] = base64;
+          // console.debug("file stored",base64);
+        });
+      }
+    }
   };
 
 

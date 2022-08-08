@@ -3,7 +3,11 @@ export default function Final() {
   {
     const name = sessionStorage.getItem("Resource Name");
     const specification = sessionStorage.getItem("Weight");
-    const img = sessionStorage.getItem("Resource Image");
+    // const img = sessionStorage.getItem("Resource Image");
+    const img = [];
+    for (let i = 0;i<localStorage['quantity'];i++){
+      img[i] = localStorage["fileBase64-image-"+i];
+    }
     const subject = sessionStorage.getItem("Domain");
     const dimension = sessionStorage.getItem("Dimensions");
     const details = sessionStorage.getItem("Description");
