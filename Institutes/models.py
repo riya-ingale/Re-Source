@@ -5,7 +5,7 @@ class Institutes(models.Model):
     id = models.AutoField(primary_key = True)
     name = models.CharField(max_length = 500)
     password = models.CharField(max_length = 100)
-    university = models.CharField(max_length = 500)
+    university = models.CharField(max_length = 500,null=True)
     city = models.CharField(max_length = 100 , null = True)
     state = models.CharField(max_length = 500, null = True)
     pincode = models.IntegerField(null = True)
@@ -15,18 +15,20 @@ class Institutes(models.Model):
     accredition = models.FileField(upload_to = 'media/accredition' , null = True)
     sop = models.FileField(upload_to='media/sop' , null = True)
     status = models.IntegerField(default=0) #-1,0,1
+    auth_token = models.CharField(max_length=500,null=True)
 
 
 class WorkForce(models.Model):
     id = models.AutoField(primary_key=True)
     institute = models.ForeignKey(to = Institutes , on_delete=models.CASCADE)
-    name = models.CharField(max_length = 500)
+    name = models.CharField(max_length = 500,null=True)
     position = models.CharField(max_length = 500)
     role_id = models.IntegerField()
     status = models.IntegerField(default = 0)
     password = models.CharField(max_length = 100)
     email_id = models.CharField(max_length = 500)
-    phone_no = models.IntegerField()
+    phone_no = models.IntegerField(null=True)
+    auth_token = models.CharField(max_length=500,null=True)
 
 
 class Labs(models.Model):
@@ -67,6 +69,7 @@ class Students(models.Model):
     password = models.CharField(max_length = 500)
     photo = models.FileField(upload_to = 'media/student_images')
     email = models.CharField(max_length = 500)
+    institute_id = models.ForeignKey(to = Institutes , on_delete=models.CASCADE,default=-1)
 
 class Grievence(models.Model):
     id = models.AutoField(primary_key = True)

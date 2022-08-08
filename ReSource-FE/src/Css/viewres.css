@@ -1,0 +1,119 @@
+body,html {
+  width: 100vw !important;
+  overflow-x: hidden;
+}
+img {
+  width: 100%;
+}
+
+.imgres {
+  object-fit: cover;
+  border-radius: 12px;
+  height: 214px;
+  box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+}
+
+.lires{
+  padding: 0%;
+  margin: 0;
+  font-size: 0.5 em;
+}
+#date{
+  width: 300px;
+}
+#standard-basic {
+  width: 300px;
+}
+#container {
+  max-width: 300px;
+
+  /* Center the container in middle on horizontal axis */
+  margin: 0 auto;
+
+  /* Add empty space above the container (20% of the view height) */
+  margin-top: 20vh;
+}
+
+.rescard {
+  /* Change background color */
+  background-color: white;
+
+  /* Add border */
+  border: 1px solid #bacdd8;
+
+  /* Add space between the border and the content */
+  padding: 8px;
+
+  border-radius: 12px;
+  box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+}
+
+/* Style div elements that have class equal to tag */
+.tag {
+  padding: 4px 8px;
+  border: 1px solid #e5eaed;
+
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #788697;
+}
+
+/* Style div elements that have class equal to name */
+.name {
+  font-size: 24px;
+  font-weight: 600;
+
+  margin-top: 16px;
+}
+
+/* Style p element */
+p {
+  font-size: 14px;
+  color: #7f8c9b;
+  line-height: 150%;
+}
+
+/* Style button element */
+.btn-vr{
+  border: none;
+  padding: 12px 24px;
+  border-radius: 50px;
+
+  font-weight: 600;
+  color: #0077ff;
+  background-color: #e0efff;
+
+  /* Button is inline-block element by default, it need to have block display for margin: 0 auto; to work */
+  margin: 0 auto;
+  display: block;
+
+  /* Button is a clickable element, therefore it should have a pointer cursor */
+  cursor: pointer;
+}
+
+.card__details {
+  /* Add space around the details */
+  padding: 16px 8px 8px 8px;
+}
+
+/* Add style when button is focused or hovered */
+.btn-vr:focus,
+.btn-vr:hover {
+  background-color: #0077ff;
+  color: #e0efff;
+}
+/* 
+margin: topValue rightValue bottomValue leftValue;
+margin: verticalValue horizontalValue;
+
+padding: topValue rightValue bottomValue leftValue;
+padding: verticalValue horizontalValue; */
+.c-view-res{
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+.colvr{
+  padding: 30px;
+}
