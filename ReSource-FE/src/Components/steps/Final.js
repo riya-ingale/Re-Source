@@ -19,7 +19,8 @@ export default function Final() {
     const role_id = 4; //sessionStorage.getItem("role_id")
     const logindata = {name,specification,subject,dimension,details,quantity,cost,req_approval,img,role_id};
     console.log(logindata);
-    const url = 'http://127.0.0.1:8000/resource/add/'+username;
+    const lab_id = 2
+    const url = 'http://127.0.0.1:8000/resource/add/'+username+"/"+lab_id;
     
     fetch(url, {//role id update require wait for landing page
       method: 'POST',
