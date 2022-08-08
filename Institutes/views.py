@@ -10,50 +10,69 @@ import json
 
 # Create your views here.
 @csrf_exempt
-def profile(request):
-    if 'user_name' in request.session:
-        if request.session['role_id'] == 2:
-            if request.method == 'GET':
-                curr_ins = Institutes.objects.get(username = request.session['user_name'])
-                serializer = InstituteSerializer(curr_ins)
-                return JsonResponse({
-                    'status' : 200,
-                    'message' : 'All resource fetched',
-                    'data': serializer.data
+def profile(request, username):
+    # if 'username' in request.session:
+    # role_id = request.session['role_id']
+
+    curr_ins = Institutes.objects.get(name = username)
+    role_id = curr_ins.role_id
+    if role_id == 3:
+        if request.method == 'GET':
+            serializer = InstituteSerializer(curr_ins)
+            return JsonResponse({
+                'status' : 200,
+                'message' : 'fetched',
+                'data': serializer.data
+            })
+
+            # return render(request, 'profile.html' , curr_ins)
+        
+        elif request.method == 'POST':
+            data = json.loads(request.body)
+            data['name'] = curr_ins.name
+            data['email'] = curr_ins.email
+            data['password'] = curr_ins.password
+            serializer = InstituteSerializer(curr_ins ,data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(data = {
+                    'message': 'Success',
+                    'data' : serializer.data
                 })
-                # return render(request, 'profile.html' , curr_ins)
-            
-            elif request.method == 'POST':
-                data = json.loads(request.body)
-                #print(data)
-                serializer = InstituteSerializer(data = data)
-                if serializer.is_valid():
-                    serializer.save()
-                    return JsonResponse(data = {
-                        'message': 'Success',
-                        'data' : serializer.data
-                    })
-            
-            elif request.method == 'PUT':
-                curr_ins = Institutes.objects.get(username = request.session['user_name'])
-                data = json.loads(request.body)
-                serializer = InstituteSerializer(curr_ins , data = data)
-                if serializer.is_valid():
-                    serializer.save()
-                    return JsonResponse(data = {
-                        'message' : 'Updated',
-                        'data': serializer.data
-                    })
-            
             else:
-                curr_ins = Institutes.objects.get(username = request.session['user_name'])
-                curr_ins.delete()
-                return JsonResponse('Record Deleted' , safe = False)
-                
+                return JsonResponse(data = {
+                    'status':400,
+                    'message': 'Invalid Data',
+                    'data': serializer.errors
+                })
+       
+    else:
+        return JsonResponse(data = {
+            'status':401,
+            'message' : 'Nahi jaga hai, role badal'
+        })  
+
+def editprofile(request, username):
+    curr_ins = Institutes.objects.get(name = username)
+    role_id = curr_ins.role_id
+    if role_id == 3:
+        if request.method == 'GET':
+            curr_ins = Institutes.objects.get(name = username)
+            serializer = InstituteSerializer(curr_ins)
+            return JsonResponse(data = {
+                'message': 'Fetched',
+                'data':serializer.data
+            })
+        
+        #the edit form will be submitted on the post route itself
+
+        elif request.method == 'DELETE':
+            curr_ins = Institutes.objects.get(name = username)
+            curr_ins.delete()
+            return JsonResponse('Record Deleted' , safe = False)
 
 
-                #retrieve fields from form, and update the data
-                
+
 
 
                 
