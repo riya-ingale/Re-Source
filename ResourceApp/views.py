@@ -59,6 +59,7 @@ def addresources(request,username,lab_id):
             'message':'Role has no acess'
             })
 
+
 @csrf_exempt
 def getresources(request):
     if request.method == 'GET':
@@ -87,3 +88,18 @@ def getresources(request):
                 'count': len(resourcesobjs),
                 'data':serializer.data,
             })
+
+
+def getdetails(request,r_id):
+    if request.method == "GET":
+        r_id = r_id
+        resourceobj = Resources.objects.filter(id  =r_id)[0]
+        serializer = ResourcesSerializer(resourceobj)
+
+        # Availability and Slots to be added
+
+        return JsonResponse({
+            'status':200,
+            'message':"Resource fetched",
+            'data':serializer.data
+        })
