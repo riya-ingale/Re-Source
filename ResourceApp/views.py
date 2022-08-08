@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse
 from ResourceApp.serializers import ResourcesSerializer
+from Institutes.serializers import InstituteSerializer
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
@@ -65,16 +66,38 @@ def getresources(request):
     if request.method == 'GET':
         resourcesobjs = Resources.objects.all()
         serializer = ResourcesSerializer(resourcesobjs,many = True)
+
+        # List of institutes to populate in the drop down along with their ids
+        institutes = Institutes.objects.values_list('id','name').all()
+
         return JsonResponse({
             'status':200,
             'message':"All Resources fetched",
             'data':serializer.data,
+            'institutes':list(institutes)
         })
     elif request.method == 'POST':
         data = json.loads(request.body)
-        search = data['searchtext']
-        resourcesobjs = Resources.objects.filter(name__icontains=search).all()
-        print("Resources",resourcesobjs)
+
+        if 'searchtext' in data and 'institute_id' in data:
+            search = data['searchtext']
+            institute_id = data['institute_id']
+            labs = Labs.objects.filter(institute = institute_id).values_list('id').all()
+            lab_ids = [item for sublist in list(labs) for item in sublist]
+            resourcesobjs = Resources.objects.filter(name__icontains=search,lab__in = lab_ids).all()
+        elif "searchtext" in data:
+            search = data['searchtext']
+            resourcesobjs = Resources.objects.filter(name__icontains=search).all()
+        elif 'institute_id' in data:
+            institute_id = data['institute_id']
+            labs = Labs.objects.filter(institute = institute_id).values_list('id').all()
+            lab_ids = [item for sublist in list(labs) for item in sublist]
+            resourcesobjs = Resources.objects.filter(lab__in = lab_ids).all()
+
+
+        # Availabilty on that Date To be Done
+        
+        
         if len(resourcesobjs) == 0:
             return JsonResponse({
             'status':404,
@@ -94,8 +117,9 @@ def getdetails(request,r_id):
     if request.method == "GET":
         r_id = r_id
         resourceobj = Resources.objects.filter(id  =r_id)[0]
-        institutes = Institutes.objects.all()
         serializer = ResourcesSerializer(resourceobj)
+        
+        
 
         # Availability and Slots to be added
 
