@@ -73,7 +73,7 @@ def getresources(request):
     elif request.method == 'POST':
         data = json.loads(request.body)
         search = data['searchtext']
-        resourcesobjs = Resources.objects.filter(name__contains=search).all()
+        resourcesobjs = Resources.objects.filter(name__icontains=search).all()
         print("Resources",resourcesobjs)
         if len(resourcesobjs) == 0:
             return JsonResponse({
@@ -94,6 +94,7 @@ def getdetails(request,r_id):
     if request.method == "GET":
         r_id = r_id
         resourceobj = Resources.objects.filter(id  =r_id)[0]
+        institutes = Institutes.objects.all()
         serializer = ResourcesSerializer(resourceobj)
 
         # Availability and Slots to be added
