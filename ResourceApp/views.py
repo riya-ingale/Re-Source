@@ -15,6 +15,7 @@ from sqlalchemy import or_
 def addresources(request,username):
     if request.method == "POST":
         print(json.loads(request.body),username)
+        # if role in []
         return JsonResponse({'status':200,'username':username})
         #cost and quantity int
         # t = Students.objects.get(email = username)
@@ -65,4 +66,3 @@ def getresources(request):
                 'count': len(resourcesobjs),
                 'data':serializer.data,
             })
-    
