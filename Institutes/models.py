@@ -37,7 +37,7 @@ class Labs(models.Model):
     workforce = models.ForeignKey(to = WorkForce , on_delete = models.SET_NULL, null=True)
     institute = models.ForeignKey(to = Institutes , on_delete=models.CASCADE)
     name = models.CharField(max_length=500 , null = True)
-    lab_staff = models.CharField(max_length = 500, default = str(id))
+    lab_staff = models.CharField(max_length = 500,null = True)
     resource_id = models.CharField(max_length = 500 , null = True)
     start_time = models.CharField(max_length = 500, null=True)
     end_time = models.CharField(max_length = 500, null=True)

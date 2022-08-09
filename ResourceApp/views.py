@@ -13,8 +13,25 @@ import base64
 from django.core.files.base import ContentFile
 import string
 import random
+from datetime import date, timedelta, datetime
+
+
+
 
 # Create your views here.
+
+def add_available_slots(res):
+    lab = Labs.objects.filter(id = res.lab_id)[0]
+    today = date.today()
+    start_time = int(lab.start_time)
+    end_time = int(lab.end_time)
+    slots = []
+    for k in range(7):
+        for i in range(start_time, end_time):
+            db = Availability(resource = res,lab = lab.id, available_units = res.quantity, date = today, start_time = i, end_time = i+1)
+            db.save()
+        today = today + timedelta(days=1)
+    return slots
 
 @csrf_exempt
 def addresources(request,username,lab_id):
@@ -35,9 +52,10 @@ def addresources(request,username,lab_id):
                     file_name = photoname+"." + ext
                     imagedata = ContentFile(base64.b64decode(imgstr),name=file_name)
 
-                    res = Resources.objects.filter(name = data['name'],lab = lab_id,cost= data['cost'])[0]
+                    res = Resources.objects.filter(name = data['name'],lab = lab_id,cost= data['cost'],quantity = data['quantity'])[0]
                     db = Image(resource = res,image = imagedata)
                     db.save()
+                # add_available_slots(res)
                 print("got the images")
                 return JsonResponse(data={
                 'status':200,
@@ -112,14 +130,12 @@ def getresources(request):
                 'data':serializer.data,
             })
 
-
+@csrf_exempt
 def getdetails(request,r_id):
     if request.method == "GET":
         r_id = r_id
         resourceobj = Resources.objects.filter(id  =r_id)[0]
         serializer = ResourcesSerializer(resourceobj)
-        
-        
 
         # Availability and Slots to be added
 
@@ -128,3 +144,36 @@ def getdetails(request,r_id):
             'message':"Resource fetched",
             'data':serializer.data
         })
+    elif request.method == "POST":
+        resourceobj = Resources.objects.filter(id  =r_id)[0]
+        serializer = ResourcesSerializer(resourceobj)
+
+        data = json.loads(request.body)
+        date = data['date'] 
+        print(date)
+        date = datetime.strptime(date, '%Y-%m-%d').date()
+        print(type(date), date)# type = date
+        quantity = data['quantity']
+        slots = Availability.objects.filter(date= date, available_units__gte=quantity, resource_id = r_id ).all()
+        result =[]
+        for slot in slots:
+            tup = (slot.start_time,slot.end_time)
+            result.append(tup)
+
+        return JsonResponse({
+            'status':200,
+            'message':"Resource fetched",
+            'data':serializer.data,
+            'slots':result
+        })
+
+
+
+# def addslots(request):
+#     data = json.loads(request.body)
+#     res = Resources.objects.filter(id = data['res_id'])[0]
+#     slots = add_available_slots(res)
+#     print(slots)
+#     return JsonResponse(data={
+#         "slots":slots
+#     })

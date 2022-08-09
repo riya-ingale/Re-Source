@@ -15,4 +15,5 @@ class WorkForceSerializer(serializers.ModelSerializer):
 class LabSerializer(serializers.ModelSerializer):
     class Meta:
         model = Labs
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ('resource_id','lab_staff')

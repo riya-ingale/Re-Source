@@ -14,7 +14,7 @@ def profile(request, username):
     # if 'username' in request.session:
     # role_id = request.session['role_id']
 
-    curr_ins = Institutes.objects.get(name = username)
+    curr_ins = Institutes.objects.get(email = username)
     role_id = curr_ins.role_id
     if role_id == 3:
         if request.method == 'GET':

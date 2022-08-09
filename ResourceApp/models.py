@@ -5,12 +5,12 @@ from Institutes.models import Resources
 class Availability(models.Model):
     a_id = models.AutoField(primary_key=True)
     resource = models.ForeignKey(to = Resources, on_delete = models.CASCADE )
-    lab = models.IntegerField()
+    lab = models.IntegerField(null = True)
     available_units = models.IntegerField()
-    day = models.TextField()
+    day = models.TextField(null = True)
     date = models.DateField()
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    start_time = models.IntegerField()
+    end_time = models.IntegerField()
     approved = models.IntegerField(default = 0)
 
 class Cart(models.Model):
