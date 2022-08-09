@@ -76,7 +76,8 @@ def allrequests(request,id):
     # role_id = request.session['role_id']
     # id = request.session['id']
     if request.method == 'GET':
-        role_id = 3
+        data = Institutes.objects.get(id = id)
+        role_id = data.role_id
         if role_id == 1:
             pending_universities = Institutes.objects.filter(role_id = 2, status = 0)
             serializer = InstituteSerializer(pending_universities , many = True)
@@ -87,8 +88,8 @@ def allrequests(request,id):
         
         elif role_id == 2:
             #username = request.session['username']
-            username = 'Mumbai University'
-            pending_institutes = Institutes.objects.filter(university = username , role_id = 3 , status = 0)
+            name = data.name
+            pending_institutes = Institutes.objects.filter(university = name , role_id = 3 , status = 0)
             serializer = InstituteSerializer(pending_institutes , many = True)
             return JsonResponse(data = {
                 'message' : 'Feteched Institutions -->',
@@ -96,7 +97,6 @@ def allrequests(request,id):
             })
         
         elif role_id ==3 or role_id == 4:
-
             pending_labs = Labs.objects.filter(institute = id , status = 0)
             lserializer = LabSerializer(pending_labs , many = True)
 
@@ -120,16 +120,40 @@ def allrequests(request,id):
 
 # post route for request acceptance 
 @csrf_exempt
-def institution_request(request):
+def institution_request(request , id):
     if request.method == "POST":
         # if request.session.Role in [1,2,3]:
-        role_id = 2
-        if role_id in [1,2]:
+        user = Institutes.objects.get(id = id)
+        role_id = user.role_id
+        if role_id == 1:
             data = json.loads(request.body)
-            print(data)
+            curr_ins = Institutes.objects.get(id = data['id'])
+
+            if data['university']!= user.name:
+                return JsonResponse('Institution is not under your university' , safe = False)
+
+            serializer = InstituteSerializer(curr_ins , data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(data = {
+                    'status': 200,
+                    'message': 'Status Updated',
+                    'data': serializer.data
+                })
+            else:
+                return JsonResponse(data = {
+                    'status' : 400,
+                    'message': 'Invalid Data',
+                    'data' : serializer.errors
+                })
+        elif role_id == 2:
+            data = json.loads(request.body)
+            if data['role_id']!=3:
+                return JsonResponse('You cannot remove admin' , safe = False)
+                
             curr_ins = Institutes.objects.get(id = data['id'])
             #if data['university']!= request.session['username']:
-            # return 'Nikal La*de'
+            #return not allowed
             serializer = InstituteSerializer(curr_ins , data = data)
             if serializer.is_valid():
                 serializer.save()
@@ -157,9 +181,10 @@ def institution_request(request):
         })
 
 @csrf_exempt
-def workforce_request(request):
+def workforce_request(request , id):
     if request.method == "POST":
-        role_id = 3
+        user = Institutes.objects.get(id = id)
+        role_id = user.role_id
         #role_id = request.session['Role']
         if role_id == 3:
             data = json.loads(request.body)
@@ -191,10 +216,11 @@ def workforce_request(request):
         })
 
 @csrf_exempt
-def lab_request(request):
+def lab_request(request , id):
     if request.method == "POST":
-        role = 3
-        if role in [3,4]:
+        user = Institutes.objects.get(id = id)
+        role_id = user.role_id
+        if role_id in [3,4]:
             data = json.loads(request.body)
             lab = Labs.objects.get(id = data['id'])
             serializer = LabSerializer(lab , data = data)
