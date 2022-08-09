@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse
-from Institutes.serializers import InstituteSerializer
+from Institutes.serializers import *
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
@@ -72,7 +72,156 @@ def editprofile(request, username):
             return JsonResponse('Record Deleted' , safe = False)
 
 
+def allrequests(request,id):
+    # role_id = request.session['role_id']
+    # id = request.session['id']
+    if request.method == 'GET':
+        role_id = 3
+        if role_id == 1:
+            pending_universities = Institutes.objects.filter(role_id = 2, status = 0)
+            serializer = InstituteSerializer(pending_universities , many = True)
+            return JsonResponse(data = {
+                'message' : 'Feteched Universities -->',
+                'data' : serializer.data
+            })
+        
+        elif role_id == 2:
+            #username = request.session['username']
+            username = 'Mumbai University'
+            pending_institutes = Institutes.objects.filter(university = username , role_id = 3 , status = 0)
+            serializer = InstituteSerializer(pending_institutes , many = True)
+            return JsonResponse(data = {
+                'message' : 'Feteched Institutions -->',
+                'data' : serializer.data
+            })
+        
+        elif role_id ==3 or role_id == 4:
 
+            pending_labs = Labs.objects.filter(institute = id , status = 0)
+            lserializer = LabSerializer(pending_labs , many = True)
+
+            if role_id == 3:
+                pending_workforce = WorkForce.objects.filter(institute = id , status = 0)
+                wfserializer = WorkForceSerializer(pending_workforce , many = True)
+                return JsonResponse(data = {
+                    'message':'Feteched',
+                    'workforce_data' : wfserializer.data,
+                    'lab_data' : lserializer.data
+                })
+            return JsonResponse(data = {
+                    'message':'Feteched',
+                    'lab_data' : lserializer.data
+                })
+    else:
+        return JsonResponse(data = {
+            'status': 404,
+            'message' : 'page not found'
+        })
+
+# post route for request acceptance 
+@csrf_exempt
+def institution_request(request):
+    if request.method == "POST":
+        # if request.session.Role in [1,2,3]:
+        role_id = 2
+        if role_id in [1,2]:
+            data = json.loads(request.body)
+            print(data)
+            curr_ins = Institutes.objects.get(id = data['id'])
+            #if data['university']!= request.session['username']:
+            # return 'Nikal La*de'
+            serializer = InstituteSerializer(curr_ins , data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(data = {
+                    'status': 200,
+                    'message': 'Status Updated',
+                    'data': serializer.data
+                })
+            else:
+                return JsonResponse(data = {
+                    'status' : 400,
+                    'message': 'Invalid Data',
+                    'data' : serializer.errors
+                })
+        else:
+            return JsonResponse(data = {
+                'status': 401,
+                'message': 'Role has no access'
+            })
+    
+    else:
+        return JsonResponse(data = {
+            'status': 404,
+            'message' : 'page not found'
+        })
+
+@csrf_exempt
+def workforce_request(request):
+    if request.method == "POST":
+        role_id = 3
+        #role_id = request.session['Role']
+        if role_id == 3:
+            data = json.loads(request.body)
+            worker = WorkForce.objects.get(id = data['id'])
+            serializer = WorkForceSerializer(worker , data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(data = {
+                    'status': 200,
+                    'message': 'Status Updated',
+                    'data': serializer.data
+                })
+            else:
+                return JsonResponse(data = {
+                    'status' : 400,
+                    'message': 'Invalid Data',
+                    'data' : serializer.errors
+                })
+        else:
+            return JsonResponse(data = {
+                'status': 401,
+                'message': 'Role has no access'
+            })
+    
+    else:
+        return JsonResponse(data = {
+            'status': 404,
+            'message' : 'page not found'
+        })
+
+@csrf_exempt
+def lab_request(request):
+    if request.method == "POST":
+        role = 3
+        if role in [3,4]:
+            data = json.loads(request.body)
+            lab = Labs.objects.get(id = data['id'])
+            serializer = LabSerializer(lab , data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(data = {
+                    'status': 200,
+                    'message': 'Status Updated',
+                    'data': serializer.data
+                })
+            else:
+                return JsonResponse(data = {
+                    'status' : 400,
+                    'message': 'Invalid Data',
+                    'data' : serializer.errors
+                })
+        else:
+            return JsonResponse(data = {
+                'status': 401,
+                'message': 'Role has no access'
+            })
+    
+    else:
+        return JsonResponse(data = {
+            'status': 404,
+            'message' : 'page not found'
+        })
 
 
                 

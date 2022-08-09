@@ -29,16 +29,19 @@ class WorkForce(models.Model):
     email_id = models.CharField(max_length = 500)
     phone_no = models.IntegerField(null=True)
     auth_token = models.CharField(max_length=500,null=True)
+    status = models.IntegerField(default=0) #-1,0,1
 
 
 class Labs(models.Model):
     id = models.AutoField(primary_key= True)
     workforce = models.ForeignKey(to = WorkForce , on_delete = models.SET_NULL, null=True)
     institute = models.ForeignKey(to = Institutes , on_delete=models.CASCADE)
+    name = models.CharField(max_length=500 , null = True)
     lab_staff = models.CharField(max_length = 500, default = str(id))
     resource_id = models.CharField(max_length = 500 , null = True)
     start_time = models.CharField(max_length = 500, null=True)
     end_time = models.CharField(max_length = 500, null=True)
+    status = models.IntegerField(default=0) #-1,0,1
     
 
 class Resources(models.Model):
