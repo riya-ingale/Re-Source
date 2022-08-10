@@ -10,66 +10,111 @@ import json
 
 # Create your views here.
 @csrf_exempt
-def profile(request, username):
+def profile(request, id):
     # if 'username' in request.session:
     # role_id = request.session['role_id']
-
-    curr_ins = Institutes.objects.get(email = username)
-    role_id = curr_ins.role_id
-    if role_id == 3:
-        if request.method == 'GET':
+    if request.method == 'GET':
+        data = json.loads(request.body)
+        role_id = data['Role']
+        if role_id == 1 or role_id == 2:
+            curr_ins = Institutes.objects.get(id = id)
             serializer = InstituteSerializer(curr_ins)
+            return JsonResponse({
+                    'status' : 200,
+                    'message' : 'fetched',
+                    'data': serializer.data
+                })
+        elif role_id == 3:
+            curr_ins = Institutes.objects.get(id = id)
+            labs = Labs.objects.filter(institute = id)
+            lserializer = LabSerializer(labs , many = True)
+
+            workforce = WorkForce.objects.filter(institute = id)
+            wfserializer = WorkForceSerializer(workforce , many = True)
+
+            serializer = InstituteSerializer(curr_ins)
+            
             return JsonResponse({
                 'status' : 200,
                 'message' : 'fetched',
-                'data': serializer.data
+                'institute_data': serializer.data,
+                'Labs_data': lserializer.data,
+                'Workforce_data':WorkForceSerializer.data
+            })
+        
+        elif role_id == 4:
+            labs = Labs.objects.get(workforce = id)
+            lserializer = LabSerializer(labs , many = True)
+            return JsonResponse({
+                'status': 200,
+                'message': 'Fetched',
+                'lab_data': lserializer.data
             })
 
-            # return render(request, 'profile.html' , curr_ins)
-        
-        elif request.method == 'POST':
-            data = json.loads(request.body)
-            data['name'] = curr_ins.name
-            data['email'] = curr_ins.email
-            data['password'] = curr_ins.password
-            serializer = InstituteSerializer(curr_ins ,data = data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(data = {
-                    'message': 'Success',
-                    'data' : serializer.data
-                })
-            else:
-                return JsonResponse(data = {
-                    'status':400,
-                    'message': 'Invalid Data',
-                    'data': serializer.errors
-                })
-       
+        else:
+            workforce = WorkForce.objects.get(workforce = id)
+            wfserializer = WorkForceSerializer(workforce)
+            return JsonResponse({
+                'statues':200,
+                'message': 'Fetched',
+                'data': wfserializer.data
+            })
+            
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        data['name'] = curr_ins.name
+        data['email'] = curr_ins.email
+        data['password'] = curr_ins.password
+        serializer = InstituteSerializer(curr_ins ,data = data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(data = {
+                'message': 'Success',
+                'data' : serializer.data
+            })
+        else:
+            return JsonResponse(data = {
+                'status':400,
+                'message': 'Invalid Data',
+                'data': serializer.errors
+            })
     else:
         return JsonResponse(data = {
             'status':401,
             'message' : 'Nahi jaga hai, role badal'
-        })  
+        })            
+       
+    
 
-def editprofile(request, username):
-    curr_ins = Institutes.objects.get(name = username)
-    role_id = curr_ins.role_id
-    if role_id == 3:
-        if request.method == 'GET':
-            curr_ins = Institutes.objects.get(name = username)
+def editprofile(request, id):
+
+    if request.method == 'GET':
+        data = json.loads(request.body)
+        role_id = data['Role']
+        if role_id in [1,2,3]:
+            curr_ins = Institutes.objects.get(id = id)
             serializer = InstituteSerializer(curr_ins)
             return JsonResponse(data = {
                 'message': 'Fetched',
                 'data':serializer.data
             })
         
-        #the edit form will be submitted on the post route itself
+        if role_id == 4:
+            worker = WorkForce.objects.get(id = id)
+            serializer = WorkForceSerializer(worker)
+            return JsonResponse(data = {
+                'message': 'Fetched',
+                'data': serializer.data
+            })
+    
+    #the edit form will be submitted on the post route itself
 
-        elif request.method == 'DELETE':
-            curr_ins = Institutes.objects.get(name = username)
-            curr_ins.delete()
-            return JsonResponse('Record Deleted' , safe = False)
+    elif request.method == 'DELETE':
+        curr_ins = Institutes.objects.get(name = username)
+        curr_ins.delete()
+        return JsonResponse('Record Deleted' , safe = False)
+
+def edit_lab(request, )
 
 
 def allrequests(request,id):
