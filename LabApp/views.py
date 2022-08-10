@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from Institutes.models import *
-from ResourceApp.models import Availability
+from ResourceApp.models import Book_slots
 from Institutes.serializers import *
 from ResourceApp.serializers import *
 import json
@@ -18,7 +18,7 @@ def addlab(request):
         workforce_id = data['workforce']
         workforce = WorkForce.objects.filter(id = workforce_id)[0]
         data['institute'] = workforce.institute.id
-        if workforce.role_id in [3,4]:
+        if workforce.role_id == 4:
             serializer = LabSerializer(data = data)
             if serializer.is_valid():
                 serializer.save()

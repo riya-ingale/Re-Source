@@ -110,11 +110,11 @@ def editprofile(request, id):
     #the edit form will be submitted on the post route itself
 
     elif request.method == 'DELETE':
-        curr_ins = Institutes.objects.get(name = username)
+        curr_ins = Institutes.objects.get(name = id)
         curr_ins.delete()
         return JsonResponse('Record Deleted' , safe = False)
 
-def edit_lab(request, )
+# def edit_lab(request, )
 
 
 def allrequests(request,id):

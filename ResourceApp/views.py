@@ -28,7 +28,7 @@ def add_available_slots(res):
     slots = []
     for k in range(7):
         for i in range(start_time, end_time):
-            db = Availability(resource = res,lab = lab.id, available_units = res.quantity, date = today, start_time = i, end_time = i+1)
+            db = Book_slots(resource = res,lab = lab.id, available_units = res.quantity, date = today, start_time = i, end_time = i+1)
             db.save()
         today = today + timedelta(days=1)
     return slots
@@ -137,7 +137,7 @@ def getdetails(request,r_id):
         resourceobj = Resources.objects.filter(id  =r_id)[0]
         serializer = ResourcesSerializer(resourceobj)
 
-        # Availability and Slots to be added
+        # Book_slots and Slots to be added
 
         return JsonResponse({
             'status':200,
@@ -154,7 +154,7 @@ def getdetails(request,r_id):
         date = datetime.strptime(date, '%Y-%m-%d').date()
         print(type(date), date)# type = date
         quantity = data['quantity']
-        slots = Availability.objects.filter(date= date, available_units__gte=quantity, resource_id = r_id ).all()
+        slots = Book_slots.objects.filter(date= date, available_units__gte=quantity, resource_id = r_id ).all()
         result =[]
         for slot in slots:
             tup = (slot.start_time,slot.end_time)
