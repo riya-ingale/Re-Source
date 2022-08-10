@@ -1,7 +1,4 @@
-from django.shortcuts import render, HttpResponse
 from Institutes.serializers import *
-from rest_framework.response import Response
-from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from Institutes.models import *
 from ResourceApp.models import *

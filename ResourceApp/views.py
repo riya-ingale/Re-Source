@@ -1,37 +1,15 @@
-from django.shortcuts import render, HttpResponse
 from ResourceApp.serializers import ResourcesSerializer
-from Institutes.serializers import InstituteSerializer
-from rest_framework.response import Response
-from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from Institutes.models import *
 from ResourceApp.models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
-from sqlalchemy import or_
 import base64
 from django.core.files.base import ContentFile
 import string
 import random
 from datetime import date, timedelta, datetime
 
-
-
-
-# Create your views here.
-
-def add_available_slots(res):
-    lab = Labs.objects.filter(id = res.lab_id)[0]
-    today = date.today()
-    start_time = int(lab.start_time)
-    end_time = int(lab.end_time)
-    slots = []
-    for k in range(7):
-        for i in range(start_time, end_time):
-            db = Book_slots(resource = res,lab = lab.id, available_units = res.quantity, date = today, start_time = i, end_time = i+1)
-            db.save()
-        today = today + timedelta(days=1)
-    return slots
 
 @csrf_exempt
 def addresources(request,username,lab_id):
@@ -85,8 +63,8 @@ def getresources(request):
         resourcesobjs = Resources.objects.all()
         serializer = ResourcesSerializer(resourcesobjs,many = True)
 
-        # List of institutes to populate in the drop down along with their ids
-        institutes = Institutes.objects.values_list('id','name').all()
+        # List of institutes,city to populate in the drop down along with their ids in asceding order of their name
+        institutes = Institutes.objects.filter(role_id = 3).values_list('id','name','city').order_by('name').all()
 
         return JsonResponse({
             'status':200,
@@ -95,7 +73,10 @@ def getresources(request):
             'institutes':list(institutes)
         })
     elif request.method == 'POST':
+
         data = json.loads(request.body)
+
+        # If searchtext is given then return searchtext, If one institute in the dropdown is given then return the institute id 
 
         if 'searchtext' in data and 'institute_id' in data:
             search = data['searchtext']
@@ -130,6 +111,7 @@ def getresources(request):
                 'data':serializer.data,
             })
 
+
 @csrf_exempt
 def getdetails(request,r_id):
     if request.method == "GET":
@@ -137,43 +119,64 @@ def getdetails(request,r_id):
         resourceobj = Resources.objects.filter(id  =r_id)[0]
         serializer = ResourcesSerializer(resourceobj)
 
-        # Book_slots and Slots to be added
-
-        return JsonResponse({
-            'status':200,
-            'message':"Resource fetched",
-            'data':serializer.data
-        })
-    elif request.method == "POST":
-        resourceobj = Resources.objects.filter(id  =r_id)[0]
-        serializer = ResourcesSerializer(resourceobj)
-
-        data = json.loads(request.body)
-        date = data['date'] 
-        print(date)
-        date = datetime.strptime(date, '%Y-%m-%d').date()
-        print(type(date), date)# type = date
-        quantity = data['quantity']
-        slots = Book_slots.objects.filter(date= date, available_units__gte=quantity, resource_id = r_id ).all()
-        result =[]
-        for slot in slots:
-            tup = (slot.start_time,slot.end_time)
-            result.append(tup)
+        imgs = Image.objects.filter(resource = resourceobj).values_list('image').all()
 
         return JsonResponse({
             'status':200,
             'message':"Resource fetched",
             'data':serializer.data,
-            'slots':result
+            'images':list(imgs)
         })
 
+    # After sending date and units required this POST will show the slots along with resource data  
+    elif request.method == "POST":
+        resourceobj = Resources.objects.filter(id  = r_id)[0]
+        serializer = ResourcesSerializer(resourceobj)
 
+        imgs = Image.objects.filter(resource = resourceobj).values_list('image').all()
 
-# def addslots(request):
-#     data = json.loads(request.body)
-#     res = Resources.objects.filter(id = data['res_id'])[0]
-#     slots = add_available_slots(res)
-#     print(slots)
-#     return JsonResponse(data={
-#         "slots":slots
-#     })
+        data = json.loads(request.body)
+        date = data['date'] 
+        print(date)
+        required_date = datetime.strptime(date, '%Y-%m-%d').date()
+        print(type(date), date) # type = date
+        required_quantity = data['quantity']
+    
+        if required_quantity<=resourceobj.quantity:
+            lab = resourceobj.lab
+            start_time = int(lab.start_time)
+            end_time = int(lab.end_time)
+            slots = []
+            for i in range(start_time, end_time):
+                l = [i,i+1,resourceobj.quantity]
+                slots.append(l)
+            booked_slots = Book_slots.objects.filter(resource = resourceobj, date = required_date).values_list('start_time','end_time','units').all()
+            og_booked_slots = list(booked_slots)
+            booked_slots = og_booked_slots.copy()
+            result=[]
+            for i in slots:
+                flag = 0
+                for j in booked_slots:
+                    if i[0] == j[0] and i[1] == j[1]:
+                        l = [i[0],j[1],i[2]-j[2]]
+                        result.append(l)
+                        booked_slots.remove(j)
+                        flag = 1
+                        break
+                if not flag:   
+                    result.append(i)
+            for i in result:
+                if not i[2]>=required_quantity:
+                    result.remove(i)
+        else:
+            return JsonResponse({
+            'status':404,
+            'message':f"{required_quantity} Units not available, Try a lesser number"
+        })
+        return JsonResponse({
+            'status':200,
+            'message':"Resource fetched",
+            'data':serializer.data,
+            'images':list(imgs),
+            'available_slots':result  # SHOW THIS IN THE FRONTEND
+        })
