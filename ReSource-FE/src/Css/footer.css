@@ -50,6 +50,9 @@ h3{
 
  footer{
     color:#caced1 !important;
+    padding-top: 0% !important;
+    padding-bottom: 0% !important;
+    margin-top: 30px;
  }
 
  li{

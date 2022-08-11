@@ -4,36 +4,68 @@ import chem from "../Images/chem-quip.jpg";
 import bio from "../Images/images.jpg";
 import phy from "../Images/microscope.jpg";
 import TextField from '@material-ui/core/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Button from '@mui/material/Button';
 
 
 export default function ViewResources() {
   return (
     <>
       <div className="containner c-view-res">
-      <form>
-        <div className="row">
-            <div className="col-md-6 d-flex justify-content-center">
-            <TextField
-        id="date"
-        label="Date"
-        type="date"
-        defaultValue="2017-05-24"
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
+        <form>
+          <div className="row">
+            <div className="col-md-3 d-flex justify-content-center">
+              <TextField
+                id="date"
+                label="Date"
+                type="date"
+                defaultValue="2017-05-24"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </div>
-            <div className="col-md-6 d-flex justify-content-center">
-            <TextField id="standard-basic" label="Search" variant="standard" />
+            <div className="col-md-3 d-flex justify-content-center">
+              <TextField
+                id="standard-basic"
+                label="Search"
+                variant="standard"
+              />
             </div>
-        </div>
+            <div className="col-md-3 d-flex justify-content-center">
+              <FormControl variant="standard" >
+                <InputLabel id="demo-simple-select-standard-label">
+                  Age
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value=""
+                  label="Age"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={10}>Ten</MenuItem>
+                  <MenuItem value={20}>Twenty</MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+            <div className="col-md-3 d-flex justify-content-center">
+              <Button className="Searchbtn" variant="outlined">Search</Button>
+            </div>
+          </div>
         </form>
         <div className="row">
           <div className="col-md-4 colvr">
             <div className="card rescard">
               <img src={chem} className="imgres" alt="Equipment Name" />
 
-              {/* <!-- A div with card__details class to hold the details in the card  --> */}
+              {/* <!-- A div with card__details  to hold the details in the card  --> */}
               <div className="card__details">
                 {/* <!-- Span with tag class for the tag --> */}
                 {/* <span className="tag">Nature</span>
@@ -106,6 +138,9 @@ export default function ViewResources() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="d-flex justify-content-center">
+        <Button variant="text">Show More</Button>
         </div>
       </div>
     </>
