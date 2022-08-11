@@ -1,6 +1,6 @@
-import React from 'react';
+import React,{lazy} from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-import img1 from "../Images/chem-quip.jpg";
+import img1 from ".././Images/chem-quip.jpg";
 import img2 from "../Images/microscope.jpg";
 import img3 from "../Images/chem-quip.jpg";
 import "../Css/resourcedetail.css";
@@ -8,11 +8,114 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import TextField from '@material-ui/core/TextField';
+import { useParams } from 'react-router';
 
 export default function Resourcedetail() {
+  // const images = require.context('../../../', true);
+//   var data = {};
+//   console.log('http://127.0.0.1:8000/resource/getdetails/'+useParams()['id']);
+//   fetch('http://127.0.0.1:8000/resource/getdetails/'+useParams()['id'], { //role id update require wait for landing page
+//   method: 'GET',
+//   headers: { "Content-Type": "application/json" },
+//   // body: JSON.stringify(logindata)
+// }).then(async response=>{
+//   data = await response.json();})
+
+
+const data = {
+  "status": 200,
+  "message": "Resource fetched",
+  "data": {
+      "id": 9,
+      "name": "Tungsten Turbidimeter",
+      "specification": "3.0",
+      "subject": "Science",
+      "dimension": "153 mm x 395 mm x 305 mm",
+      "details": "TL2350 Turbidimeter, silicone oil, oiling cloth, USEPA filter assembly, 1-inch sample cells (30 mL) with caps (6x), Gelex secondary turbidity standardization kit, Stablcal calibration kit, power supply, power cord, dust cover",
+      "quantity": 10,
+      "cost": 45999,
+      "req_approval": 0,
+      "lab": 3
+  },
+  "images": [
+      [
+          "media/resource_images/3NGQBVLXCN.jpeg"
+      ],
+      [
+          "media/resource_images/M2AW277Z5U.jpeg"
+      ]
+  ],
+  "available_slots": [
+      [
+          11,
+          12,
+          10
+      ],
+      [
+          12,
+          13,
+          10
+      ],
+      [
+          13,
+          14,
+          10
+      ],
+      [
+          14,
+          15,
+          10
+      ],
+      [
+          15,
+          16,
+          10
+      ],
+      [
+          16,
+          17,
+          10
+      ],
+      [
+          17,
+          18,
+          10
+      ]
+  ]
+};
+
+
+console.log("available_slots" in data);
+var slotting = <div></div>;
+if("available_slots" in data){
+ slotting = 
+  <div>
+  <div className=''>
+  <div className="card card-booking">
+  <div className="outer-slot-div">
+    {data.available_slots.map((item) =>(
+      <div className="cat">
+      <label>
+          <input type="checkbox" value="1"/><span>{item[0]}:00 - {item[1]}:00</span>
+      </label>
+      </div>
+    ))}
+    
+  </div>
+  </div>
+  </div>
+
+  <div className='d-flex justify-content-center bookNow'>
+      <button className="button-86" role="button">Book Now</button>
+  </div>
+  </div>
+ }
+
+
+
   return (
     <>
-      <div className="pd-wrap">
+      <div className="pd-wrap" >
         <div className="container">
           <div className="heading-section">
             <h2>Product Details</h2>
@@ -38,9 +141,9 @@ export default function Resourcedetail() {
             <div className="col-md-6">
               <div className="product-dtl">
                 <div className="product-info">
-                  <div className="product-name">Variable Product</div>
-                  <div className="reviews-counter">
-                    <div className="rate">
+                  <div className="product-name">{data.data.name}</div>
+                  {/* <div className="reviews-counter"> */}
+                    {/* <div className="rate">
                       <input
                         type="radio"
                         id="star5"
@@ -81,18 +184,16 @@ export default function Resourcedetail() {
                       </label>
                     </div>
                     <span>3 Reviews</span>
-                  </div>
+                  </div> */}
                   <div className="product-price-discount">
-                    <span>Rs 3900.00</span>
+                    <span>Cost per hour: Rs{data.data.cost}</span>
                   </div>
                 </div>
                 <p>
-                    Specification: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    Specification: {data.data.specification}
                     <br></br>
                     Details:
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
+                  {data.data.details}
                   
                 </p>
                 <Card sx={{ minWidth: 275 }}>
@@ -100,15 +201,15 @@ export default function Resourcedetail() {
                     <div className='row'>
                         <div className='col-md-6'>
                             <ul className="list-bullets">
-                                <li className="mb-2"><strong className='strlist'>Domain: </strong> Physics</li>
-                                <li className="mb-2"><strong className='strlist'>Dimension: </strong> 2ft x 2ft</li>
+                                <li className="mb-2"><strong className='strlist'>Domain: </strong> {data.data.subject}</li>
+                                <li className="mb-2"><strong className='strlist'>Dimension: </strong>{data.data.dimension}</li>
                                 {/* <li className="mb-2"><strong>Specification: </strong>High Bandwidth</li> */}
                             </ul>
                         </div>
                         <div className='col-md-6'>
                             <ul className="list-bullets">
-                                <li className="mb-2"><strong className='strlist'>Quantity: </strong> 50</li>
-                                <li className="mb-2"><strong className='strlist'>Details: </strong>Some detail</li>
+                                <li className="mb-2"><strong className='strlist'>Quantity: </strong>{data.data.quantity}</li>
+                                <li className="mb-2"><strong className='strlist'>Details: </strong>{data.data.details}</li>
                                 {/* <li className="mb-2"><strong></strong></li> */}
                             </ul>
                         </div>
@@ -143,63 +244,8 @@ export default function Resourcedetail() {
             </div>
           </div>
         </form>
-        <div className=''>
-        <div className="card card-booking">
-        <div className="outer-slot-div">
-            <div className="cat">
-            <label>
-                <input type="checkbox" value="1"/><span>9:00 - 10:00</span>
-            </label>
-            </div>
 
-            <div className="cat">
-            <label>
-                <input type="checkbox" value="1"/><span>9:00 - 10:00</span>
-            </label>
-            </div>
-
-            <div className="cat ">
-            <label>
-                <input type="checkbox" value="1"/><span>9:00 - 10:00</span>
-            </label>
-            </div>
-
-            <div className="cat">
-            <label>
-                <input type="checkbox" value="1"/><span>9:00 - 10:00</span>
-            </label>
-            </div>
-
-            <div className="cat ">
-            <label>
-                <input type="checkbox" value="1"/><span>9:00 - 10:00</span>
-            </label>
-            </div>
-
-            <div className="cat">
-            <label>
-                <input type="checkbox" value="1"/><span>9:00 - 10:00</span>
-            </label>
-            </div>
-
-            <div className="cat ">
-            <label>
-                <input type="checkbox" value="1"/><span>9:00 - 10:00</span>
-            </label>
-            </div>
-
-            <div className="cat">
-            <label>
-                <input type="checkbox" value="1"/><span>9:00 - 10:00</span>
-            </label>
-            </div>
-
-            </div>
-        </div>
-        </div>
-        </div>
-        <div className='d-flex justify-content-center bookNow'>
-            <button className="button-86" role="button">Book Now</button>
+        {slotting}
         </div>
       </div>
     </>

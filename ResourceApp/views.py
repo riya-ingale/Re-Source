@@ -9,8 +9,7 @@ from django.core.files.base import ContentFile
 import string
 import random
 from datetime import date, timedelta, datetime
-
-
+import base64
 @csrf_exempt
 def addresources(request,username,lab_id):
     if request.method == "POST":
@@ -56,6 +55,12 @@ def addresources(request,username,lab_id):
             'message':'Role has no acess'
             })
 
+
+def converted(image):
+      
+    with open(image, "rb") as image_file:
+        data = base64.b64encode(image_file.read())
+    return data
 
 @csrf_exempt
 def getresources(request):
@@ -110,6 +115,8 @@ def getresources(request):
                 'count': len(resourcesobjs),
                 'data':serializer.data,
             })
+
+
 
 
 @csrf_exempt
@@ -173,10 +180,17 @@ def getdetails(request,r_id):
             'status':404,
             'message':f"{required_quantity} Units not available, Try a lesser number"
         })
+        # image_b64 = []
+        # for i in list(imgs):
+        #     image_b64.append(converted(i[0]))
+        # print(image_b64)
+        imgs = list(imgs)
+        print(imgs[0][0])
+        # print(converted(imgs[0][0]))
         return JsonResponse({
             'status':200,
             'message':"Resource fetched",
             'data':serializer.data,
-            'images':list(imgs),
+            'images':imgs,
             'available_slots':result  # SHOW THIS IN THE FRONTEND
         })

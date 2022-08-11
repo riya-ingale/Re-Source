@@ -73,7 +73,7 @@ export default function ViewResources() {
                 <span className="tag">Lake</span> */}
 
                 {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
+                <div className="name">Checkers</div>
 
                 <div className="">
                   <ul>
@@ -83,7 +83,7 @@ export default function ViewResources() {
                   </ul>
                 </div>
 
-                <button className="btn-vr">Book Now</button>
+                <button className="btn-vr" onClick={event =>  window.location.href='/resdetail/9'}>Book Now</button>
               </div>
             </div>
           </div>

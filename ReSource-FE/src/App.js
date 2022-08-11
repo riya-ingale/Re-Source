@@ -25,7 +25,7 @@ function App() {
           <Route exact path="/footer" element={<Footer/>}/>
           <Route exact path="/viewres" element={<><Header/><ViewResources/><Footer/></>}/>
           <Route exact path="/profile" element={<><Header/><Profile/><Footer/></>}/>
-          <Route exact path="/resdetail" element={<><Header/><Resourcedetail/><Footer/></>}/>
+          <Route exact path="/resdetail/:id" element={<><Header/><Resourcedetail/><Footer/></>}/>
           <Route exact path="/cart" element={<><Header/><Cart/><Footer/></>}/>
         </Routes>
     </Router>
