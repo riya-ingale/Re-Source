@@ -180,3 +180,89 @@ def getdetails(request,r_id):
             'images':list(imgs),
             'available_slots':result  # SHOW THIS IN THE FRONTEND
         })
+
+@csrf_exempt
+def resource_edit(request,  id):
+    data = json.loads(request.body())
+    uid = data['id']
+    role_id = data['Role']
+    if request.method == 'GET':
+        if role_id == 4:
+            resource = Resources.objects.get(id = id)
+            owner_id = resource.lab.workforce
+            if owner_id != uid:
+                return JsonResponse(data = {
+                        'status': 401,
+                        'message': 'Only lab owner has access'
+                    })
+            serializer = ResourcesSerializer(resource)
+            return JsonResponse(data = {
+                'status':200,
+                'message': 'Resource Fetched',
+                'resource_data' : serializer.data
+            })
+        elif role_id == 3:
+            resource = Resources.objects.get(id = id)
+            owner_id = resource.lab.institute
+            if owner_id != uid:
+                return JsonResponse(data = {
+                        'status': 401,
+                        'message': 'It is not you lab you dont have access'
+                    })
+            serializer = ResourcesSerializer(resource)
+            return JsonResponse(data = {
+                'status':200,
+                'message': 'Resource Fetched',
+                'resource_data' : serializer.data
+            })
+        else:
+            return JsonResponse(data = {
+                'status': 401,
+                'message': 'This role donot have access'
+            })
+    
+    else:
+        if role_id == 3:
+
+            resource = Resources.objects.get(id = id)
+            owner_id = resource.lab.institute
+            if owner_id!=uid:
+                return JsonResponse(data = {
+                        'status': 401,
+                        'message': 'It is not you lab you dont have access'
+                    })
+            del data['id']
+            del data['Role']
+
+            serializer = ResourcesSerializer(resource , data == data)
+            return JsonResponse(data = {
+                'status':200,
+                'message': 'Resource Fetched',
+                'resource_data' : serializer.data
+            })
+        elif role_id == 4:
+
+            resource = Resources.objects.get(id = id)
+            owner_id = resource.lab.workforce
+            if owner_id!=uid:
+                return JsonResponse(data = {
+                        'status': 401,
+                        'message': 'It is not you lab you dont have access'
+                    })
+            del data['id']
+            del data['Role']
+
+            data['edit_approval'] = 0
+
+            serializer = ResourcesSerializer(resource , data == data)
+            return JsonResponse(data = {
+                'status':200,
+                'message': 'Resource Fetched',
+                'resource_data' : serializer.data
+            })
+
+        else:
+            return JsonResponse(data = {
+                'status': 401,
+                'message': 'This role donot have access'
+            })
