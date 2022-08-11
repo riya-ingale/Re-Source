@@ -37,11 +37,11 @@ def profile(request, id):
                 'message' : 'fetched',
                 'institute_data': serializer.data,
                 'Labs_data': lserializer.data,
-                'Workforce_data':WorkForceSerializer.data
+                'Workforce_data':wfserializer.data
             })
         
         elif role_id == 4:
-            labs = Labs.objects.get(workforce = id)
+            labs = Labs.objects.filter(workforce = id)
             lserializer = LabSerializer(labs , many = True)
             return JsonResponse({
                 'status': 200,
@@ -61,14 +61,15 @@ def profile(request, id):
         elif role_id == 8:
             data = WorkForce.objects.get(id = id)
             institute = data.institute
-            buytransactions = Transaction.objects.filter(buyer = institute)
-            selltransactions = Transaction.objects.filter(seller = institute)
+            wfserializer = WorkForceSerializer(data)
+            buytransactions = Transaction.objects.filter(buyer = institute.id)
+            selltransactions = Transaction.objects.filter(seller = institute.id)
             bserializer = TransactionSerializer(buytransactions , many = True)
             sserializer = TransactionSerializer(selltransactions , many = True)
             return JsonResponse({
                 'status':200,
                 'message':'Fetched',
-                'workforce':data,
+                'workforce':wfserializer.data,
                 'bdata': bserializer.data,
                 'sdata':sserializer.data
             })
@@ -163,22 +164,31 @@ def allrequests(request,id):
                 'data' : serializer.data
             })
         
-        elif role_id ==3 or role_id == 4:
+        elif role_id ==3:
+            labs = Labs.objects.filter(institute = id).values_list('id').all()
+            lab_ids = [ele[0] for ele in labs]
+     
             pending_labs = Labs.objects.filter(institute = id , status = 0)
             lserializer = LabSerializer(pending_labs , many = True)
 
-            if role_id == 3:
-                pending_workforce = WorkForce.objects.filter(institute = id , status = 0)
-                wfserializer = WorkForceSerializer(pending_workforce , many = True)
-                return JsonResponse(data = {
-                    'message':'Feteched',
-                    'workforce_data' : wfserializer.data,
-                    'lab_data' : lserializer.data
-                })
+            lab_edits = Labs.objects.filter(institute = id , edit_approval = 0)
+            leserializer = LabSerializer(lab_edits , many = True)
+
+            resource_edits = Resources.objects.filter(lab__in= lab_ids , edit_approval = 0)
+            reserializer = ResourcesSerializer(resource_edits , many = True)
+
+            pending_workforce = WorkForce.objects.filter(institute = id , status = 0)
+            wfserializer = WorkForceSerializer(pending_workforce , many = True)
+
             return JsonResponse(data = {
-                    'message':'Feteched',
-                    'lab_data' : lserializer.data
-                })
+                'message':'Feteched',
+                'workforce_data' : wfserializer.data,
+                'lab_data' : lserializer.data,
+                'lab_edit_requests':leserializer.data,
+                'resource_edit_requests':reserializer.data
+            })
+        else:
+            return JsonResponse('role has no access' , safe = False)
     else:
         return JsonResponse(data = {
             'status': 404,

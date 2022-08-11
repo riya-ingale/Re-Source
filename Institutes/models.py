@@ -42,6 +42,7 @@ class Labs(models.Model):
     start_time = models.CharField(max_length = 500, null=True)
     end_time = models.CharField(max_length = 500, null=True)
     status = models.IntegerField(default=0) #-1,0,1
+    edit_approval = models.IntegerField(default = 1 , null = True)
     
 
 class Resources(models.Model):
@@ -56,6 +57,7 @@ class Resources(models.Model):
     quantity = models.IntegerField(default = 1)
     cost = models.IntegerField()
     req_approval = models.IntegerField(default = 0)
+    edit_approval = models.IntegerField(default = 1 , null = True)
 
 
 class Image(models.Model):
