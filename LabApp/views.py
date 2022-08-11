@@ -41,5 +41,25 @@ def addlab(request):
             'message':'Role has no acess'
             })
 
+# def edit_lab(request , id):
+#     #id === lab_id
+#     if request.method == 'GET':
+#         user = request.body()
+#         role_id = user['Role']
+#         if role_id == 4:
+
+            
+#         uid = user['id']
+#         lab = Labs.objects.get(id = id)
+#         if lab.workforce != uid:
+#             return JsonResponse(data = {
+#                 'status': 401,
+#                 'message': 'Only lab owner has access'
+#             })
+        
+    
+#     else:
+
+
 
 

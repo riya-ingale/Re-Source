@@ -1,4 +1,5 @@
 from Institutes.serializers import *
+from ResourceApp.serializers import *
 from django.http.response import JsonResponse
 from Institutes.models import *
 from ResourceApp.models import *
@@ -46,6 +47,30 @@ def profile(request, id):
                 'status': 200,
                 'message': 'Fetched',
                 'lab_data': lserializer.data
+            })
+
+        elif role_id == 6:
+            student = Students.objects.get(id = id)
+            serializer = StudentSerializer(student)
+            return JsonResponse({
+                'status': 200,
+                'message':'Fetched',
+                'data':serializer.data
+            })
+        
+        elif role_id == 8:
+            data = WorkForce.objects.get(id = id)
+            institute = data.institute
+            buytransactions = Transaction.objects.filter(buyer = institute)
+            selltransactions = Transaction.objects.filter(seller = institute)
+            bserializer = TransactionSerializer(buytransactions , many = True)
+            sserializer = TransactionSerializer(selltransactions , many = True)
+            return JsonResponse({
+                'status':200,
+                'message':'Fetched',
+                'workforce':data,
+                'bdata': bserializer.data,
+                'sdata':sserializer.data
             })
 
         else:
