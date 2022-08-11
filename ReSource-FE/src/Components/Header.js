@@ -62,7 +62,7 @@ export default function Header() {
               <li className="nav-item">
                 <button className="btn logoutbtn">
                   {" "}
-                  <i className="fa-solid fa-right-from-bracket"></i> LogOut
+                  <i class="fa fa-sign-out" aria-hidden="true"></i>  LogOut
                 </button>
               </li>
             </ul>

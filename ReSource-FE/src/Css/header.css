@@ -4,8 +4,8 @@
 }
 .logoutbtn {
     /* Button Blue */
-    background-color: #00BFFF;
-    color: #ffffff;
+    /* background-color: #00BFFF; */
+    color: #000000;
     /* background-color: transparent;
     color: #000000; */
 }
@@ -27,7 +27,36 @@
 .navbar{
     background-color: rgb(255, 255, 255) !important;
 }
-nav {
-    width: 100vw;
-    overflow-x: hidden;
+
+
+/* RESPONSIVE DESIGNS */
+/* // Small devices (landscape phones, 576px and up) */
+@media (max-width: 576px) 
+{
+    nav {
+        width: 100vw;
+        overflow-x: hidden !important;
+        overflow-y: auto;
+    }
+}
+
+/* // Medium devices (tablets, 768px and up) */
+ @media (min-width: 576px) and (max-width: 768px)
+ {		
+    nav {
+        width: 100vw;
+        overflow-x: hidden !important;
+        overflow-y: auto;
+    }
+ }
+
+/* // Large devices (desktops, 992px and up)
+@media (min-width: 992px) { ... } */
+
+ /* // Extra large devices (large desktops, 1200px and up) */
+ @media screen and (min-width: 1400px) {
+
+  }
+@media (min-width: 1900px)
+{
 }

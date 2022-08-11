@@ -24,6 +24,14 @@ img {
 #standard-basic {
   width: 300px;
 }
+#demo-simple-select-standard {
+  width: 280px;
+}
+.Searchbtn {
+  height: 40px;
+  color: currentColor !important;
+  border-color: currentColor !important;
+}
 #container {
   max-width: 300px;
 
@@ -116,4 +124,30 @@ padding: verticalValue horizontalValue; */
 
 .colvr{
   padding: 30px;
+}
+
+/* RSPONSIVE DESIGNS */
+/* // Small devices (landscape phones, 576px and up) */
+@media (max-width: 576px) 
+{
+  .Searchbtn {
+    margin: 20px !important;
+  }
+}
+
+/* // Medium devices (tablets, 768px and up) */
+ @media (min-width: 576px) and (max-width: 768px)
+ {		
+    
+ }
+
+/* // Large devices (desktops, 992px and up)
+@media (min-width: 992px) { ... } */
+
+ /* // Extra large devices (large desktops, 1200px and up) */
+ @media screen and (min-width: 1400px) {
+
+  }
+@media (min-width: 1900px)
+{
 }
