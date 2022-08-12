@@ -52,7 +52,6 @@ var data = {
       [
           "media/resource_images/M2AW277Z5U.jpeg"
       ]
-<<<<<<< HEAD
   ],
   "available_slots": [
       [
@@ -152,17 +151,13 @@ const handleDate = (e) =>{
 //       }
 var slotting = <div></div>;
 if(slots !== '' && slots!== undefined){
->>>>>>> abbd675d485b4187626ad0a402e397900bd2874a
  slotting = 
   <div>
   <div className=''>
   <div className="card card-booking">
   <div className="outer-slot-div">
-<<<<<<< HEAD
     {data.available_slots.map((item) =>(
-=======
     {slots.map((item) =>(
->>>>>>> abbd675d485b4187626ad0a402e397900bd2874a
       <div className="cat">
       <label>
           <input type="checkbox" value="1"/><span>{item[0]}:00 - {item[1]}:00</span>
