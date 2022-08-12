@@ -10,6 +10,8 @@ import string
 import random
 from datetime import date, timedelta, datetime
 import base64
+from django.core.paginator import Paginator
+
 @csrf_exempt
 def addresources(request,username,lab_id):
     if request.method == "POST":
@@ -65,42 +67,64 @@ def converted(image):
 @csrf_exempt
 def getresources(request):
     if request.method == 'GET':
-        resourcesobjs = Resources.objects.all()
-        serializer = ResourcesSerializer(resourcesobjs,many = True)
-
         # List of institutes,city to populate in the drop down along with their ids in asceding order of their name
         institutes = Institutes.objects.filter(role_id = 3).values_list('id','name','city').order_by('name').all()
+        flag = 0
+        try:
+            data = json.loads(request.body)
+            flag= 1
+            if 'lab_id' in data:
+                resourcesobjs = Resources.objects.filter(lab = int(data['lab_id']))
+        except:
+            resourcesobjs = Resources.objects.all()
 
-        return JsonResponse({
+        size = 2
+        page = request.GET.get('page')
+        paginator = Paginator(resourcesobjs, size)
+        resources = paginator.get_page(page)
+        serializer = ResourcesSerializer(resources, many=True)
+        return_data = {
             'status':200,
             'message':"All Resources fetched",
+            'total_count':paginator.count,
+            'total_pages':paginator.num_pages,
             'data':serializer.data,
             'institutes':list(institutes)
-        })
+        }
+        if resources.number == paginator.num_pages:
+            return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+        elif resources.number == 1:
+            return_data['next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+        else:
+            return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+            return_data['next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+        if flag:
+            return_data['body_data'] = data
+        return JsonResponse(return_data)
+
     elif request.method == 'POST':
-
-        data = json.loads(request.body)
-
         # If searchtext is given then return searchtext, If one institute in the dropdown is given then return the institute id 
+        try:
+            data = json.loads(request.body)
 
-        if 'searchtext' in data and 'institute_id' in data:
-            search = data['searchtext']
-            institute_id = data['institute_id']
-            labs = Labs.objects.filter(institute = institute_id).values_list('id').all()
-            lab_ids = [item for sublist in list(labs) for item in sublist]
-            resourcesobjs = Resources.objects.filter(name__icontains=search,lab__in = lab_ids).all()
-        elif "searchtext" in data:
-            search = data['searchtext']
-            resourcesobjs = Resources.objects.filter(name__icontains=search).all()
-        elif 'institute_id' in data:
-            institute_id = data['institute_id']
-            labs = Labs.objects.filter(institute = institute_id).values_list('id').all()
-            lab_ids = [item for sublist in list(labs) for item in sublist]
-            resourcesobjs = Resources.objects.filter(lab__in = lab_ids).all()
-
+            if 'searchtext' in data and 'institute_id' in data:
+                search = data['searchtext']
+                institute_id = data['institute_id']
+                labs = Labs.objects.filter(institute = institute_id).values_list('id').all()
+                lab_ids = [item for sublist in list(labs) for item in sublist]
+                resourcesobjs = Resources.objects.filter(name__icontains=search,lab__in = lab_ids).all()
+            elif "searchtext" in data:
+                search = data['searchtext']
+                resourcesobjs = Resources.objects.filter(name__icontains=search).all()
+            elif 'institute_id' in data:
+                institute_id = data['institute_id']
+                labs = Labs.objects.filter(institute = institute_id).values_list('id').all()
+                lab_ids = [item for sublist in list(labs) for item in sublist]
+                resourcesobjs = Resources.objects.filter(lab__in = lab_ids).all()
+        except:
+            resourcesobjs = Resources.objects.all()
 
         # Availabilty on that Date To be Done
-        
         
         if len(resourcesobjs) == 0:
             return JsonResponse({
@@ -115,7 +139,6 @@ def getresources(request):
                 'count': len(resourcesobjs),
                 'data':serializer.data,
             })
-
 
 
 
@@ -185,12 +208,9 @@ def getdetails(request,r_id):
         #     image_b64.append(converted(i[0]))
         # print(image_b64)
         imgs = list(imgs)
-<<<<<<< HEAD
         print(imgs[0][0])
-=======
         # print(imgs[0][0])
         # print(result)
->>>>>>> abbd675d485b4187626ad0a402e397900bd2874a
         # print(converted(imgs[0][0]))
         return JsonResponse({
             'status':200,
