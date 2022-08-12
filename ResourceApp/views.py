@@ -147,7 +147,7 @@ def getdetails(request,r_id):
         print(date)
         required_date = datetime.strptime(date, '%Y-%m-%d').date()
         print(type(date), date) # type = date
-        required_quantity = data['quantity']
+        required_quantity = int(data['quantity'])
     
         if required_quantity<=resourceobj.quantity:
             lab = resourceobj.lab
@@ -185,7 +185,8 @@ def getdetails(request,r_id):
         #     image_b64.append(converted(i[0]))
         # print(image_b64)
         imgs = list(imgs)
-        print(imgs[0][0])
+        # print(imgs[0][0])
+        # print(result)
         # print(converted(imgs[0][0]))
         return JsonResponse({
             'status':200,
