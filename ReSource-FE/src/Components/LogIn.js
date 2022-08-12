@@ -58,10 +58,13 @@ export default class LogIn extends Component {
       if(data['status'] == 200){
         sessionStorage.setItem('username',data['username']);
         sessionStorage.setItem('role_id',data['Role']);//role id update require wait for landing page
+        sessionStorage.setItem('user_id',data['user_id']);
         const cookies = new Cookies();
         cookies.set('username', data['username'], { path: '/' });
         window.location.href = '/'
         cookies.set('role_id', data['Role'], { path: '/' });
+        window.location.href = '/'
+        cookies.set('user_id', data['user_id'], { path: '/' });
         window.location.href = '/'
         // const cookies = new Cookies();
         // cookies.set('username', data['username'], { path: '/' });

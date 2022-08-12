@@ -9,8 +9,7 @@ from django.core.files.base import ContentFile
 import string
 import random
 from datetime import date, timedelta, datetime
-
-
+import base64
 @csrf_exempt
 def addresources(request,username,lab_id):
     if request.method == "POST":
@@ -56,6 +55,12 @@ def addresources(request,username,lab_id):
             'message':'Role has no acess'
             })
 
+
+def converted(image):
+      
+    with open(image, "rb") as image_file:
+        data = base64.b64encode(image_file.read())
+    return data
 
 @csrf_exempt
 def getresources(request):
@@ -110,6 +115,8 @@ def getresources(request):
                 'count': len(resourcesobjs),
                 'data':serializer.data,
             })
+
+
 
 
 @csrf_exempt
@@ -173,23 +180,30 @@ def getdetails(request,r_id):
             'status':404,
             'message':f"{required_quantity} Units not available, Try a lesser number"
         })
+        # image_b64 = []
+        # for i in list(imgs):
+        #     image_b64.append(converted(i[0]))
+        # print(image_b64)
+        imgs = list(imgs)
+        print(imgs[0][0])
+        # print(converted(imgs[0][0]))
         return JsonResponse({
             'status':200,
             'message':"Resource fetched",
             'data':serializer.data,
-            'images':list(imgs),
+            'images':imgs,
             'available_slots':result  # SHOW THIS IN THE FRONTEND
         })
 
 @csrf_exempt
 def resource_edit(request,  id):
-    data = json.loads(request.body())
-    uid = data['id']
-    role_id = data['Role']
     if request.method == 'GET':
+        data = json.loads(request.body)
+        uid = data['id']
+        role_id = data['Role']
         if role_id == 4:
             resource = Resources.objects.get(id = id)
-            owner_id = resource.lab.workforce
+            owner_id = resource.lab.workforce.id
             if owner_id != uid:
                 return JsonResponse(data = {
                         'status': 401,
@@ -203,7 +217,7 @@ def resource_edit(request,  id):
             })
         elif role_id == 3:
             resource = Resources.objects.get(id = id)
-            owner_id = resource.lab.institute
+            owner_id = resource.lab.institute.id
             if owner_id != uid:
                 return JsonResponse(data = {
                         'status': 401,
@@ -222,19 +236,24 @@ def resource_edit(request,  id):
             })
     
     else:
+        data = json.loads(request.body)
+        uid = data['uid']
+        role_id = data['Role']
         if role_id == 3:
-
+            
             resource = Resources.objects.get(id = id)
-            owner_id = resource.lab.institute
+            owner_id = resource.lab.institute.id
             if owner_id!=uid:
                 return JsonResponse(data = {
                         'status': 401,
-                        'message': 'It is not you lab you dont have access'
+                        'message': 'It is not your lab you dont have access'
                     })
             del data['id']
             del data['Role']
 
-            serializer = ResourcesSerializer(resource , data == data)
+            serializer = ResourcesSerializer(resource , data = data)
+            if serializer.is_valid():
+                serializer.save()
             return JsonResponse(data = {
                 'status':200,
                 'message': 'Resource Fetched',
@@ -243,18 +262,20 @@ def resource_edit(request,  id):
         elif role_id == 4:
 
             resource = Resources.objects.get(id = id)
-            owner_id = resource.lab.workforce
+            owner_id = resource.lab.workforce.id
             if owner_id!=uid:
                 return JsonResponse(data = {
                         'status': 401,
-                        'message': 'It is not you lab you dont have access'
+                        'message': 'It is not your lab you dont have access'
                     })
             del data['id']
             del data['Role']
 
             data['edit_approval'] = 0
 
-            serializer = ResourcesSerializer(resource , data == data)
+            serializer = ResourcesSerializer(resource , data = data)
+            if serializer.is_valid():
+                serializer.save()
             return JsonResponse(data = {
                 'status':200,
                 'message': 'Resource Fetched',

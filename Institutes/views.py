@@ -62,7 +62,7 @@ def profile(request, id):
             data = WorkForce.objects.get(id = id)
             institute = data.institute
             wfserializer = WorkForceSerializer(data)
-            buytransactions = Transaction.objects.filter(buyer = institute.id)
+            buytransactions = Transaction.objects.filter(buyer = institute)
             selltransactions = Transaction.objects.filter(seller = institute.id)
             bserializer = TransactionSerializer(buytransactions , many = True)
             sserializer = TransactionSerializer(selltransactions , many = True)

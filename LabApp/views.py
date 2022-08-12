@@ -52,7 +52,7 @@ def edit_lab(request ,id):
             uid = user['id']
             lab = Labs.objects.get(id = id)
             serializer = LabSerializer(lab)
-            if lab.workforce != uid:
+            if lab.workforce.id != uid:
                 return JsonResponse(data = {
                     'status': 401,
                     'message': 'Only lab owner has access'
@@ -68,7 +68,7 @@ def edit_lab(request ,id):
             uid = user['id']
             lab = Labs.objects.get(id = id)
             serializer = LabSerializer(lab)
-            if lab.institute != uid:
+            if lab.institute.id != uid:
                 return JsonResponse(data = {
                     'status': 401,
                     'message': 'Only lab owner has access'
@@ -89,8 +89,8 @@ def edit_lab(request ,id):
         if role_id == 4:
             uid = data['uid']
         
-            lab = Labs.object.get(id = id)
-            if lab.workforce != uid:
+            lab = Labs.objects.get(id = id)
+            if lab.workforce.id != uid:
                 return JsonResponse(data = {
                     'status': 401,
                     'message': 'Only lab owner has access'
@@ -101,13 +101,36 @@ def edit_lab(request ,id):
             data['edit_approval'] = 0
 
             serializer = LabSerializer(lab , data = data)
-            if serializer.is_valid:
+            if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(data={
                 'status':200,
                 'message':'SUCCESS',
                 'data': serializer.data,
             })
+        
+        if role_id == 3:
+            uid = data['uid']
+        
+            lab = Labs.objects.get(id = id)
+            if lab.institute.id != uid:
+                return JsonResponse(data = {
+                    'status': 401,
+                    'message': 'Only lab owner has access'
+                })
+
+            del data['uid']
+            del data['Role']
+
+            serializer = LabSerializer(lab , data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(data={
+                'status':200,
+                'message':'SUCCESS',
+                'data': serializer.data,
+            })
+
 
         else:
             return JsonResponse('This role has no access' , safe = False) 

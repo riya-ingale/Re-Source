@@ -84,7 +84,7 @@ def signup(request,id = 0):
                     # if check_password(password, t.password):
                     if password == t.password:
                         request.session['username'] = username   
-                        return JsonResponse({'status':200,'username':username,'Role':id})
+                        return JsonResponse({'status':200,'username':username,'Role':id,'user_id':t.id})
                     else:
                         return JsonResponse({'status':403,"message":"Password Incorrect"}) 
                 except:
@@ -96,7 +96,7 @@ def signup(request,id = 0):
                         return JsonResponse({'status':403,"message":"Verify Email First"})
                     if password == t.password:
                         request.session['username'] = username   
-                        return JsonResponse({'status':200,'username':username,'Role':id})
+                        return JsonResponse({'status':200,'username':username,'Role':id,'user_id':t.id})
                     else:
                         return JsonResponse({'status':403,"message":"Password Incorrect"}) 
                 except:
@@ -108,7 +108,7 @@ def signup(request,id = 0):
                         return JsonResponse({'status':403,"message":"Verify Email First"})
                     if password == t.password:
                         request.session['username'] = username   
-                        return JsonResponse({'status':200,'username':username,'Role':id})
+                        return JsonResponse({'status':200,'username':username,'Role':id,'user_id':t.id})
                     else:
                         return JsonResponse({'status':403,"message":"Password Incorrect"}) 
                 except:
