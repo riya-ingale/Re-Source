@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React,{lazy} from 'react';
+=======
+import React,{useEffect, useState} from 'react';
+>>>>>>> abbd675d485b4187626ad0a402e397900bd2874a
 import Carousel from 'react-bootstrap/Carousel';
 import img1 from ".././Images/chem-quip.jpg";
 import img2 from "../Images/microscope.jpg";
@@ -21,8 +25,12 @@ export default function Resourcedetail() {
 // }).then(async response=>{
 //   data = await response.json();})
 
+<<<<<<< HEAD
 
 const data = {
+=======
+var data = {
+>>>>>>> abbd675d485b4187626ad0a402e397900bd2874a
   "status": 200,
   "message": "Resource fetched",
   "data": {
@@ -44,6 +52,7 @@ const data = {
       [
           "media/resource_images/M2AW277Z5U.jpeg"
       ]
+<<<<<<< HEAD
   ],
   "available_slots": [
       [
@@ -88,12 +97,72 @@ const data = {
 console.log("available_slots" in data);
 var slotting = <div></div>;
 if("available_slots" in data){
+=======
+  ]
+};
+
+const [users, setUsers] = useState();
+const { id } = useParams();
+useEffect(() => {
+  fetch(
+          "http://127.0.0.1:8000/resource/getdetails/"+id
+        ).then(async response=>{
+          setUsers(await response.json());})
+          console.log('i fire once');
+          // sessionStorage.setItem("getter","1");
+}, [id])
+if(users !== undefined){
+  console.log("change");
+  data = users
+}
+const [slots,setSlots] = useState('');
+const [date, setDate] = useState('');
+const [quant, setQuant] = useState('');
+const slot_fetch = () => {
+    // console.log("Clicked")
+  // console.log(date);
+  // console.log(quant);
+  const quantity = quant;
+  const slot = {date,quantity}
+  console.log(slot)
+  fetch("http://127.0.0.1:8000/resource/getdetails/"+id, { //role id update require wait for landing page
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(slot)
+    }).then(async response=>{
+      data = await response.json();
+      setSlots(data['available_slots']);
+      // console.log(await response.json())
+
+    })
+}
+
+const handleCapacity = (e) =>{
+  setQuant(e.target.value);
+}
+
+
+const handleDate = (e) =>{
+  setDate(e.target.value);
+}
+
+// if(slots !== '')
+//       {
+//         console.log(slots);
+//       }
+var slotting = <div></div>;
+if(slots !== '' && slots!== undefined){
+>>>>>>> abbd675d485b4187626ad0a402e397900bd2874a
  slotting = 
   <div>
   <div className=''>
   <div className="card card-booking">
   <div className="outer-slot-div">
+<<<<<<< HEAD
     {data.available_slots.map((item) =>(
+=======
+    {slots.map((item) =>(
+>>>>>>> abbd675d485b4187626ad0a402e397900bd2874a
       <div className="cat">
       <label>
           <input type="checkbox" value="1"/><span>{item[0]}:00 - {item[1]}:00</span>
@@ -230,6 +299,7 @@ if("available_slots" in data){
                 InputLabelProps={{
                   shrink: true,
                 }}
+                onChange={handleDate}
               />
             </div>
             <div className="col-md-4 d-flex justify-content-center">
@@ -237,10 +307,11 @@ if("available_slots" in data){
                 id="standard-basic"
                 label="Capacity"
                 variant="standard"
+                onChange={handleCapacity}
               />
             </div>
             <div className="col-md-4 d-flex justify-content-center">
-              <Button className="Searchbtn" variant="outlined">Find Slots</Button>
+              <Button className="Searchbtn" variant="outlined" onClick={slot_fetch}>Find Slots</Button>
             </div>
           </div>
         </form>
