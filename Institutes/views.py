@@ -297,7 +297,7 @@ def lab_request(request , id):
     if request.method == "POST":
         user = Institutes.objects.get(id = id)
         role_id = user.role_id
-        if role_id in [3,4]:
+        if role_id == 3:
             data = json.loads(request.body)
             lab = Labs.objects.get(id = data['id'])
             serializer = LabSerializer(lab , data = data)

@@ -64,6 +64,22 @@ def edit_lab(request ,id):
                     'message':'Great sucess',
                     'data': serializer.data
                 })
+        elif role_id == 3:       
+            uid = user['id']
+            lab = Labs.objects.get(id = id)
+            serializer = LabSerializer(lab)
+            if lab.institute != uid:
+                return JsonResponse(data = {
+                    'status': 401,
+                    'message': 'Only lab owner has access'
+                })
+            else:
+                
+                return JsonResponse(data = {
+                    'status':200,
+                    'message':'Great sucess',
+                    'data': serializer.data
+                })
         else:
             return JsonResponse('This role has no access' , safe = False)
     
