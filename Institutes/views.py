@@ -141,11 +141,9 @@ def editprofile(request, id):
 
 
 def allrequests(request,id):
-    # role_id = request.session['role_id']
-    # id = request.session['id']
     if request.method == 'GET':
-        data = Institutes.objects.get(id = id)
-        role_id = data.role_id
+        data = json.loads(request.body)
+        role_id = data['Role']
         if role_id == 1:
             pending_universities = Institutes.objects.filter(role_id = 2, status = 0)
             serializer = InstituteSerializer(pending_universities , many = True)
@@ -156,7 +154,7 @@ def allrequests(request,id):
         
         elif role_id == 2:
             #username = request.session['username']
-            name = data.name
+            name = Institutes.objects.get(id = id).name
             pending_institutes = Institutes.objects.filter(university = name , role_id = 3 , status = 0)
             serializer = InstituteSerializer(pending_institutes , many = True)
             return JsonResponse(data = {
@@ -174,6 +172,9 @@ def allrequests(request,id):
             lab_edits = Labs.objects.filter(institute = id , edit_approval = 0)
             leserializer = LabSerializer(lab_edits , many = True)
 
+            resource_approve = Cart.objects.filter(seller = id, is_approved = 0)
+            raserializer = CartSerializer(resource_approve, many = True)
+
             resource_edits = Resources.objects.filter(lab__in= lab_ids , edit_approval = 0)
             reserializer = ResourcesSerializer(resource_edits , many = True)
 
@@ -185,7 +186,8 @@ def allrequests(request,id):
                 'workforce_data' : wfserializer.data,
                 'lab_data' : lserializer.data,
                 'lab_edit_requests':leserializer.data,
-                'resource_edit_requests':reserializer.data
+                'resource_edit_requests':reserializer.data,
+                'resource_approve': raserializer.data
             })
         else:
             return JsonResponse('role has no access' , safe = False)
@@ -199,7 +201,6 @@ def allrequests(request,id):
 @csrf_exempt
 def institution_request(request , id):
     if request.method == "POST":
-        # if request.session.Role in [1,2,3]:
         user = Institutes.objects.get(id = id)
         role_id = user.role_id
         if role_id == 1:
@@ -325,6 +326,41 @@ def lab_request(request , id):
             'status': 404,
             'message' : 'page not found'
         })
+
+@csrf_exempt
+def resource_request(request , id):
+    if request.method == 'POST':
+        user = Institutes.objects.get(id = id)
+        role_id = user.role_id
+        if role_id == 3:
+            data = json.loads(request.body)
+            item = Cart.objects.get(id = data['id'])
+            serializer = CartSerializer(item , data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(data = {
+                    'status': 200,
+                    'message': 'Status Updated',
+                    'data': serializer.data
+                })
+            else:
+                return JsonResponse(data = {
+                    'status' : 400,
+                    'message': 'Invalid Data',
+                    'data' : serializer.errors
+                })
+        else:
+            return JsonResponse(data = {
+                'status': 401,
+                'message': 'Role has no access'
+            })
+    
+    else:
+        return JsonResponse(data = {
+            'status': 404,
+            'message' : 'page not found'
+        })
+
 
 
                 

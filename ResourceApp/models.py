@@ -15,6 +15,7 @@ class Book_slots(models.Model):
 
 class Cart(models.Model):
     c_id = models.AutoField(primary_key = True)
+    workforce = models.ForeignKey(to = WorkForce , on_delete=models.CASCADE , null = True)
     buyer_institute = models.IntegerField()
     seller_institute = models.IntegerField()
     resource = models.ForeignKey(to = Resources, on_delete = models.CASCADE)
@@ -24,7 +25,7 @@ class Cart(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     cost =  models.FloatField()
-    is_approved = models.IntegerField(default = 0)
+    is_approved = models.IntegerField(default = 1)
 
 class Bill(models.Model):
     id = models.AutoField(primary_key = True)

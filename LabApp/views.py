@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from Institutes.models import *
-from ResourceApp.models import Book_slots
+from ResourceApp.models import *
 from Institutes.serializers import *
 from ResourceApp.serializers import *
 import json

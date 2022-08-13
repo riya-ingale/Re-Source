@@ -1,4 +1,4 @@
-from ResourceApp.models import Transaction
+from ResourceApp.models import Cart, Transaction
 from rest_framework import serializers
 from Institutes.models import *
 
@@ -14,4 +14,10 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = '__all__'
+
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = '__all__'
+
 

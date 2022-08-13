@@ -7,5 +7,6 @@ urlpatterns = [
     path('pendingrequests/<id>' , views.allrequests),
     path('institute_request/<id>' , views.institution_request),
     path('workforce_request/<id>' , views.workforce_request),
-    path('lab_request/<id>' , views.lab_request)
+    path('lab_request/<id>' , views.lab_request),
+    path('resource_request/<id>', views.resource_request)
 ]

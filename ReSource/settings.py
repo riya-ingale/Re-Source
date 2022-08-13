@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'Institutes.apps.InstitutesConfig',
     'ResourceApp.apps.ResourceappConfig',
     'rest_framework',
-    'LabApp.apps.LabappConfig'
+    'LabApp.apps.LabappConfig',
+
 ]
 
 MIDDLEWARE = [
