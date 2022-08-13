@@ -148,7 +148,7 @@ if(slots !== '' && slots!== undefined){
                   />
                 </Carousel.Item>
                 <Carousel.Item>
-                  <img className="d-block w-100" src={img3} alt="Third slide" />
+                  <img className="d-block w-100" src="" alt="Third slide" />
                 </Carousel.Item>
               </Carousel>
             </div>
