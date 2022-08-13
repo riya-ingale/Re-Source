@@ -520,15 +520,17 @@ def addslots(request):
         #     "required_quantity":10,
         #     "date":"2022/08/13"
         #     "resource_id":9,
-        #     "current_user":8,
+        #     "workforce_id":1,
         # }
+    
+        workforce_id = data['workforce_id']
+        workforce = WorkForce.objects.filter(id = workforce_id)[0]
+        buyer_institute_id = workforce.institute.id
         slots = data['slots']
         required_quantity = data['required_quantity']
         resource_id = data['resource_id']
-        current_user = data['current_user']
         date = data['date']
         date = datetime.strptime(date, '%Y-%m-%d').date()
-        buyer_institute_id = current_user
         resource = Resources.objects.filter(id = resource_id)[0]
         lab = resource.lab
         seller_institute_id = lab.institute_id
@@ -536,7 +538,10 @@ def addslots(request):
         for slot in slots:
             start_time = datetime.strptime(str(slot[0])+":00", "%H:%M").time()
             end_time = datetime.strptime(str(slot[1])+":00", "%H:%M").time()
-            db = Cart(buyer_institute = buyer_institute_id, seller_institute = seller_institute_id,resource = resource, units = required_quantity,date = date, start_time  = start_time, end_time = end_time, cost = resource.cost)
+            if resource.req_approval == 1:
+                db = Cart(workforce = workforce, buyer_institute = buyer_institute_id, seller_institute = seller_institute_id,resource = resource, units = required_quantity,date = date, start_time  = start_time, end_time = end_time, cost = resource.cost, is_approved=0)
+            else:
+                db = Cart(workforce = workforce, buyer_institute = buyer_institute_id, seller_institute = seller_institute_id,resource = resource, units = required_quantity,date = date, start_time  = start_time, end_time = end_time, cost = resource.cost, is_approved=1)
             db.save()
         return JsonResponse(data = {
             "status":200,
