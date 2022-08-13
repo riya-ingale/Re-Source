@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React,{lazy} from 'react';
-=======
 import React,{useEffect, useState} from 'react';
->>>>>>> abbd675d485b4187626ad0a402e397900bd2874a
 import Carousel from 'react-bootstrap/Carousel';
 import img1 from ".././Images/chem-quip.jpg";
 import img2 from "../Images/microscope.jpg";
@@ -25,12 +21,8 @@ export default function Resourcedetail() {
 // }).then(async response=>{
 //   data = await response.json();})
 
-<<<<<<< HEAD
-
-const data = {
-=======
 var data = {
->>>>>>> abbd675d485b4187626ad0a402e397900bd2874a
+
   "status": 200,
   "message": "Resource fetched",
   "data": {
@@ -52,53 +44,10 @@ var data = {
       [
           "media/resource_images/M2AW277Z5U.jpeg"
       ]
-  ],
-  "available_slots": [
-      [
-          11,
-          12,
-          10
-      ],
-      [
-          12,
-          13,
-          10
-      ],
-      [
-          13,
-          14,
-          10
-      ],
-      [
-          14,
-          15,
-          10
-      ],
-      [
-          15,
-          16,
-          10
-      ],
-      [
-          16,
-          17,
-          10
-      ],
-      [
-          17,
-          18,
-          10
-      ]
-  ]
+    ]
 };
 
 
-console.log("available_slots" in data);
-var slotting = <div></div>;
-if("available_slots" in data){
-=======
-  ]
-};
 
 const [users, setUsers] = useState();
 const { id } = useParams();
@@ -112,6 +61,7 @@ useEffect(() => {
 }, [id])
 if(users !== undefined){
   console.log("change");
+  console.log(users)
   data = users
 }
 const [slots,setSlots] = useState('');
@@ -156,7 +106,7 @@ if(slots !== '' && slots!== undefined){
   <div className=''>
   <div className="card card-booking">
   <div className="outer-slot-div">
-    {data.available_slots.map((item) =>(
+
     {slots.map((item) =>(
       <div className="cat">
       <label>

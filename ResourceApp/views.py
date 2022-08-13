@@ -10,6 +10,7 @@ import string
 import random
 from datetime import datetime
 import base64
+import cv2
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_http_methods
 
@@ -323,6 +324,17 @@ def getresources(request):
             return JsonResponse(return_data)
 
 
+def paster(imgs):
+    leng = 0
+    file_name = []
+    for img in imgs:
+        # print(img[0])
+        temp = cv2.imread(img[0])
+        cv2.imwrite("./ReSource-FE/src/temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]), temp)
+        file_name.append("../temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]))
+        leng+=1
+    return file_name
+
 @csrf_exempt
 def getdetails(request,r_id):
     if request.method == "GET":
@@ -331,12 +343,14 @@ def getdetails(request,r_id):
         serializer = ResourcesSerializer(resourceobj)
 
         imgs = Image.objects.filter(resource = resourceobj).values_list('image').all()
-
+        # print(paster(imgs))
+        p_img = paster(imgs)
+        print(p_img)
         return JsonResponse({
             'status':200,
             'message':"Resource fetched",
             'data':serializer.data,
-            'images':list(imgs)
+            'images':p_img
         })
 
     # After sending date and units required this POST will show the slots along with resource data  
