@@ -1,8 +1,8 @@
 import React,{useEffect, useState} from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-import img1 from ".././Images/chem-quip.jpg";
-import img2 from "../Images/microscope.jpg";
-import img3 from "../Images/chem-quip.jpg";
+// import img1 from ".././Images/chem-quip.jpg";
+// import img2 from "../Images/microscope.jpg";
+// import img3 from "../Images/chem-quip.jpg";
 import "../Css/resourcedetail.css";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -44,34 +44,54 @@ var data = {
       [
           "media/resource_images/M2AW277Z5U.jpeg"
       ]
-    ]
+    ],
+    "updated":0
 };
-
 
 
 const [users, setUsers] = useState();
 const { id } = useParams();
+const [slots,setSlots] = useState('');
+const [date, setDate] = useState('');
+const [quant, setQuant] = useState('');
 useEffect(() => {
   fetch(
           "http://127.0.0.1:8000/resource/getdetails/"+id
         ).then(async response=>{
           setUsers(await response.json());})
-          console.log('i fire once');
-          // sessionStorage.setItem("getter","1");
+          // image_fetcher(users.images)
+          // console.log(image)
 }, [id])
-if(users !== undefined){
-  console.log("change");
-  console.log(users)
-  data = users
+
+const image_arr = []
+const image_fetcher = (num) => {
+  for(let i = 0;i<num;i++){
+    const temp = require("../temp_images/temp"+String(i+1)+".jpeg");
+    image_arr[i] = temp;
+  }
+  console.log(image_arr)
+  // setImage(image_arr)
 }
-const [slots,setSlots] = useState('');
-const [date, setDate] = useState('');
-const [quant, setQuant] = useState('');
+
+if(users !== undefined && data['updated']===0){
+  data = users;
+  data['updated'] = 1;
+  console.log(data);
+  image_fetcher(data.images);
+  // for(let i = 0;i<users.images;i++){
+  //   // console.log("Checker");
+  //   // const temp = require("../temp_images/temp"+String(i+1)+".jpeg")
+  //   // // console.log(temp);
+  //   // setImg([...img, temp]);
+  // }
+}
+// console.log(img)
+
 const slot_fetch = () => {
-    // console.log("Clicked")
-  // console.log(date);
-  // console.log(quant);
+
   const quantity = quant;
+  sessionStorage.setItem("Date",date);
+  sessionStorage.setItem("Quantity",quantity);
   const slot = {date,quantity}
   console.log(slot)
   fetch("http://127.0.0.1:8000/resource/getdetails/"+id, { //role id update require wait for landing page
@@ -81,7 +101,6 @@ const slot_fetch = () => {
     }).then(async response=>{
       data = await response.json();
       setSlots(data['available_slots']);
-      // console.log(await response.json())
 
     })
 }
@@ -95,10 +114,49 @@ const handleDate = (e) =>{
   setDate(e.target.value);
 }
 
-// if(slots !== '')
-//       {
-//         console.log(slots);
-//       }
+const [slotbook, setSlotbook] = useState({});
+
+const handleClick = (e) =>{
+  if(e.target.value in slotbook){
+    setSlotbook({ ...slotbook, [e.target.value]:  (slotbook[e.target.value]+1)%2});
+  }
+  else{
+    setSlotbook({ ...slotbook, [e.target.value]:  1});
+  }
+}
+
+const book_slot = (e) =>{
+  console.log(slotbook);
+  const required_quantity = Number(sessionStorage.getItem('Quantity'));
+  const date = sessionStorage.getItem("Date");
+  const workforce_id = 1 //sessionStorage.getItem("user_id");
+  const resource_id = id;
+  const slots_overall = [];
+  var iterator = 0;
+  for(const [key, val] of Object.entries(slotbook)) {
+    if (val === 1){
+      slots_overall[iterator] = [Number(key),Number(key)+1];
+      iterator+=1;
+    }
+  }
+
+  const slot_data = {required_quantity,date,workforce_id,resource_id,slots_overall}
+  console.log(slot_data);
+      fetch('http://127.0.0.1:8000/resource/addslots/', { //role id update require wait for landing page
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(slot_data)
+    }).then(async response=>{
+      const msg = await response.json();
+      console.log(msg)
+      if(msg['status'] == 200){
+        console.log(msg['message'])
+      }
+    })
+
+}
+
+
 var slotting = <div></div>;
 if(slots !== '' && slots!== undefined){
  slotting = 
@@ -110,7 +168,7 @@ if(slots !== '' && slots!== undefined){
     {slots.map((item) =>(
       <div className="cat">
       <label>
-          <input type="checkbox" value="1"/><span>{item[0]}:00 - {item[1]}:00</span>
+          <input type="checkbox" value={item[0]} onClick={handleClick}/><span>{item[0]}:00 - {item[1]}:00</span>
       </label>
       </div>
     ))}
@@ -120,7 +178,7 @@ if(slots !== '' && slots!== undefined){
   </div>
 
   <div className='d-flex justify-content-center bookNow'>
-      <button className="button-86" role="button">Book Now</button>
+      <button className="button-86" role="button" onClick={book_slot}>Book Now</button>
   </div>
   </div>
  }
@@ -137,19 +195,21 @@ if(slots !== '' && slots!== undefined){
           <div className="row">
             <div className="col-md-6">
               <Carousel fade>
+                { image_arr.map((item) =>(
                 <Carousel.Item>
-                  <img className="d-block w-100" src={img1} alt="First slide" />
+                  <img className="d-block w-100"  src={item} alt="First slide" />
                 </Carousel.Item>
-                <Carousel.Item>
+))}
+                {/* <Carousel.Item>
                   <img
                     className="d-block w-100"
-                    src={img2}
+                    src={image_arr[1]}
                     alt="Second slide"
                   />
-                </Carousel.Item>
-                <Carousel.Item>
-                  <img className="d-block w-100" src={img3} alt="Third slide" />
-                </Carousel.Item>
+                </Carousel.Item> */}
+                {/* <Carousel.Item>
+                  <img className="d-block w-100" src={image_arr[2]} alt="Third slide" />
+                </Carousel.Item> */}
               </Carousel>
             </div>
             <div className="col-md-6">

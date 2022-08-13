@@ -326,17 +326,17 @@ def getresources(request):
 
 def paster(imgs):
     leng = 0
-    file_name = []
     for img in imgs:
         # print(img[0])
         temp = cv2.imread(img[0])
-        cv2.imwrite("./ReSource-FE/src/temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]), temp)
-        file_name.append("../temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]))
+        cv2.imwrite("./ReSource-FE/src/temp_images/temp"+str(leng+1)+".jpeg", temp)
+        # file_name.append("../temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]))
         leng+=1
-    return file_name
+    return
 
 @csrf_exempt
 def getdetails(request,r_id):
+    print(type(r_id))
     if request.method == "GET":
         r_id = r_id
         resourceobj = Resources.objects.filter(id  =r_id)[0]
@@ -344,13 +344,13 @@ def getdetails(request,r_id):
 
         imgs = Image.objects.filter(resource = resourceobj).values_list('image').all()
         # print(paster(imgs))
-        p_img = paster(imgs)
-        print(p_img)
+        paster(imgs)
+        # print(p_img)
         return JsonResponse({
             'status':200,
             'message':"Resource fetched",
             'data':serializer.data,
-            'images':p_img
+            'images':len(imgs)
         })
 
     # After sending date and units required this POST will show the slots along with resource data  
@@ -516,7 +516,7 @@ def addslots(request):
         data = json.loads(request.body)
         # Eg. of request.body 
         # {
-        #     "slots":[[9,10],[11,12]],
+        #     "slots_overall":[[9,10],[11,12]],
         #     "required_quantity":10,
         #     "date":"2022/08/13"
         #     "resource_id":9,
@@ -526,7 +526,7 @@ def addslots(request):
         workforce_id = data['workforce_id']
         workforce = WorkForce.objects.filter(id = workforce_id)[0]
         buyer_institute_id = workforce.institute.id
-        slots = data['slots']
+        slots = data['slots_overall']
         required_quantity = data['required_quantity']
         resource_id = data['resource_id']
         date = data['date']
