@@ -8,9 +8,10 @@ import base64
 from django.core.files.base import ContentFile
 import string
 import random
-from datetime import date, timedelta, datetime
+from datetime import datetime
 import base64
 from django.core.paginator import Paginator
+from django.views.decorators.http import require_http_methods
 
 @csrf_exempt
 def addresources(request,username,lab_id):
@@ -59,7 +60,6 @@ def addresources(request,username,lab_id):
 
 
 def converted(image):
-      
     with open(image, "rb") as image_file:
         data = base64.b64encode(image_file.read())
     return data
@@ -102,21 +102,186 @@ def getresources(request):
             return_data['body_data'] = data
         return JsonResponse(return_data)
 
+    # POST REQUEST FOR FILTER AND SEARCH 
     elif request.method == 'POST':
-        # If searchtext is given then return searchtext, If one institute in the dropdown is given then return the institute id 
+        institutes = Institutes.objects.filter(role_id = 3).values_list('id','name','city').order_by('name').all()
+        bodyflag = 0
+        # If searchtext is given then return searchtext, If one institute in the dropdown is given then return the institute id, if required date is given then return the date(type date)
         try:
+            bodyflag = 1
             data = json.loads(request.body)
 
-            if 'searchtext' in data and 'institute_id' in data:
+            if 'searchtext' in data and 'institute_id' in data and 'required_date' in data:
                 search = data['searchtext']
                 institute_id = data['institute_id']
+                required_date = data['required_date']
+                required_date = datetime.strptime(required_date, '%Y-%m-%d').date()
+                if required_date<datetime.now().date():
+                    return JsonResponse(data={
+                        "message":"Invalid Date, Select a Valid Date",
+                        "status": 400,
+                    })
                 labs = Labs.objects.filter(institute = institute_id).values_list('id').all()
                 lab_ids = [item for sublist in list(labs) for item in sublist]
                 resourcesobjs = Resources.objects.filter(name__icontains=search,lab__in = lab_ids).all()
+                resultobjs = []
+                for resourceobj in resourcesobjs:
+                    lab = resourceobj.lab
+                    start_time = int(lab.start_time)
+                    end_time = int(lab.end_time)
+                    slots = []
+                    for i in range(start_time, end_time):
+                        l = [i,i+1,resourceobj.quantity]
+                        slots.append(l)
+                    booked_slots = Book_slots.objects.filter(resource = resourceobj, date = required_date).values_list('start_time','end_time','units').all()
+                    booked_slots = list(booked_slots)
+                    result = []
+                    for i in slots:
+                        flag = 0
+                        for j in booked_slots:
+                            if i[0] == j[0] and i[1] == j[1]:
+                                l = [i[0],j[1],i[2]-j[2]]
+                                result.append(l)
+                                booked_slots.remove(j)
+                                flag = 1
+                                break
+                        if not flag:   
+                            result.append(i)
+                    for i in result:
+                        if i[2]==0:
+                            result.remove(i)
+                    if result:
+                        resultobjs.append(resourceobj)
+                resourcesobjs = resultobjs
+            elif "searchtext" in data and 'required_date' in data:
+                search = data['searchtext']
+                required_date = data['required_date']
+                if required_date<datetime.now().date():
+                    return JsonResponse(data={
+                        "message":"Invalid Date, Select a Valid Date",
+                        "status": 400,
+                    })
+                required_date = datetime.strptime(required_date, '%Y-%m-%d').date()
+                resourcesobjs = Resources.objects.filter(name__icontains=search).all()
+                resultobjs = []
+                for resourceobj in resourcesobjs:
+                    lab = resourceobj.lab
+                    start_time = int(lab.start_time)
+                    end_time = int(lab.end_time)
+                    slots = []
+                    for i in range(start_time, end_time):
+                        l = [i,i+1,resourceobj.quantity]
+                        slots.append(l)
+                    booked_slots = Book_slots.objects.filter(resource = resourceobj, date = required_date).values_list('start_time','end_time','units').all()
+                    booked_slots = list(booked_slots)
+                    result = []
+                    for i in slots:
+                        flag = 0
+                        for j in booked_slots:
+                            if i[0] == j[0] and i[1] == j[1]:
+                                l = [i[0],j[1],i[2]-j[2]]
+                                result.append(l)
+                                booked_slots.remove(j)
+                                flag = 1
+                                break
+                        if not flag:   
+                            result.append(i)
+                    for i in result:
+                        if i[2]==0:
+                            result.remove(i)
+                    if result:
+                        resultobjs.append(resourceobj)
+                resourcesobjs = resultobjs
+            elif 'institute_id' in data and 'searchtext' in data:
+                institute_id = data['institute_id']
+                search = data['searchtext']
+                labs = Labs.objects.filter(institute = institute_id).values_list('id').all()
+                lab_ids = [item for sublist in list(labs) for item in sublist]
+                resourcesobjs = Resources.objects.filter(name__icontains=search,lab__in = lab_ids).all()
+            elif 'institute_id' in data and 'required_date' in data:
+                institute_id = data['institute_id']
+                required_date = data['required_date']
+                if required_date<datetime.now().date():
+                    return JsonResponse(data={
+                        "message":"Invalid Date, Select a Valid Date",
+                        "status": 400,
+                    })
+                required_date = datetime.strptime(required_date, '%Y-%m-%d').date()
+                labs = Labs.objects.filter(institute = institute_id).values_list('id').all()
+                lab_ids = [item for sublist in list(labs) for item in sublist]
+                resourcesobjs = Resources.objects.filter(lab__in = lab_ids).all()
+                resultobjs = []
+                for resourceobj in resourcesobjs:
+                    lab = resourceobj.lab
+                    start_time = int(lab.start_time)
+                    end_time = int(lab.end_time)
+                    slots = []
+                    for i in range(start_time, end_time):
+                        l = [i,i+1,resourceobj.quantity]
+                        slots.append(l)
+                    booked_slots = Book_slots.objects.filter(resource = resourceobj, date = required_date).values_list('start_time','end_time','units').all()
+                    booked_slots = list(booked_slots)
+                    result = []
+                    for i in slots:
+                        flag = 0
+                        for j in booked_slots:
+                            if i[0] == j[0] and i[1] == j[1]:
+                                l = [i[0],j[1],i[2]-j[2]]
+                                result.append(l)
+                                booked_slots.remove(j)
+                                flag = 1
+                                break
+                        if not flag:   
+                            result.append(i)
+                    for i in result:
+                        if i[2]==0:
+                            result.remove(i)
+                    if result:
+                        resultobjs.append(resourceobj)
+                resourcesobjs = resultobjs
+            elif 'required_date' in data:
+                required_date = data['required_date']
+                required_date = datetime.strptime(required_date, '%Y-%m-%d').date()
+                if required_date<datetime.now().date():
+                    return JsonResponse(data={
+                        "message":"Invalid Date, Select a Valid Date",
+                        "status": 400,
+                    })
+                resourcesobjs = Resources.objects.all()
+                resultobjs = []
+                for resourceobj in resourcesobjs:
+                    lab = resourceobj.lab
+                    start_time = int(lab.start_time)
+                    end_time = int(lab.end_time)
+                    slots = []
+                    for i in range(start_time, end_time):
+                        l = [i,i+1,resourceobj.quantity]
+                        slots.append(l)
+                    booked_slots = Book_slots.objects.filter(resource = resourceobj, date = required_date).values_list('start_time','end_time','units').all()
+                    booked_slots = list(booked_slots)
+                    result = []
+                    for i in slots:
+                        flag = 0
+                        for j in booked_slots:
+                            if i[0] == j[0] and i[1] == j[1]:
+                                l = [i[0],j[1],i[2]-j[2]]
+                                result.append(l)
+                                booked_slots.remove(j)
+                                flag = 1
+                                break
+                        if not flag:   
+                            result.append(i)
+                    for i in result:
+                        if i[2]==0:
+                            result.remove(i)
+                    if result:
+                        resultobjs.append(resourceobj)
+                    
+                resourcesobjs = resultobjs
             elif "searchtext" in data:
                 search = data['searchtext']
                 resourcesobjs = Resources.objects.filter(name__icontains=search).all()
-            elif 'institute_id' in data:
+            elif "institute_id" in data:
                 institute_id = data['institute_id']
                 labs = Labs.objects.filter(institute = institute_id).values_list('id').all()
                 lab_ids = [item for sublist in list(labs) for item in sublist]
@@ -124,22 +289,38 @@ def getresources(request):
         except:
             resourcesobjs = Resources.objects.all()
 
-        # Availabilty on that Date To be Done
-        
         if len(resourcesobjs) == 0:
             return JsonResponse({
             'status':404,
             'message':"No such Resource Found",
         })
         else: 
-            serializer = ResourcesSerializer(resourcesobjs,many = True)
-            return JsonResponse({
-                'status':200,
-                'message':"Resources Found",
-                'count': len(resourcesobjs),
-                'data':serializer.data,
-            })
+            size = 2
+            page = request.GET.get('page')
+            paginator = Paginator(resourcesobjs, size)
+            resources = paginator.get_page(page)
+            serializer = ResourcesSerializer(resources, many=True)
 
+            return_data = {
+            'status':200,
+            'message':"Resources Found",
+            'total_count':paginator.count,
+            'total_pages':paginator.num_pages,
+            'data':serializer.data,
+            'institutes':list(institutes)
+            }
+            if resources.number == paginator.num_pages and resources.number ==1:
+                pass
+            elif resources.number == paginator.num_pages:
+                return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+            elif resources.number == 1:
+                return_data['next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+            else:
+                return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+                return_data['next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+            if bodyflag:
+                return_data['body_data'] = data
+            return JsonResponse(return_data)
 
 
 @csrf_exempt
@@ -312,3 +493,43 @@ def resource_edit(request,  id):
                 'status': 401,
                 'message': 'This role donot have access'
             })
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def addslots(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        # Eg. of request.body 
+        # {
+        #     "slots":[[9,10],[11,12]],
+        #     "required_quantity":10,
+        #     "date":"2022/08/13"
+        #     "resource_id":9,
+        #     "current_user":8,
+        # }
+        slots = data['slots']
+        required_quantity = data['required_quantity']
+        resource_id = data['resource_id']
+        current_user = data['current_user']
+        date = data['date']
+        date = datetime.strptime(date, '%Y-%m-%d').date()
+        buyer_institute_id = current_user
+        resource = Resources.objects.filter(id = resource_id)[0]
+        lab = resource.lab
+        seller_institute_id = lab.institute_id
+
+        for slot in slots:
+            start_time = datetime.strptime(str(slot[0])+":00", "%H:%M").time()
+            end_time = datetime.strptime(str(slot[1])+":00", "%H:%M").time()
+            db = Cart(buyer_institute = buyer_institute_id, seller_institute = seller_institute_id,resource = resource, units = required_quantity,date = date, start_time  = start_time, end_time = end_time, cost = resource.cost)
+            db.save()
+        return JsonResponse(data = {
+            "status":200,
+            "message":"Slots sucessfully added to the cart",
+        })
+    
+
+
+
+        
