@@ -2,7 +2,7 @@ from django.urls import path
 from ResourceApp import views
 
 urlpatterns = [
-    path('',views.getresources,name= "getResources"),
+    path('allres/<page_num>',views.getresources,name= "getResources"),
     path('add/<username>/<lab_id>',views.addresources, name = 'addResources'),
     path('getdetails/<r_id>',views.getdetails,name = "getDetails"),
     path('edit/<id>' , views.resource_edit),

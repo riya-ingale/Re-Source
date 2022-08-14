@@ -66,7 +66,7 @@ def converted(image):
     return data
 
 @csrf_exempt
-def getresources(request):
+def getresources(request,page_num):
     if request.method == 'GET':
         # List of institutes,city to populate in the drop down along with their ids in asceding order of their name
         institutes = Institutes.objects.filter(role_id = 3).values_list('id','name','city').order_by('name').all()
@@ -80,7 +80,7 @@ def getresources(request):
             resourcesobjs = Resources.objects.all()
 
         size = 2
-        page = request.GET.get('page')
+        page = page_num
         paginator = Paginator(resourcesobjs, size)
         resources = paginator.get_page(page)
         serializer = ResourcesSerializer(resources, many=True)

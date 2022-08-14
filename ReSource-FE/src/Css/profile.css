@@ -78,15 +78,7 @@ a:hover, a:active, a:focus {
   outline: none;
 }
 
-::-webkit-scrollbar{
-  width: 8px;
-  height: 8px;
-}
 
-::-webkit-scrollbar-thumb {
-  cursor: pointer;
-  background: #000000;
-}
 
 .section-title {
   padding-bottom: 40px;
@@ -151,7 +143,7 @@ a:hover, a:active, a:focus {
   color: #ffffff;
 }
 
-section {
+section.sec {
   position: relative;
   padding: 100px 0;
 }

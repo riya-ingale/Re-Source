@@ -27,7 +27,9 @@
 .navbar{
     background-color: rgb(255, 255, 255) !important;
 }
-
+.service-dropdown{
+    padding-top: 7px !important;
+}
 
 /* RESPONSIVE DESIGNS */
 /* // Small devices (landscape phones, 576px and up) */

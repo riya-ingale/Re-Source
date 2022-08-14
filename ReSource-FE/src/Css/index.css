@@ -1,0 +1,49 @@
+.aspect[data-aspect="2:1"] {
+    padding: 25vw 0;
+  }
+  @media all and (max-width: 768px) {
+    .aspect[data-s-aspect="2:1"] {
+      padding: 25vw 0;
+    }
+  }
+  .aspect[data-aspect="1:1"] {
+    padding: 50vw 0;
+  }
+  @media all and (max-width: 768px) {
+    .aspect[data-s-aspect="1:1"] {
+      padding: 50vw 0;
+    }
+  }
+  .aspect[data-aspect="1:2"] {
+    padding: 100vw 0;
+  }
+  @media all and (max-width: 768px) {
+    .aspect[data-s-aspect="1:2"] {
+      padding: 100vw 0;
+    }
+  }
+  
+  section {
+    position: relative;
+  }
+  section .overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-size: cover;
+    background-position: center 20%;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.3) 50%, rgba(207,207,207,0.1) 75%),url(../Images/home5.jpg);
+  }
+  section .text {
+    position: relative;
+    font-family: "Cabin", sans-serif;
+    text-align: center;
+    color: #fff;
+  }
+  section .text h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
