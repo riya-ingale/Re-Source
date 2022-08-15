@@ -13,6 +13,9 @@ import base64
 import cv2
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_http_methods
+from collections import OrderedDict
+from pathlib import Path
+
 
 @csrf_exempt
 def addresources(request,username,lab_id):
@@ -70,19 +73,34 @@ def getresources(request,page_num):
     if request.method == 'GET':
         # List of institutes,city to populate in the drop down along with their ids in asceding order of their name
         institutes = Institutes.objects.filter(role_id = 3).values_list('id','name','city').order_by('name').all()
+
         flag = 0
         try:
             data = json.loads(request.body)
             flag= 1
+            # agar specific lab ke resources chahiye
             if 'lab_id' in data:
                 resourcesobjs = Resources.objects.filter(lab = int(data['lab_id']))
+        # lab_id nai dia hai toh, all resources chahiye
         except:
             resourcesobjs = Resources.objects.all()
+
+        institute_names = []
+        imgs = []
+        for r in resourcesobjs:
+            ins = r.lab.institute.name
+            try:
+                img = Image.objects.filter(resource = r).values_list('image')[0]
+                imgs.append([img[0]])
+            except:
+                imgs.append(["media/resource_images/default_image.jpeg"])
+            institute_names.append(ins)
 
         size = 2
         page = page_num
         paginator = Paginator(resourcesobjs, size)
         resources = paginator.get_page(page)
+        paster(imgs)
         serializer = ResourcesSerializer(resources, many=True)
         return_data = {
             'status':200,
@@ -90,7 +108,9 @@ def getresources(request,page_num):
             'total_count':paginator.count,
             'total_pages':paginator.num_pages,
             'data':serializer.data,
-            'institutes':list(institutes)
+            'institutes':list(institutes),
+            'resources_institutes':institute_names,
+            'images':imgs
         }
         if resources.number == paginator.num_pages:
             return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
@@ -296,19 +316,35 @@ def getresources(request,page_num):
             'message':"No such Resource Found",
         })
         else: 
+
+            institute_names = []
+            imgs = []
+            for r in resourcesobjs:
+                ins = r.lab.institute.name
+                try:
+                    img = Image.objects.filter(resource = r).values_list('image')[0]
+                    imgs.append([img[0]])
+                except:
+                    imgs.append(["media/resource_images/default_image.jpeg"])
+                institute_names.append(ins)
+            print(imgs)
+
             size = 2
             page = request.GET.get('page')
             paginator = Paginator(resourcesobjs, size)
             resources = paginator.get_page(page)
             serializer = ResourcesSerializer(resources, many=True)
 
+            paster(imgs)
             return_data = {
             'status':200,
             'message':"Resources Found",
             'total_count':paginator.count,
             'total_pages':paginator.num_pages,
             'data':serializer.data,
-            'institutes':list(institutes)
+            'institutes':list(institutes),
+            'resources_institutes':institute_names,
+            'images':imgs
             }
             if resources.number == paginator.num_pages and resources.number ==1:
                 pass
@@ -336,14 +372,12 @@ def paster(imgs):
 
 @csrf_exempt
 def getdetails(request,r_id):
-    print(type(r_id))
     if request.method == "GET":
         r_id = r_id
         resourceobj = Resources.objects.filter(id  =r_id)[0]
         serializer = ResourcesSerializer(resourceobj)
 
         imgs = Image.objects.filter(resource = resourceobj).values_list('image').all()
-        # print(paster(imgs))
         paster(imgs)
         # print(p_img)
         return JsonResponse({
@@ -403,7 +437,6 @@ def getdetails(request,r_id):
         #     image_b64.append(converted(i[0]))
         # print(image_b64)
         imgs = list(imgs)
-        print(imgs[0][0])
         # print(imgs[0][0])
         # print(result)
         # print(converted(imgs[0][0]))
