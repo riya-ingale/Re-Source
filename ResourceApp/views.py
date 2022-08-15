@@ -106,7 +106,7 @@ def getresources(request,page_num):
             resources_data.append(d)
 
         paster(imgs)
-
+        print(imgs)
         return_data = {
             'status':200,
             'message':"All Resources fetched",
@@ -114,7 +114,7 @@ def getresources(request,page_num):
             'total_pages':paginator.num_pages,  # total number of pages
             'resources_data':resources_data,    # resources data on that page
             'institutes':list(institutes),      # list of institutes to populate in the dropdown
-            'images':imgs                       # list of images of resources on that page
+            'images':len(imgs)                       # list of images of resources on that page
         }
         if resources.number == paginator.num_pages:
             return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
