@@ -80,11 +80,11 @@ const handlePage = (e,p) =>{
         </form>
         <div className="row">
         {/* {data} */}
-        {resource.data.map((item) =>(
+        {resource.data.map((item,index) =>(
           <div className="col-md-4 colvr">
             <div className="card rescard">
               <img src={phy} className="imgres" alt="Equipment Name" />
-
+              {/* {index} */}
               {/* <!-- A div with card__details class to hold the details in the card  --> */}
               <div className="card__details">
                 {/* <!-- Span with tag class for the tag --> */}
