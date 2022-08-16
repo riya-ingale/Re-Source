@@ -1,4 +1,4 @@
-from ResourceApp.serializers import ResourcesSerializer
+from ResourceApp.serializers import ResourcesSerializer, CartSerializer
 from django.http.response import JsonResponse
 from Institutes.models import *
 from ResourceApp.models import *
@@ -571,30 +571,72 @@ def addslots(request):
     
         workforce_id = data['workforce_id']
         workforce = WorkForce.objects.filter(id = workforce_id)[0]
-        buyer_institute_id = workforce.institute.id
-        slots = data['slots_overall']
-        required_quantity = data['required_quantity']
-        resource_id = data['resource_id']
-        date = data['date']
-        date = datetime.strptime(date, '%Y-%m-%d').date()
-        resource = Resources.objects.filter(id = resource_id)[0]
-        lab = resource.lab
-        seller_institute_id = lab.institute_id
+        if workforce.role_id == 3:
+            buyer_institute_id = workforce.institute.id
+            slots = data['slots_overall']
+            required_quantity = data['required_quantity']
+            resource_id = data['resource_id']
+            date = data['date']
+            date = datetime.strptime(date, '%Y-%m-%d').date()
+            resource = Resources.objects.filter(id = resource_id)[0]
+            lab = resource.lab
+            seller_institute_id = lab.institute_id
 
-        for slot in slots:
-            start_time = datetime.strptime(str(slot[0])+":00", "%H:%M").time()
-            end_time = datetime.strptime(str(slot[1])+":00", "%H:%M").time()
-            if resource.req_approval == 1:
-                db = Cart(workforce = workforce, buyer_institute = buyer_institute_id, seller_institute = seller_institute_id,resource = resource, units = required_quantity,date = date, start_time  = start_time, end_time = end_time, cost = resource.cost, is_approved=0)
-            else:
-                db = Cart(workforce = workforce, buyer_institute = buyer_institute_id, seller_institute = seller_institute_id,resource = resource, units = required_quantity,date = date, start_time  = start_time, end_time = end_time, cost = resource.cost, is_approved=1)
-            db.save()
-        return JsonResponse(data = {
-            "status":200,
-            "message":"Slots sucessfully added to the cart",
-        })
-    
-
-
-
+            for slot in slots:
+                start_time = datetime.strptime(str(slot[0])+":00", "%H:%M").time()
+                end_time = datetime.strptime(str(slot[1])+":00", "%H:%M").time()
+                if resource.req_approval == 1:
+                    db = Cart(workforce = workforce, buyer_institute = buyer_institute_id, seller_institute = seller_institute_id,resource = resource, units = required_quantity,date = date, start_time  = start_time, end_time = end_time, cost = resource.cost, is_approved=0)
+                else:
+                    db = Cart(workforce = workforce, buyer_institute = buyer_institute_id, seller_institute = seller_institute_id,resource = resource, units = required_quantity,date = date, start_time  = start_time, end_time = end_time, cost = resource.cost, is_approved=1)
+                db.save()
+            return JsonResponse(data = {
+                "status":200,
+                "message":"Slots sucessfully added to the cart",
+            })
+        else:
+            return JsonResponse(data = {
+                "status":401,
+                "message":"Unauthorized for you role",
+            })
         
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def cart(request,user_id):
+    if request.method == "GET":
+        cart_items = Cart.objects.filter(workforce_id = user_id).all()
+        if cart_items:
+            cart_items = CartSerializer(cart_items, many=True)
+            items = []
+            for item in cart_items.data:
+                item = dict(item)
+                res_name = Resources.objects.filter(id = int(item['resource']))[0].name
+                item['resource_name'] = res_name
+                ins_name = Institutes.objects.filter(id = int(item['seller_institute']))[0].name
+                item['institute_name'] = ins_name
+                items.append(item)
+            approved_items = Cart.objects.filter(workforce_id = user_id, is_approved = 1).all()
+            subtotal = 0
+            for item in approved_items:
+                subtotal += item.cost*10
+
+            # razorpay charger 2% per transaction
+            subtotal = subtotal*1.02
+            gst_percent = 18
+            total = subtotal * 1.18 # after adding gst
+
+            return JsonResponse(data = {
+                    "status":200,
+                    "message":"All Cart items fetched",
+                    "data" : items,
+                    "subtotal" : subtotal,
+                    "total":total
+                })
+        else:
+            return JsonResponse(data = {
+                    "status":404,
+                    "message":"No Items in the Cart"
+                })
+        
+

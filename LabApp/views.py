@@ -12,13 +12,13 @@ from django.http.response import JsonResponse
 @csrf_exempt
 def addlab(request):
     if request.method == "POST":
-        # After filling all the details and submitting the form, Workforce id(one who is creating the lab) will be sent from frontend
+        # After filling all the details and submitting the form, Workforce id(one who is creating the lab) will be sent from frontend along with form details
 
         data = json.loads(request.body)
-        workforce_id = data['workforce']
+        workforce_id = data['user_id']
         workforce = WorkForce.objects.filter(id = workforce_id)[0]
         data['institute'] = workforce.institute.id
-        if workforce.role_id == 4:
+        if workforce.role_id == 4: # only Lab Assistant can add labs
             serializer = LabSerializer(data = data)
             if serializer.is_valid():
                 serializer.save()

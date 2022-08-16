@@ -7,7 +7,8 @@ urlpatterns = [
     path('getdetails/<r_id>',views.getdetails,name = "getDetails"),
     path('edit/<id>' , views.resource_edit),
     # path('edit_resource/<id>' , views.resource_edit)
-    path('addslots/', views.addslots)
+    path('addslots/', views.addslots),
+    path('cart/<user_id>', views.cart, name = "viewCart")
     # path('add/<lab_id>',views.addresources, name = 'addResources')
     # path('getsearchedresources',views.getsearchedresources,name='getSearchedResources')
 ]

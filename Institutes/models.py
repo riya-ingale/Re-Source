@@ -44,7 +44,7 @@ class Labs(models.Model):
     # resource_id = models.CharField(max_length = 500 , null = True)
     start_time = models.CharField(max_length = 500, null=True)
     end_time = models.CharField(max_length = 500, null=True)
-    status = models.IntegerField(default=0) #-1,0,1
+    status = models.IntegerField(default=0) # -1,0,1
     edit_approval = models.IntegerField(default = 1 , null = True)
     
 
