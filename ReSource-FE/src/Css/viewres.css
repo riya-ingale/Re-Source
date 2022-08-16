@@ -54,6 +54,7 @@ img {
 
   border-radius: 12px;
   box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+  height: 450px !important;
 }
 
 /* Style div elements that have class equal to tag */
@@ -71,8 +72,8 @@ img {
 .name {
   font-size: 24px;
   font-weight: 600;
-
   margin-top: 16px;
+  margin-bottom: 8px !important;
 }
 
 /* Style p element */
@@ -126,6 +127,9 @@ padding: verticalValue horizontalValue; */
   padding: 30px;
 }
 
+.boldline {
+  font-weight: bold;
+}
 /* RSPONSIVE DESIGNS */
 /* // Small devices (landscape phones, 576px and up) */
 @media (max-width: 576px) 

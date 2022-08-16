@@ -13,6 +13,10 @@ import ViewResources from "./Components/ViewResources";
 import Profile from "./Components/Profile";
 import Resourcedetail from "./Components/Resourcedetail";
 import Cart from "./Components/Cart";
+import InstituteProfile from "./Components/InstituteProfile";
+import Addlab from "./Components/Addlab";
+import AddWorkforce from "./Components/AddWorkforce";
+import InstituteCompletion from "./Components/InstituteCompletion";
 
 function App() {
   return (
@@ -27,6 +31,10 @@ function App() {
           <Route exact path="/profile" element={<><Header/><Profile/><Footer/></>}/>
           <Route exact path="/resdetail/:id" element={<><Header/><Resourcedetail/><Footer/></>}/>
           <Route exact path="/cart" element={<><Header/><Cart/><Footer/></>}/>
+          <Route exact path="/instituteProfile" element={<InstituteProfile/>}/>
+          <Route exact path="/addlab" element={<><Header/><Addlab/><Footer/></>}/>
+          <Route exact path="/addwf" element={<><Header/><AddWorkforce/><Footer/></>}/>
+          <Route exact path="/instidetails" element={<><Header/><InstituteCompletion/><Footer/></>}/>
         </Routes>
     </Router>
   );

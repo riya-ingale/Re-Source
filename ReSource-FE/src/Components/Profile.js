@@ -8,7 +8,7 @@ export default function profile() {
     <>
      {/* <!-- PRE LOADER --> */}
    {/* <!-- HOME --> */}
-     <section id="home">
+     <section className='sec' id="home">
           <div class="row">
 
                     <div class="owl-carousel owl-theme home-slider">
@@ -31,7 +31,7 @@ export default function profile() {
 
 
      {/* <!-- FEATURE --> */}
-     <section id="feature">
+     <section  className='sec' id="feature">
           <div class="container">
                <div class="row">
 
@@ -60,7 +60,7 @@ export default function profile() {
 
 
      {/* <!-- Courses --> */}
-     <section id="courses">
+     <section  className='sec' id="courses">
           <div class="container">
                <div class="row">
 
@@ -116,7 +116,7 @@ export default function profile() {
 
 
      {/* <!-- TESTIMONIAL --> */}
-     <section id="testimonial">
+     <section  className='sec' id="testimonial">
           <div class="container">
                <div class="row">
 
