@@ -52,6 +52,10 @@ export default function ViewResources() {
   const [currentPage, setcurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(1); 
   const[refresh,setRefresh] = useState(true);
+  const[institute,setInstitute] = useState("");
+  const[date,setDate] = useState();
+  const[search,setSearch] = useState();
+
   // var page = 1;
   useEffect(() => {
     if(refresh){
@@ -77,21 +81,80 @@ export default function ViewResources() {
 // }
 
 const handlePage = (e,p) =>{
-  setcurrentPage(p);
-  fetch("http://127.0.0.1:8000/resource/allres/"+p)
-.then(response=>response.json())
-          .then(body=>  {
-            setRes(body);
-            console.log(body);
-          setPageCount(body.total_pages);
-            setisLoaded(true);
-            console.log(isLoaded)
-  })
-    // console.log(resource);
-    // setRes(resource);
-    setPageCount(res.total_pages); 
-    setisLoaded(true);
+  if(institute === "" && date === undefined && search === undefined){
+    setcurrentPage(p);
+    fetch("http://127.0.0.1:8000/resource/allres/"+p)
+  .then(response=>response.json())
+            .then(body=>  {
+              setRes(body);
+              console.log(body);
+            setPageCount(body.total_pages);
+              setisLoaded(true);
+              console.log(isLoaded)
+    })
+      // console.log(resource);
+      // setRes(resource);
+      setPageCount(res.total_pages); 
+      setisLoaded(true);
+  }
+  else{
+    var filterdata ={}
+    if(institute !== ""){
+      filterdata['institute_id'] = Number(institute);
+    }
+    if(date !== undefined){
+      filterdata['required_date'] = date;
+    }
+    if(search !== undefined){
+      filterdata['searchtext'] = search
+    }
+    if(p===undefined){
+    p = 1;
+    setcurrentPage(p);
+    console.log(p);
+    }
+    console.log(filterdata)
+    fetch('http://127.0.0.1:8000/resource/allres/'+p, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(filterdata)
+    }).then(response=>response.json())
+            .then(body=>  {
+              setRes(body);
+            setPageCount(body.total_pages);
+              setisLoaded(true);
+    })
+      setPageCount(res.total_pages); 
+      setisLoaded(true);
+
+  }
 }
+console.log(res)
+const filter = (e) =>{
+  handlePage(1);
+  // searchtext
+  // institute_id
+  // required_date
+  // const filterdata = {username,password,institute}
+  // fetch('http://127.0.0.1:8000/resource/allres/', {
+  //     method: 'POST',
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(filterdata)
+  //   })
+}
+
+const handleinsti = (e) => {
+  setInstitute(e.target.value);
+}
+
+const handledate = (e) => {
+  setDate(e.target.value);
+}
+
+const handlesearch = (e) => {
+  setSearch(e.target.value);
+}
+
   return (
     <>
       <div className="containner c-view-res">
@@ -106,6 +169,7 @@ const handlePage = (e,p) =>{
                 InputLabelProps={{
                   shrink: true,
                 }}
+                onChange={handledate}
               />
             </div>
             <div className="col-md-3 d-flex justify-content-center">
@@ -113,6 +177,7 @@ const handlePage = (e,p) =>{
                 id="standard-basic"
                 label="Search"
                 variant="standard"
+                onChange={handlesearch}
               />
             </div>
             <div className="col-md-3 d-flex justify-content-center">
@@ -123,12 +188,13 @@ const handlePage = (e,p) =>{
                 <Select
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
-                  value=""
+                  value={institute}
                   label="Institute"
+                  onChange={handleinsti}
                 >
                   {isLoaded ? (
                   res.institutes.map((item) =>(
-                  <MenuItem value={item[1]}>{item[1]},{item[2]}</MenuItem>
+                  <MenuItem value={item[0]}>{item[1]},{item[2]}</MenuItem>
                   ))
                   ):<MenuItem value="">None</MenuItem>
                 }
@@ -136,12 +202,11 @@ const handlePage = (e,p) =>{
               </FormControl>
             </div>
             <div className="col-md-3 d-flex justify-content-center">
-              <Button className="Searchbtn" variant="outlined">Search</Button>
+              <Button className="Searchbtn" variant="outlined" onClick={filter}>Search</Button>
             </div>
           </div>
         </form>
         <div className="row">
-        {/* {data} */}
         {isLoaded ? (
         res.resources_data.map((item,index) =>(
           <ResourceCard

@@ -325,8 +325,8 @@ def getresources(request,page_num):
             'message':"No such Resource Found",
         })
         else: 
-            size = 2
-            page = request.GET.get('page')
+            size = 3
+            page = page_num
             paginator = Paginator(resourcesobjs, size)
             resources = paginator.get_page(page)
             serializer = ResourcesSerializer(resources, many=True)
@@ -354,9 +354,9 @@ def getresources(request,page_num):
             'message':"Resources Found",
             'total_count':paginator.count,
             'total_pages':paginator.num_pages,
-            'data':resources_data,
+            'resources_data':resources_data,
             'institutes':list(institutes),
-            'images':imgs
+            'images':len(imgs)
             }
 
             if resources.number == paginator.num_pages and resources.number ==1:
@@ -370,6 +370,7 @@ def getresources(request,page_num):
                 return_data['next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
             if bodyflag:
                 return_data['body_data'] = data
+            print(return_data)
             return JsonResponse(return_data)
 
 def paster(imgs):
