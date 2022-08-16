@@ -12,12 +12,25 @@ from django.http.response import JsonResponse
 @csrf_exempt
 def addlab(request):
     if request.method == "POST":
-        # After filling all the details and submitting the form, Workforce id(one who is creating the lab) will be sent from frontend along with form details
+        # After filling all the details and submitting the form, Workforceid(one who is creating the lab) will be sent from frontend along with form details
+
+        # Eg. {
+        #     "user_id":1,
+        #     "name":"Biology Lab",
+        #     "start_time":"01:00",
+        #     "end_time":"18:00"
+        # }
 
         data = json.loads(request.body)
         workforce_id = data['user_id']
+        data["workforce"] = workforce_id
+
+        # considering start_time and end_time were taken from time input field, 24hr clock
+        data['start_time'] = data['start_time'][:2]
+        data['end_time'] = data['end_time'][:2]
         workforce = WorkForce.objects.filter(id = workforce_id)[0]
         data['institute'] = workforce.institute.id
+        
         if workforce.role_id == 4: # only Lab Assistant can add labs
             serializer = LabSerializer(data = data)
             if serializer.is_valid():
@@ -40,6 +53,7 @@ def addlab(request):
             'status':401,
             'message':'Role has no acess'
             })
+
 
 ## for post route of csrf send role and userid as well for authentication           
 @csrf_exempt

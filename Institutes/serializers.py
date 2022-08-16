@@ -21,6 +21,5 @@ class StudentSerializer(serializers.ModelSerializer):
 class LabSerializer(serializers.ModelSerializer):
     class Meta:
         model = Labs
-        # fields = '__all__'
-        exclude = ('resource_id','lab_staff')
+        fields = '__all__'
 
