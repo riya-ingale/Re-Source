@@ -3,6 +3,7 @@ from django.db import models
 
 class Institutes(models.Model):
     id = models.AutoField(primary_key = True)
+    registeration_no = models.CharField(max_length = 500)
     name = models.CharField(max_length = 500)
     password = models.CharField(max_length = 100)
     university = models.CharField(max_length = 500,null=True)
@@ -16,6 +17,7 @@ class Institutes(models.Model):
     sop = models.FileField(upload_to='media/sop' , null = True)
     status = models.IntegerField(default=0) #-1,0,1
     auth_token = models.CharField(max_length=500,null=True)
+    account_no = models.CharField(max_length = 500, null = True)
 
 
 class WorkForce(models.Model):
@@ -29,6 +31,7 @@ class WorkForce(models.Model):
     email_id = models.CharField(max_length = 500)
     phone_no = models.IntegerField(null=True)
     auth_token = models.CharField(max_length=500,null=True)
+    idcard = models.FileField(upload_to='media/idcards')
     status = models.IntegerField(default=0) #-1,0,1
 
 
@@ -37,8 +40,8 @@ class Labs(models.Model):
     workforce = models.ForeignKey(to = WorkForce , on_delete = models.SET_NULL, null=True)
     institute = models.ForeignKey(to = Institutes , on_delete=models.CASCADE)
     name = models.CharField(max_length=500 , null = True)
-    lab_staff = models.CharField(max_length = 500,null = True)
-    resource_id = models.CharField(max_length = 500 , null = True)
+    # lab_staff = models.CharField(max_length = 500,null = True)
+    # resource_id = models.CharField(max_length = 500 , null = True)
     start_time = models.CharField(max_length = 500, null=True)
     end_time = models.CharField(max_length = 500, null=True)
     status = models.IntegerField(default=0) #-1,0,1
@@ -55,6 +58,9 @@ class Resources(models.Model):
     dimension = models.CharField(max_length = 500)
     details = models.CharField(max_length = 500)
     quantity = models.IntegerField(default = 1)
+    mrp = models.FloatField()
+    is_approved = models.IntegerField()
+    under_maintenance = models.IntegerField(default = 0)
     cost = models.IntegerField()
     req_approval = models.IntegerField(default = 0)
     edit_approval = models.IntegerField(default = 1 , null = True)

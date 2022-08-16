@@ -49,7 +49,7 @@ def edit_lab(request ,id):
         user = json.loads(request.body)
         role_id = user['Role']
         if role_id == 4:       
-            uid = user['id']
+            uid = user['user_id']
             lab = Labs.objects.get(id = id)
             serializer = LabSerializer(lab)
             if lab.workforce.id != uid:
@@ -58,14 +58,13 @@ def edit_lab(request ,id):
                     'message': 'Only lab owner has access'
                 })
             else:
-                
                 return JsonResponse(data = {
                     'status':200,
                     'message':'Great sucess',
                     'data': serializer.data
                 })
         elif role_id == 3:       
-            uid = user['id']
+            uid = user['user_id']
             lab = Labs.objects.get(id = id)
             serializer = LabSerializer(lab)
             if lab.institute.id != uid:
@@ -87,7 +86,7 @@ def edit_lab(request ,id):
         data = json.loads(request.body)
         role_id = data['Role']
         if role_id == 4:
-            uid = data['uid']
+            uid = data['user_id']
         
             lab = Labs.objects.get(id = id)
             if lab.workforce.id != uid:
@@ -95,7 +94,7 @@ def edit_lab(request ,id):
                     'status': 401,
                     'message': 'Only lab owner has access'
                 })
-            del data['uid']
+            del data['user_id']
             del data['Role']
 
             data['edit_approval'] = 0
@@ -110,7 +109,7 @@ def edit_lab(request ,id):
             })
         
         if role_id == 3:
-            uid = data['uid']
+            uid = data['user_id']
         
             lab = Labs.objects.get(id = id)
             if lab.institute.id != uid:
@@ -119,7 +118,7 @@ def edit_lab(request ,id):
                     'message': 'Only lab owner has access'
                 })
 
-            del data['uid']
+            del data['user_id']
             del data['Role']
 
             serializer = LabSerializer(lab , data = data)

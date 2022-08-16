@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'ResourceApp.apps.ResourceappConfig',
     'rest_framework',
     'LabApp.apps.LabappConfig',
+    'PlaceOrder.apps.PlaceorderConfig'
 
 ]
 

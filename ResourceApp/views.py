@@ -419,7 +419,7 @@ def getdetails(request,r_id):
 def resource_edit(request,  id):
     if request.method == 'GET':
         data = json.loads(request.body)
-        uid = data['id']
+        uid = data['user_id']
         role_id = data['Role']
         if role_id == 4:
             resource = Resources.objects.get(id = id)
@@ -457,7 +457,7 @@ def resource_edit(request,  id):
     
     else:
         data = json.loads(request.body)
-        uid = data['uid']
+        uid = data['user_id']
         role_id = data['Role']
         if role_id == 3:
             
@@ -468,9 +468,11 @@ def resource_edit(request,  id):
                         'status': 401,
                         'message': 'It is not your lab you dont have access'
                     })
-            del data['id']
+            del data['user_id']
             del data['Role']
 
+            data['edit_approval'] = 0
+            
             serializer = ResourcesSerializer(resource , data = data)
             if serializer.is_valid():
                 serializer.save()

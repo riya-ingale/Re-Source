@@ -9,8 +9,6 @@ import json
 # Create your views here.
 @csrf_exempt
 def profile(request, id):
-    # if 'username' in request.session:
-    # role_id = request.session['role_id']
     if request.method == 'GET':
         data = json.loads(request.body)
         role_id = data['Role']
@@ -175,6 +173,9 @@ def allrequests(request,id):
             resource_approve = Cart.objects.filter(seller = id, is_approved = 0)
             raserializer = CartSerializer(resource_approve, many = True)
 
+            add_resource = Resources.ojbects.filter(institute = id , status = 0)
+            arserializer = ResourcesSerializer(add_resource , many = True)
+
             resource_edits = Resources.objects.filter(lab__in= lab_ids , edit_approval = 0)
             reserializer = ResourcesSerializer(resource_edits , many = True)
 
@@ -187,7 +188,8 @@ def allrequests(request,id):
                 'lab_data' : lserializer.data,
                 'lab_edit_requests':leserializer.data,
                 'resource_edit_requests':reserializer.data,
-                'resource_approve': raserializer.data
+                'resource_approve': raserializer.data,
+                'add_resource':arserializer.data
             })
         else:
             return JsonResponse('role has no access' , safe = False)
@@ -206,11 +208,8 @@ def institution_request(request , id):
         if role_id == 1:
             data = json.loads(request.body)
             curr_ins = Institutes.objects.get(id = data['id'])
-
-            if data['university']!= user.name:
-                return JsonResponse('Institution is not under your university' , safe = False)
-
-            serializer = InstituteSerializer(curr_ins , data = data)
+            curr_ins.status = data['status']
+            serializer = InstituteSerializer(curr_ins)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(data = {
@@ -227,12 +226,14 @@ def institution_request(request , id):
         elif role_id == 2:
             data = json.loads(request.body)
             if data['role_id']!=3:
-                return JsonResponse('You cannot remove admin' , safe = False)
+                return JsonResponse('You can only handle institutes' , safe = False)
                 
             curr_ins = Institutes.objects.get(id = data['id'])
-            #if data['university']!= request.session['username']:
-            #return not allowed
-            serializer = InstituteSerializer(curr_ins , data = data)
+            #Authenticate
+            if curr_ins.university != user.name:
+                return JsonResponse('Institute doesnot belong to your institution' , safe = False)
+            curr_ins.status = data['status']
+            serializer = InstituteSerializer(curr_ins)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(data = {
@@ -263,11 +264,15 @@ def workforce_request(request , id):
     if request.method == "POST":
         user = Institutes.objects.get(id = id)
         role_id = user.role_id
-        #role_id = request.session['Role']
         if role_id == 3:
             data = json.loads(request.body)
             worker = WorkForce.objects.get(id = data['id'])
-            serializer = WorkForceSerializer(worker , data = data)
+
+            if worker.institute != id:
+                return JsonResponse('Workforce member doesnot belong to your institution' , safe = False)
+
+            worker.status = data['status']
+            serializer = WorkForceSerializer(worker)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(data = {
@@ -301,7 +306,11 @@ def lab_request(request , id):
         if role_id == 3:
             data = json.loads(request.body)
             lab = Labs.objects.get(id = data['id'])
-            serializer = LabSerializer(lab , data = data)
+            if lab.institute != id:
+                return JsonResponse('Lab doesnt fall under your institution' , safe = False)
+            
+            lab.status = data['status']
+            serializer = LabSerializer(lab)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(data = {
@@ -329,13 +338,56 @@ def lab_request(request , id):
 
 @csrf_exempt
 def resource_request(request , id):
+    if request.method == "POST":
+        user = Institutes.objects.get(id = id)
+        role_id = user.role_id
+        if role_id == 3:
+            data = json.loads(request.body)
+            resource = Resources.objects.get(id = data['id'])
+            if resource.institute != id:
+                return JsonResponse('Resource doesnt fall under your institution' , safe = False)
+            
+            resource.status = data['status']
+            serializer = ResourcesSerializer(resource)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(data = {
+                    'status': 200,
+                    'message': 'Status Updated',
+                    'data': serializer.data
+                })
+            else:
+                return JsonResponse(data = {
+                    'status' : 400,
+                    'message': 'Invalid Data',
+                    'data' : serializer.errors
+                })
+        else:
+            return JsonResponse(data = {
+                'status': 401,
+                'message': 'Role has no access'
+            })
+    
+    else:
+        return JsonResponse(data = {
+            'status': 404,
+            'message' : 'page not found'
+        })
+
+@csrf_exempt
+def resource_approval(request , id):
     if request.method == 'POST':
         user = Institutes.objects.get(id = id)
         role_id = user.role_id
         if role_id == 3:
             data = json.loads(request.body)
             item = Cart.objects.get(id = data['id'])
-            serializer = CartSerializer(item , data = data)
+
+            if item.seller != id:
+                return JsonResponse('Access not allowed' , safe = False)
+
+            item.is_approved = data['status']
+            serializer = CartSerializer(item)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(data = {
