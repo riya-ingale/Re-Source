@@ -3,7 +3,7 @@ from django.db import models
 
 class Institutes(models.Model):
     id = models.AutoField(primary_key = True)
-    registeration_no = models.CharField(max_length = 500)
+    registeration_no = models.CharField(max_length = 500 , null = True)
     name = models.CharField(max_length = 500)
     password = models.CharField(max_length = 100)
     university = models.CharField(max_length = 500,null=True)
@@ -31,7 +31,7 @@ class WorkForce(models.Model):
     email_id = models.CharField(max_length = 500)
     phone_no = models.IntegerField(null=True)
     auth_token = models.CharField(max_length=500,null=True)
-    idcard = models.FileField(upload_to='media/idcards')
+    idcard = models.FileField(upload_to='media/idcards' , null = True)
     status = models.IntegerField(default=0) #-1,0,1
 
 
@@ -58,8 +58,8 @@ class Resources(models.Model):
     dimension = models.CharField(max_length = 500)
     details = models.CharField(max_length = 500)
     quantity = models.IntegerField(default = 1)
-    mrp = models.FloatField()
-    is_approved = models.IntegerField()
+    mrp = models.FloatField(null = True)
+    is_approved = models.IntegerField(default = 0)
     under_maintenance = models.IntegerField(default = 0)
     cost = models.IntegerField()
     req_approval = models.IntegerField(default = 0)

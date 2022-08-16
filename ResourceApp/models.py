@@ -28,12 +28,12 @@ class Cart(models.Model):
     date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-    cost =  models.CharField()
+    cost =  models.IntegerField()
     is_approved = models.IntegerField(default = 1)
 
 class ProductInOrder(models.Model):
     id = models.AutoField(primary_key = True)
-    order = models.IntegerField(null = True)
+    ord = models.IntegerField(null = True)
     workforce = models.ForeignKey(to = WorkForce , on_delete=models.DO_NOTHING , null = True)
     buyer_institute = models.IntegerField()
     seller_institute = models.IntegerField()
@@ -42,7 +42,7 @@ class ProductInOrder(models.Model):
     date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-    cost =  models.CharField()
+    cost =  models.FloatField()
 
 class Order(models.Model):
     payment_status_choices = (
@@ -51,7 +51,7 @@ class Order(models.Model):
         (0, 'PENDING'),
     )
     id = models.AutoField(primary_key = True)
-    order_items = models.ManyToManyField(ProductInOrder , null = True)
+    order_items = models.ManyToManyField(ProductInOrder)
     finalcost = models.FloatField(null = True)
     datetime_of_payment = models.DateTimeField(default=timezone.now)
     payment_status = models.IntegerField(choices = payment_status_choices, default=0)
@@ -63,12 +63,12 @@ class Order(models.Model):
 
 class Transaction(models.Model):
     id = models.AutoField(primary_key=  True)
-    order  = models.ForeignKey(to = Order)
-    tid = models.TextField()
-    buyer = models.ForeignKey(to = Institutes , on_delete= models.DO_NOTHING)
+    order  = models.ForeignKey(to = Order , on_delete= models.DO_NOTHING , null = True)
+    tid = models.TextField(null = True)
+    buyer = models.IntegerField(null = True)
     seller = models.ForeignKey(to = Institutes , on_delete= models.DO_NOTHING)
     order_items = models.ManyToManyField(ProductInOrder)
-    finalcost = models.FloatField()
+    finalcost = models.FloatField(null = True)
 
 # #Handling Bills charfield
 
