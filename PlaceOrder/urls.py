@@ -1,4 +1,7 @@
 from django.urls import path
-from Institutes import views
+from PlaceOrder import views
 
-urlpatterns = []
+urlpatterns = [
+    path('payment/' , views.payment),
+    path('handlerequest/' , views.handlerequest)
+]

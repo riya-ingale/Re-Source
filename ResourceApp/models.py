@@ -2,6 +2,8 @@ from time import timezone
 from django.db import models
 from Institutes.models import *
 from django.utils import timezone
+
+
 # Create your models here.
 
 class Book_slots(models.Model):
@@ -64,8 +66,8 @@ class Order(models.Model):
 class Transaction(models.Model):
     id = models.AutoField(primary_key=  True)
     order  = models.ForeignKey(to = Order , on_delete= models.DO_NOTHING , null = True)
-    tid = models.TextField(null = True)
-    buyer = models.IntegerField(null = True)
+    tid = models.CharField(max_length = 500, null = True)
+    buyer = models.CharField(max_length = 500, null = True)
     seller = models.ForeignKey(to = Institutes , on_delete= models.DO_NOTHING)
     order_items = models.ManyToManyField(ProductInOrder)
     finalcost = models.FloatField(null = True)

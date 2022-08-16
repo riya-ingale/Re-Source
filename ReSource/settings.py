@@ -76,7 +76,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ReSource.wsgi.application'
 
-
+razorpay_id = 'rzp_test_DfplOiJGao9t7P'
+razorpay_account_id = 't5zBpGAs4uOqXaE4YBP98Y6H'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
