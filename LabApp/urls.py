@@ -3,5 +3,5 @@ from LabApp import views
 
 urlpatterns = [
     path('add/' , views.addlab,name = 'addLab'),
-    path('edit/<id>' , views.edit_lab )
+    path('edit/<user_id>/<lab_id>' , views.edit_lab , name= "editLab")
 ]

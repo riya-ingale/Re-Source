@@ -6,6 +6,7 @@ from Institutes.serializers import *
 from ResourceApp.serializers import *
 import json
 from django.http.response import JsonResponse
+from datetime import datetime
 
 # Create your views here.
 
@@ -62,17 +63,30 @@ def edit_lab(request ,user_id, lab_id):
         user = WorkForce.objects.filter(id = user_id)[0]
         if user.role_id == 4:
             lab = Labs.objects.get(id = lab_id)
+            lab_data = []
             serializer = LabSerializer(lab)
-            if lab.workforce.id != user_id:
+            lab_data = serializer.data.copy()
+
+            start_time  = lab_data['start_time']+":00"
+            lab_data['start_time'] = datetime.strptime(start_time, '%H:%M').time()
+            end_time  = lab_data['end_time']+":00"
+            lab_data['end_time'] = datetime.strptime(end_time, '%H:%M').time()
+
+            lab_data['institute_name'] = Institutes.objects.filter(id = int(lab_data['institute']))[0].name
+
+            if lab.workforce.id != int(user_id):
                 return JsonResponse(data = {
                     'status': 401,
-                    'message': 'Only lab owner has access'
+                    'message': 'Only lab owner has access',
+                    "user_id":user_id,
+                    "lab_id":lab_id,
+                    "lab.workforce.id":lab.workforce.id
                 })
             else:
                 return JsonResponse(data = {
                     'status':200,
-                    'message':'Great sucess',
-                    'data': serializer.data
+                    'message':'Lab Data fetched',
+                    'data': lab_data
                 })
         else:
             return JsonResponse(data = {
@@ -103,13 +117,16 @@ def edit_lab(request ,user_id, lab_id):
         data = json.loads(request.body)
         user = WorkForce.objects.get(id = user_id)
         if user.role_id == 4:
-            lab = Labs.objects.get(id = user_id)
-            if lab.workforce.id != user_id:
+            lab = Labs.objects.get(id = lab_id)
+            if lab.workforce.id != int(user_id):
                 return JsonResponse(data = {
                     'status': 401,
                     'message': 'Only lab owner has access'
                 })
             data['edit_approval'] = 0
+            data["institute"] = lab.workforce.institute.id
+            data['start_time'] = data['start_time'][:2]
+            data['end_time'] = data['end_time'][:2]
 
             serializer = LabSerializer(lab , data = data)
             if serializer.is_valid():
