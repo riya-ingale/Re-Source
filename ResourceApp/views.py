@@ -619,7 +619,8 @@ def cart(request,user_id):
             approved_items = Cart.objects.filter(workforce_id = user_id, is_approved = 1).all()
             subtotal = 0
             for item in approved_items:
-                subtotal += item.cost*10
+                print(item)
+                subtotal += item.cost*item.units
 
             # razorpay charger 2% per transaction
             subtotal = subtotal*1.02
