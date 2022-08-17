@@ -1,42 +1,36 @@
-import React from 'react'
+import { useCallback } from "react";
+import useRazorpay from "react-razorpay";
 
-export default function Paynow() {
-    // var options = {
-    //     "key": "{{razorpay_merchant_id}}", // Enter the Key ID generated from the Dashboard
-    //     "amount": "{% widthratio final_price 1 100 %}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-    //     "currency": "INR",
-    //     "name": "WonderShop",
-    //     "description": "Test Transaction",
-    //     "order_id": "{{order_id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-    //     "callback_url": "{{callback_url}}",
-    //     "prefill": {
-    //       "name": "{{request.user.name}}",
-    //       "email": "{{request.user.email}}",
-    //       "contact": "+91" + "{{request.user.phone}}"
-    //     },
-    //     "theme": {
-    //       "color": "#2BA977"
-    //     }
-    //   };
-    //   var rzp1 = new Razorpay(options);
-      function handleSubmit(e) {
-        // rzp1.open();
-        e.preventDefault();
+export default function App() {
+  const Razorpay = useRazorpay();
+
+  const handlePayment = useCallback(() => {
+    // const order = await createOrder(params);
+    const options = {
+      "key": "rzp_test_DfplOiJGao9t7P",
+      "amount": "200",
+      "currency": "INR",
+      "name": "Re-Source Resources",
+      "description": "Test Transaction",
+      "order_id": "order_K6irE9WSJWtQBU",
+      "callback_url": "http://127.0.0.1:8000/placeorder/handlerequest/",
+      "prefill": {
+          "name": "ABS",
+          "email": "abs@gmail.com",
+          "contact": "+919876543212"
+      },
+      "theme": {
+          "color": "#2BA977"
       }
-      
-  return (
-    <>
-    <div className="info">
-    <div className="container">
-        <h1 >Payment Summary</h1>
-        {/* Total Amount - {{final_price}} */}
-        <br/>
-        <form onSubmit={handleSubmit}>
-            <button id="rzp-button1" className="btn"  type="submit">Pay Now</button>
-        </form>
-    </div>
-    </div>
-    </>
-  )
-}
+  };
 
+    const rzpay = new Razorpay(options);
+    rzpay.open();
+  }, [Razorpay]);
+
+  return (
+    <div className="App">
+      <button onClick={handlePayment}>Click</button>
+    </div>
+  );
+}

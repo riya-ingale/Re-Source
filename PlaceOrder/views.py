@@ -98,20 +98,26 @@ def payment(request):
                 transaction.order_items.add(*value['id'])
                 transaction.save()
             
-            return render(request, r'C:\Users\SARVESH GAONKAR\Desktop\Resource_v3\Re-Source\PlaceOrder\templates\paymentsummaryrazorpay.html', {'order_id':razorpay_order['id'] , 'orderId':order.id, 'final_price':order.finalcost,
-            'razorpay_merchant_id':settings.razorpay_id, 'callback_url':callback_url })
-            # return JsonResponse(data = {'data':{'order_id':razorpay_order['id'] , 'orderId':order.id, 'final_price':order.finalcost,
-            # 'razorpay_merchant_id':settings.razorpay_id, 'callback_url':callback_url }})
+            # return render(request, r'C:\Users\SARVESH GAONKAR\Desktop\Resource_v3\Re-Source\PlaceOrder\templates\paymentsummaryrazorpay.html', {'order_id':razorpay_order['id'] , 'orderId':order.id, 'final_price':order.finalcost,
+            # 'razorpay_merchant_id':settings.razorpay_id, 'callback_url':callback_url })
+            # return JsonResponse(data = {'order_id':razorpay_order['id'] , 'orderId':order.id, 'final_price':order.finalcost,'razorpay_merchant_id':settings.razorpay_id, 'callback_url':callback_url })
+            return JsonResponse(data = {
+        "key": settings.razorpay_id,"amount":str(int(order.finalcost)), "currency": "INR", "name": "Re-Source Resources", "description": "Test Transaction", "order_id": razorpay_order['id'], 
+        "callback_url": callback_url,
+        "prefill": { "name": "ABS","email": "abs@gmail.com","contact": "+91" + "9876543212"},
+        "theme": {"color": "#2BA977"}})
         else:
             return JsonResponse('No elements in cart' , safe = False)    
 
 @csrf_exempt
 def handlerequest(request):
+    print("I AM HERE")
     if request.method == 'POST':
         try:
-            payment_id = request.POST.get('razorpay_payment_id', '')
-            order_id = request.POST.get('razorpay_order_id','')
-            signature = request.POST.get('razorpay_signature','')
+            data = json.loads(request.body)
+            payment_id = data['razorpay_payment_id']
+            order_id = data['razorpay_order_id']
+            signature = data['razorpay_signature']
             params_dict = { 
             'razorpay_order_id': order_id, 
             'razorpay_payment_id': payment_id,

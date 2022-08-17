@@ -23,7 +23,6 @@ export default function Addlab() {
             <input type="time" placeholder="" required/>
           </div>
           
-          
         </div>
         <div className="button">
           <input type="submit" value="Register"/>

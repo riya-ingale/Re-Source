@@ -37,7 +37,7 @@ function App() {
           <Route exact path="/addlab" element={<><Header/><Addlab/><Footer/></>}/>
           <Route exact path="/addwf" element={<><Header/><AddWorkforce/><Footer/></>}/>
           <Route exact path="/wfrequest" element={<><Header/><WorkforceRequest/><Footer/></>}/>
-          <Route exact path="/pay" element={<Paynow/>}/>
+          <Route exact path="/pay/:id" element={<Paynow/>}/>
         </Routes>
     </Router>
   );
