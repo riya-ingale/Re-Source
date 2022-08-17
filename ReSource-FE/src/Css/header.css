@@ -29,8 +29,11 @@
 }
 .service-dropdown{
     padding-top: 7px !important;
+    border: none !important;
 }
-
+.servicebtn {
+    border: none !important;
+}
 /* RESPONSIVE DESIGNS */
 /* // Small devices (landscape phones, 576px and up) */
 @media (max-width: 576px) 
