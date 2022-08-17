@@ -102,7 +102,11 @@ def payment(request):
             # 'razorpay_merchant_id':settings.razorpay_id, 'callback_url':callback_url })
             # return JsonResponse(data = {'order_id':razorpay_order['id'] , 'orderId':order.id, 'final_price':order.finalcost,'razorpay_merchant_id':settings.razorpay_id, 'callback_url':callback_url })
             return JsonResponse(data = {
-        "key": settings.razorpay_id,"amount":str(int(order.finalcost)), "currency": "INR", "name": "Re-Source Resources", "description": "Test Transaction", "order_id": razorpay_order['id'], 
+        "key": str(settings.razorpay_id),"amount":int(order.finalcost*100), "currency": "INR", "name": "Re-Source Resources", "description": "Test Transaction","amount_paid": 0,"amount_due":int(order.finalcost*100), "order_id": razorpay_order['id'], "entity": "order",
+        "receipt": "receipt#1",
+      "status": "created",
+      "attempts": 0,
+      "notes": [],
         "callback_url": callback_url,
         "prefill": { "name": "ABS","email": "abs@gmail.com","contact": "+91" + "9876543212"},
         "theme": {"color": "#2BA977"}})
