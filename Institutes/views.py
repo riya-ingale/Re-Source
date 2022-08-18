@@ -413,6 +413,85 @@ def resource_approval(request , id):
             'message' : 'page not found'
         })
 
+@csrf_exempt
+def workforce_requests(request , user_id):
+    # GET route to show all the workforce requests to the institute role
+    if request.method == "GET":
+        try:
+            user = Institutes.objects.filter(id = int(user_id))[0]
+        except:
+            return JsonResponse(data = {
+                'status': 401,
+                'message' : 'No such Institute'
+            })
+        role = user.role_id
+        if role == 3:
+            workforce_data = []
+            workforces  = WorkForce.objects.filter(status = 0, institute_id = user.id).all()
+            if workforces:
+                serializer = WorkForceSerializer(workforces,many = True)
+                for item in serializer.data:
+                    item = dict(item)
+                    item["institute_name"] = user.name
+                    workforce_data.append(item)
+                return JsonResponse(data = {
+                'status': 200,
+                'message' : 'Workforce Requests Fetched',
+                "data" : workforce_data
+                })
+            else:
+                return JsonResponse(data = {
+                'status': 404,
+                'message' : 'No Pending Workforce Requests'
+                })
+        else:
+            return JsonResponse(data = {
+            'status': 401,
+            'message' : 'Unauthorized for you role'
+        })
+    # POST route to approve/ disapprove the workforce
+    elif request.method == "POST":
+        try:
+            user = Institutes.objects.filter(id = int(user_id))[0]
+        except:
+            return JsonResponse(data = {
+                'status': 401,
+                'message' : 'Unauthorized for you role'
+            })
+        role = user.role_id
+        if role == 3:
+            data = json.loads(request.body)
+            status = data['status']                # 1 for approved, -1 for rejected
+            workforce_id = data["workforce_id"]    # the one who is approved or rejected
+            try:
+                workforce = WorkForce.objects.filter(id = int(workforce_id))[0]
+            except:
+                return JsonResponse(data = {
+                'status': 400,
+                'message' : 'Workforce id doesnt exist'
+            })
+            if workforce.institute_id != int(user_id):
+                return JsonResponse(data = {
+                'status': 401,
+                'message' : 'Workforce doesnt belong to your institute'
+            })
+            action = ["",'approved', 'rejected']
+            workforce.status = status
+            workforce.save()
+            serializer  = WorkForceSerializer(workforce)
+            return JsonResponse(data = {
+            'status': 200,
+            'message' : f'Workforce {workforce.name} is {action[status]}',
+            "data" : serializer.data
+            })
+        else:
+            return JsonResponse(data = {
+            'status': 401,
+            'message' : 'Unauthorized for you role'
+        })
+        
+
+
 
 
                 

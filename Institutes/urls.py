@@ -9,5 +9,7 @@ urlpatterns = [
     path('workforce_request/<id>' , views.workforce_request),
     path('lab_request/<id>' , views.lab_request),
     path('resource_request/<id>', views.resource_request),
-    path('resource_approval/<id>' , views.resource_approval)
+    path('resource_approval/<id>' , views.resource_approval),
+    
+    path('workforce_requests/<user_id>', views.workforce_requests, name = "workforceRequests")
 ]
