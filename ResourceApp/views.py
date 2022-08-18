@@ -114,7 +114,7 @@ def getresources(request,page_num):
             'total_pages':paginator.num_pages,  # total number of pages
             'resources_data':resources_data,    # resources data on that page
             'institutes':list(institutes),      # list of institutes to populate in the dropdown
-            'images':len(imgs)                       # list of images of resources on that page
+            'images':len(imgs)                  # list of images of resources on that page
         }
         if resources.number == paginator.num_pages:
             return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
@@ -227,7 +227,6 @@ def getresources(request,page_num):
             institute_id = data['institute_id']
             required_date = data['required_date']
             required_date = datetime.strptime(required_date, '%Y-%m-%d').date()
-            print("I AM HERE")
             if required_date<datetime.now().date():
                 return JsonResponse(data={
                     "message":"Invalid Date, Select a Valid Date",
@@ -235,8 +234,6 @@ def getresources(request,page_num):
                 })
             labs = Labs.objects.filter(institute = institute_id).values_list('id').all()
             lab_ids = [item for sublist in list(labs) for item in sublist]
-            
-            print("LAB IDS",lab_ids)
 
             resourcesobjs = Resources.objects.filter(lab__in = lab_ids).all()
 
@@ -564,14 +561,14 @@ def addslots(request):
         # {
         #     "slots_overall":[[9,10],[11,12]],
         #     "required_quantity":10,
-        #     "date":"2022/08/13"
+        #     "date":"2022-08-13"
         #     "resource_id":9,
         #     "workforce_id":1,
         # }
     
         workforce_id = data['workforce_id']
         workforce = WorkForce.objects.filter(id = workforce_id)[0]
-        if workforce.role_id == 3:
+        if workforce.role_id in [3,4,5]:
             buyer_institute_id = workforce.institute.id
             slots = data['slots_overall']
             required_quantity = data['required_quantity']
@@ -600,8 +597,6 @@ def addslots(request):
                 "message":"Unauthorized for you role",
             })
         
-
-@csrf_exempt
 @require_http_methods(["GET"])
 def cart(request,user_id):
     if request.method == "GET":
@@ -609,35 +604,123 @@ def cart(request,user_id):
         if cart_items:
             cart_items = CartSerializer(cart_items, many=True)
             items = []
+            images = []
+            unique_institutes = []
             for item in cart_items.data:
                 item = dict(item)
-                res_name = Resources.objects.filter(id = int(item['resource']))[0].name
-                item['resource_name'] = res_name
-                ins_name = Institutes.objects.filter(id = int(item['seller_institute']))[0].name
-                item['institute_name'] = ins_name
+                res = Resources.objects.filter(id = int(item['resource']))[0]
+                item['resource_name'] = res.name
+                try:
+                    img = Image.objects.filter(resource = res.id).values_list('image')[0]
+                except:
+                    img = ["media/resource_images/default_image.jpeg"]
+                item['img'] = img[0]
+                images.append(img)
+                ins = Institutes.objects.filter(id = int(item['seller_institute']))[0]
+                if int(ins.id) not in unique_institutes:
+                    unique_institutes.append(ins.id)
+                item['institute_name'] = ins.name
                 items.append(item)
+
+            paster(images) # paster images
             approved_items = Cart.objects.filter(workforce_id = user_id, is_approved = 1).all()
             subtotal = 0
             for item in approved_items:
-                print(item)
                 subtotal += item.cost*item.units
 
-            # razorpay charger 2% per transaction
-            subtotal = subtotal*1.02
             gst_percent = 18
-            total = subtotal * 1.18 # after adding gst
+            total = subtotal*1.18  # GST on subtotal
+
+            # now add 2% for every transaction we have to do
+            transaction_percent = 2 * len(unique_institutes)
+            final_total = total + (total*(0.02 * (len(unique_institutes)+1))) # after adding gst
 
             return JsonResponse(data = {
                     "status":200,
                     "message":"All Cart items fetched",
                     "data" : items,
+                    "images":images,
+                    "unique_institutes":len(unique_institutes),
                     "subtotal" : subtotal,
-                    "total":total
+                    "final_total":final_total,
+                    "gst_percent":gst_percent,
+                    "transaction_percent":transaction_percent
                 })
         else:
             return JsonResponse(data = {
                     "status":404,
                     "message":"No Items in the Cart"
                 })
-        
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def remove_item(request,user_id):
+    data = json.loads(request.body)
+    if "c_id" in data:
+        c_id = int(data['c_id'])
+        try:
+            cart_item = Cart.objects.filter(c_id = c_id)[0]
+            cart_item.delete()
+        except:
+            return JsonResponse(data = {
+                "status":404,
+                "message":"No Such Item Found in the Cart"
+            })
+
+    else:
+        return JsonResponse(data = {
+                "status":404,
+                "message":"No Items in the Cart"
+            })
+    cart_items = Cart.objects.filter(workforce_id = user_id).all()
+    if cart_items:
+        cart_items = CartSerializer(cart_items, many=True)
+        items = []
+        images = []
+        unique_institutes = []
+        for item in cart_items.data:
+            item = dict(item)
+            res = Resources.objects.filter(id = int(item['resource']))[0]
+            item['resource_name'] = res.name
+            try:
+                img = Image.objects.filter(resource = res.id).values_list('image')[0]
+            except:
+                img = ["media/resource_images/default_image.jpeg"]
+            item['img'] = img[0]
+            images.append(img)
+            ins = Institutes.objects.filter(id = int(item['seller_institute']))[0]
+            if int(ins.id) not in unique_institutes:
+                    unique_institutes.append(ins.id)
+            item['institute_name'] = ins.name
+            items.append(item)
+
+        paster(images) #paster images
+        approved_items = Cart.objects.filter(workforce_id = user_id, is_approved = 1).all()
+        subtotal = 0
+        for item in approved_items:
+            subtotal += item.cost*item.units
+
+        gst_percent = 18
+        total = subtotal*1.18  # GST on subtotal
+
+        # now add 2% for every transaction we have to do
+        transaction_percent = 2 * len(unique_institutes)
+        final_total = total + (total*(0.02 * (len(unique_institutes)+1))) # after adding gst
+
+        return JsonResponse(data = {
+                "status":200,
+                "message":"All Cart items fetched",
+                "data" : items,
+                "images":images,
+                "unique_institutes":len(unique_institutes),
+                "subtotal" : subtotal,
+                "final_total":final_total,
+                "gst_percent":gst_percent,
+                "transaction_percent":transaction_percent
+            })
+    else:
+        return JsonResponse(data = {
+                    "status":400,
+                    "message":"No c_id sent"
+                })
 
