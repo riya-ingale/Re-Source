@@ -23,6 +23,7 @@ def addlab(request):
         # }
 
         data = json.loads(request.body)
+        print(data)
         workforce_id = data['user_id']
         data["workforce"] = workforce_id
 

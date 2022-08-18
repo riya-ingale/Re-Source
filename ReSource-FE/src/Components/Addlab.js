@@ -1,7 +1,79 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import {Routes, Route, useNavigate, useLocation} from 'react-router-dom';
 import "../Css/addlab.css"
+import { useParams } from 'react-router';
 
 export default function Addlab() {
+  const location = useLocation();
+  var lab_id = location.pathname.split('/')[2];
+
+
+  useEffect(() => {
+    if(location.pathname.split('/')[1] === 'editlab'){
+      console.log('pathname', location.pathname);
+      setUpdate(true);
+    
+    fetch(
+            "http://127.0.0.1:8000/lab/edit/"+sessionStorage.getItem('user_id')+"/"+lab_id
+          ).then(response=>response.json())
+          .then(body=>  {
+
+            setStart(body['data']['start_time']);
+            setEnd(body['data']['end_time']);
+            setLabd(body['data']['name']);
+          })
+
+            // image_fetcher(users.images)
+            // console.log(image)
+          }
+  }, [lab_id])
+
+  const [start,setStart] = useState();
+  const navigate = useNavigate();
+  const [update,setUpdate] = useState(false);
+  const [end,setEnd] = useState();
+  const [labd,setLabd] = useState();
+  console.log(start,end,labd);
+  const add_lab = (e) =>{
+    console.log(start,end,labd);
+    fetch('http://127.0.0.1:8000/lab/add/', { //role id update require wait for landing page
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({"user_id":sessionStorage.getItem("user_id"),'name':labd,"start_time":start,"end_time":end})
+    }).then(async response=>{
+      const data = await response.json();
+      console.log(data)
+      if(data['status'] == 200){
+        console.log("Success fully added a lab")
+      }})
+    navigate('/viewres');
+  }
+  const handle_start = (e) =>{
+    setStart(e.target.value);
+  }
+
+  const updt_lab = (e) =>{
+    fetch('http://127.0.0.1:8000/lab/edit/'+sessionStorage.getItem('user_id')+"/"+lab_id, { //role id update require wait for landing page
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({"user_id":sessionStorage.getItem("user_id"),'name':labd,"start_time":start,"end_time":end})
+    }).then(async response=>{
+      const data = await response.json();
+      console.log(data)
+      if(data['status'] == 200){
+        console.log("Success fully updated a lab")
+      }})
+      navigate('/viewres');
+  }
+
+  const handle_end = (e) =>{
+    setEnd(e.target.value);
+  }
+
+  const handle_name = (e) =>{
+    setLabd(e.target.value);
+  }
+
   return (
     <>
     <div className="container form-container">
@@ -11,23 +83,29 @@ export default function Addlab() {
         <div className="user-details">
           <div className="input-box">
             <span className="details">Lab Name</span>
-            <input type="text" placeholder="Enter Room Number" required/>
+            <input type="text" placeholder="Enter Room Number" value={labd} onChange={handle_name} required/>
           </div>
           
           <div className="input-box">
             <span className="details">Start Time</span>
-            <input type="time" placeholder="" required/>
+            <input type="time" placeholder="" value={start} onChange={handle_start} required/>
           </div>
           <div className="input-box">
             <span className="details">End Time</span>
-            <input type="time" placeholder="" required/>
+            <input type="time" placeholder="" value={end} onChange={handle_end} required/>
           </div>
           
         </div>
+        {/* <div className="button">
+          <input type="submit" value="Register" onClick={add_lab}/>
+        </div> */}
         <div className="button">
-          <input type="submit" value="Register"/>
+          {update?
+          <button type='button' onClick={updt_lab}>Update</button>
+        :
+        <button type='button' onClick={add_lab}>Register</button>}
+
         </div>
-        
       </form>
     </div>
   </div>
