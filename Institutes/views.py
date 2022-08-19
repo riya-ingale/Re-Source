@@ -8,12 +8,12 @@ import json
 
 # Create your views here.
 @csrf_exempt
-def profile(request, id):
+def profile(request, id , role_id):
     if request.method == 'GET':
-        data = json.loads(request.body)
-        role_id = data['Role']
+        role_id = int(role_id)
         if role_id == 1 or role_id == 2:
             curr_ins = Institutes.objects.get(id = id)
+            print('Im here')
             serializer = InstituteSerializer(curr_ins)
             return JsonResponse({
                     'status' : 200,
@@ -39,12 +39,16 @@ def profile(request, id):
             })
         
         elif role_id == 4:
+            workforce = WorkForce.objects.get(id = id)
+            wfserializer = WorkForceSerializer(workforce)
+
             labs = Labs.objects.filter(workforce = id)
             lserializer = LabSerializer(labs , many = True)
             return JsonResponse({
                 'status': 200,
                 'message': 'Fetched',
-                'lab_data': lserializer.data
+                'lab_data': lserializer.data,
+                'workforce_data':wfserializer.data
             })
 
         elif role_id == 6:
@@ -60,8 +64,8 @@ def profile(request, id):
             data = WorkForce.objects.get(id = id)
             institute = data.institute
             wfserializer = WorkForceSerializer(data)
-            buytransactions = Transaction.objects.filter(buyer = institute)
-            selltransactions = Transaction.objects.filter(seller = institute.id)
+            buytransactions = Transaction.objects.filter(buyer = institute.id)
+            selltransactions = Transaction.objects.filter(seller = institute)
             bserializer = TransactionSerializer(buytransactions , many = True)
             sserializer = TransactionSerializer(selltransactions , many = True)
             return JsonResponse({
@@ -73,7 +77,7 @@ def profile(request, id):
             })
 
         else:
-            workforce = WorkForce.objects.get(workforce = id)
+            workforce = WorkForce.objects.get(id = id)
             wfserializer = WorkForceSerializer(workforce)
             return JsonResponse({
                 'statues':200,
@@ -103,15 +107,13 @@ def profile(request, id):
         return JsonResponse(data = {
             'status':401,
             'message' : 'Nahi jaga hai, role badal'
-        })            
+        })              
        
     
-
-def editprofile(request, id):
+@csrf_exempt
+def editprofile(request, id, role_id):
 
     if request.method == 'GET':
-        data = json.loads(request.body)
-        role_id = data['Role']
         if role_id in [1,2,3]:
             curr_ins = Institutes.objects.get(id = id)
             serializer = InstituteSerializer(curr_ins)
@@ -120,7 +122,10 @@ def editprofile(request, id):
                 'data':serializer.data
             })
         
-        if role_id == 4:
+        elif role_id == 5:
+            return JsonResponse('Access not allowed' , safe = False)
+        
+        else:
             worker = WorkForce.objects.get(id = id)
             serializer = WorkForceSerializer(worker)
             return JsonResponse(data = {
@@ -135,13 +140,12 @@ def editprofile(request, id):
         curr_ins.delete()
         return JsonResponse('Record Deleted' , safe = False)
 
+
 # def edit_lab(request, )
 
-
-def allrequests(request,id):
+def allrequests(request,id, role_id):
     if request.method == 'GET':
-        data = json.loads(request.body)
-        role_id = data['Role']
+        role_id = role_id
         if role_id == 1:
             pending_universities = Institutes.objects.filter(role_id = 2, status = 0)
             serializer = InstituteSerializer(pending_universities , many = True)
@@ -207,6 +211,9 @@ def institution_request(request , id):
         role_id = user.role_id
         if role_id == 1:
             data = json.loads(request.body)
+            if data['role_id']!=2:
+                return JsonResponse('You can only accept institutions' , safe = False)
+
             curr_ins = Institutes.objects.get(id = data['id'])
             curr_ins.status = data['status']
             serializer = InstituteSerializer(curr_ins)
@@ -412,7 +419,6 @@ def resource_approval(request , id):
             'status': 404,
             'message' : 'page not found'
         })
-
 @csrf_exempt
 def workforce_requests(request , user_id):
     # GET route to show all the workforce requests to the institute role
@@ -490,6 +496,85 @@ def workforce_requests(request , user_id):
             'message' : 'Unauthorized for you role'
         })
         
+
+@csrf_exempt
+def lab_requests(request , user_id):
+    # GET route to show all the workforce requests to the institute role
+    if request.method == "GET":
+        try:
+            user = Institutes.objects.get(id = user_id)
+        except:
+            return JsonResponse(data = {
+                'status': 401,
+                'message' : 'No such Institute'
+            })
+        role = user.role_id
+        if role == 3:
+            lab_data = []
+            labs  = Labs.objects.filter(status = 0, institute_id = user.id)
+            if labs:
+                serializer = LabSerializer(labs,many = True)
+                for item in serializer.data:
+                    item = dict(item)
+                    item["institute_name"] = user.name
+                    workforce = WorkForce.objects.get(id = item['workforce'])
+                    item['workforce_name'] = workforce.name
+                    lab_data.append(item)
+                return JsonResponse(data = {
+                'status': 200,
+                'message' : 'labdata Requests Fetched',
+                "data" : lab_data
+                })
+            else:
+                return JsonResponse(data = {
+                'status': 404,
+                'message' : 'No Pending lab Requests'
+                })
+        else:
+            return JsonResponse(data = {
+            'status': 401,
+            'message' : 'Unauthorized for you role'
+        })
+    # POST route to approve/ disapprove the workforce
+    elif request.method == "POST":
+        try:
+            user = Institutes.objects.get(id = int(user_id))
+        except:
+            return JsonResponse(data = {
+                'status': 401,
+                'message' : 'Unauthorized for you role'
+            })
+        role = user.role_id
+        if role == 3:
+            data = json.loads(request.body)
+            lab_id = data["id"]    # the one who is approved or rejected
+            try:
+                lab = Labs.objects.get(id = int(lab_id))
+            except:
+                return JsonResponse(data = {
+                'status': 400,
+                'message' : 'Workforce id doesnt exist'
+            })
+            
+            if lab.institute.id != int(user_id):
+                return JsonResponse(data = {
+                'status': 401,
+                'message' : 'Workforce doesnt belong to your institute'
+            })
+            action = ["",'approved', 'rejected']
+            lab.status = data['status']
+            serializer  = LabSerializer(lab)
+            lab.save()
+            return JsonResponse(data = {
+            'status': 200,
+            'message' : f'Lab {lab.name} is {action[lab.status]}',
+            "data" : serializer.data
+            })
+        else:
+            return JsonResponse(data = {
+            'status': 401,
+            'message' : 'Unauthorized for you role'
+        })
 
 
 
