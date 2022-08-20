@@ -71,6 +71,7 @@ class Transaction(models.Model):
     seller = models.ForeignKey(to = Institutes , on_delete= models.DO_NOTHING)
     order_items = models.ManyToManyField(ProductInOrder)
     finalcost = models.FloatField(null = True)
+    is_paid = models.IntegerField(default = 0)
 
 # #Handling Bills charfield
 

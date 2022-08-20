@@ -1,3 +1,4 @@
+from http.client import HTTPResponse
 from sqlite3 import dbapi2
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
@@ -9,6 +10,7 @@ from django.contrib.sites.shortcuts import get_current_site
 import razorpay
 from ReSource import settings
 from datetime import datetime
+from django.http import HttpResponse
 
 
 razorpay_client = razorpay.Client(auth=(settings.razorpay_id , settings.razorpay_account_id))
@@ -72,18 +74,24 @@ def payment(request):
                 else:
                     count+=1
                     sell_univ[item.seller_institute] = {'id': [product_in_order] , 'cost': cost}
-                    
             
-            order.finalcost = final_price * (1.02 + 0.02 * count)
+            for key, value in sell_univ.items():
+                add_cost += value['cost'] * 1.18 * 0.02
+
+                    
+            gst_percent = 0.18
+            order.finalcost = ((final_price * (1 + gst_percent)) + add_cost) * 1.02041
             order_currency = 'INR'
 
             print(final_price)
 
             callback_url = 'http://'+ str(get_current_site(request))+'/handlerequest/'
             print(callback_url)
+
             razorpay_order = razorpay_client.order.create(dict(
                 amount = final_price * 100, currency = order_currency,
                 receipt = str(order.id), payment_capture = '0') )
+
             print(razorpay_order['id'])
             order.razorpay_order_id = razorpay_order['id']
             order.save()
@@ -93,8 +101,8 @@ def payment(request):
             for key,value in sell_univ.items():
                 transaction = Transaction.objects.create(order = order,
                 tid = date_time+str(count), buyer = user.institute.id,
-                seller = Institutes.objects.get(id = key), finalcost = value['cost'] * 1.02 + order.finalcost * 0.02)
-
+                # seller = Institutes.objects.get(id = key), finalcost = value['cost'] * 1.02 + order.finalcost * 0.02),
+                seller = Institutes.objects.get(id = key), finalcost = value['cost']*1.18)
                 transaction.order_items.add(*value['id'])
                 transaction.save()
             
@@ -115,10 +123,9 @@ def payment(request):
 
 @csrf_exempt
 def handlerequest(request):
-    print("I AM HERE")
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
+            data = json.loads(request.data['response'])
             payment_id = data['razorpay_payment_id']
             order_id = data['razorpay_order_id']
             signature = data['razorpay_signature']
@@ -192,22 +199,25 @@ def handlerequest(request):
                     # email.attach(filename, pdf, 'application/pdf')
                     # email.send(fail_silently=False)
 
-                    return render('path/paymentsuccess.html' , data)
+                    # return render('path/paymentsuccess.html' , data)
+                    return HttpResponse(data)
 
                 except:
                     order.payment_status = -1
                     order.save()
                     print('paymentfailed')
-                    return render('url', 'path')
+                    return HttpResponse('Payment Didnot captured')
             else:
                 order.payment_status = -1
                 order.save()
                 print('paymentfailed')
+                return HttpResponse('Payment Failed')
                 #return render(paymentfailed.html)
 
 
         except:
-            return JsonResponse('1 st try hit, Error in retrieving')
+            return HttpResponse('Data not received')
+            # return JsonResponse('1 st try hit, Error in retrieving')
 
 
 
