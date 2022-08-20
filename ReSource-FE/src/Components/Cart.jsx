@@ -5,6 +5,7 @@ import { mobile } from "../Css/responsive";
 import React,{useEffect, useState} from "react";
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import {Routes, Route, useNavigate, useLocation} from 'react-router-dom';
 
 import img1 from "../Images/microscope.jpg"
 const Container = styled.div``;
@@ -148,6 +149,7 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
+  const navigate = useNavigate();
   const [res,setRes] = useState();
   const [isloaded,setIsloaded] = useState(false);
   useEffect(() => {
@@ -166,6 +168,24 @@ const Cart = () => {
   console.log(res);
   const moreres = () =>{
     window.location.href = "/viewres"
+  }
+
+  const handleremove = (e,cart_id) =>{
+    fetch("http://127.0.0.1:8000/resource/removeitem/"+sessionStorage.getItem('user_id')
+    ,{method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({"c_id":cart_id})
+  }
+    ).then(async response=>{
+      const data = await response.json();
+      console.log(data)
+      if(data['status'] == 200){
+        console.log("Success removed a resource")
+      }})
+      navigate('/cart');
+  } 
+  const handlepayment = () =>{
+    navigate('/pay/'+sessionStorage.getItem('user_id'));
   }
   return (
    isloaded ?
@@ -230,7 +250,7 @@ const Cart = () => {
              <ProductAmountContainer>
              {/* <IconButton color="#1ca9c9"><Add /></IconButton>
              <ProductAmount>1</ProductAmount> */}
-             <IconButton color="#1ca9c9"><Remove /></IconButton>
+             <IconButton color="#1ca9c9" onClick={event => handleremove(event,item.c_id)}><Remove /></IconButton>
                {/* <Add />
                <ProductAmount>2</ProductAmount>
                <Remove /> */}
@@ -264,7 +284,7 @@ const Cart = () => {
            <SummaryItemText>Total</SummaryItemText>
            <SummaryItemPrice>₹{res.final_total}</SummaryItemPrice>
          </SummaryItem>
-         <Button>PROCEED TO PAYMENT</Button>
+         <Button onClick={handlepayment}>PROCEED TO PAYMENT</Button>
        </Summary>
      </Bottom>
    </Wrapper>

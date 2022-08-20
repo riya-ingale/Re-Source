@@ -25,22 +25,22 @@ function App() {
   return (
     <Router>
         <Routes>
-          <Route exact path="/" element={<><Indexbody/></>}/>
+          <Route exact path="/" element={<><Indexbody/></>}/>{/* Pending */}
           <Route exact path="/login" element={<><LogIn/></>}/>
           <Route exact path="/addres" element={<AddResources/>}/>
           <Route exact path="/header" element={<Header/>}/>
           <Route exact path="/footer" element={<Footer/>}/>
           <Route exact path="/viewres" element={<><Header/><ViewResources/><Footer/></>}/>
-          <Route exact path="/profile" element={<><Header/><Profile/><Footer/></>}/>
+          <Route exact path="/profile" element={<><Header/><Profile/><Footer/></>}/>{/* Pending */}
           <Route exact path="/resdetail/:id" element={<><Header/><Resourcedetail/><Footer/></>}/>
           <Route exact path="/cart" element={<><Header/><Cart/><Footer/></>}/>
-          <Route exact path="/instituteProfile" element={<InstituteProfile/>}/>
+          <Route exact path="/instituteProfile" element={<InstituteProfile/>}/>{/* Pending */}
           <Route exact path="/addlab" element={<><Header/><Addlab/><Footer/></>}/>
-          <Route exact path="/addwf" element={<><Header/><AddWorkforce/><Footer/></>}/>
-          <Route exact path="/wfrequest" element={<><Header/><WorkforceRequest/><Footer/></>}/>
+          <Route exact path="/addwf" element={<><Header/><AddWorkforce/><Footer/></>}/>{/* Pending */}
+          <Route exact path="/wfrequest" element={<><Header/><WorkforceRequest/><Footer/></>}/>{/* Pending */}
           <Route exact path="/pay/:id" element={<Paynow/>}/>
           <Route exact path="/editlab/:lab_id" element={<><Header/><Addlab/><Footer/></>}/>
-          <Route exact path="/labreq" element={<><Header/><Labrequest/><Footer/></>}/>
+          <Route exact path="/labreq" element={<><Header/><Labrequest/><Footer/></>}/>{/* Pending */}
         </Routes>
     </Router>
   );
