@@ -190,7 +190,7 @@ const Cart = () => {
          <Product>
            
            <ProductDetail>
-             <Image src={img1} />
+             <Image src={require("../temp_images/temp"+String(index+1)+".jpeg")} />
              <Details>
                <ProductName>
                  <b>Product:</b> {item.resource_name}
@@ -250,11 +250,11 @@ const Cart = () => {
          </SummaryItem>
          <SummaryItem>
            <SummaryItemText>Transaction Fees (%)</SummaryItemText>
-           <SummaryItemPrice>2%</SummaryItemPrice>
+           <SummaryItemPrice>{res.transaction_percent}%</SummaryItemPrice>
          </SummaryItem>
          <SummaryItem>
            <SummaryItemText>GST (%)</SummaryItemText>
-           <SummaryItemPrice>18%</SummaryItemPrice>
+           <SummaryItemPrice>{res.gst_percent}%</SummaryItemPrice>
          </SummaryItem>
          {/* <SummaryItem>
            <SummaryItemText>Discount</SummaryItemText>
@@ -262,7 +262,7 @@ const Cart = () => {
          </SummaryItem> */}
          <SummaryItem type="total">
            <SummaryItemText>Total</SummaryItemText>
-           <SummaryItemPrice>₹{res.total}</SummaryItemPrice>
+           <SummaryItemPrice>₹{res.final_total}</SummaryItemPrice>
          </SummaryItem>
          <Button>PROCEED TO PAYMENT</Button>
        </Summary>
