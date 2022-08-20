@@ -35,7 +35,7 @@ class Cart(models.Model):
 
 class ProductInOrder(models.Model):
     id = models.AutoField(primary_key = True)
-    ord = models.IntegerField(null = True)
+    order_id = models.IntegerField(null = True)
     workforce = models.ForeignKey(to = WorkForce , on_delete=models.DO_NOTHING , null = True)
     buyer_institute = models.IntegerField()
     seller_institute = models.IntegerField()
@@ -46,6 +46,7 @@ class ProductInOrder(models.Model):
     end_time = models.TimeField()
     cost =  models.FloatField()
 
+
 class Order(models.Model):
     payment_status_choices = (
         (1, 'SUCCESS'),
@@ -53,7 +54,8 @@ class Order(models.Model):
         (0, 'PENDING'),
     )
     id = models.AutoField(primary_key = True)
-    order_items = models.ManyToManyField(ProductInOrder)
+    workforce = models.ForeignKey(to = WorkForce, on_delete = models.DO_NOTHING)
+    # order_items = models.ManyToManyField(ProductInOrder)
     finalcost = models.FloatField(null = True)
     datetime_of_payment = models.DateTimeField(default=timezone.now)
     payment_status = models.IntegerField(choices = payment_status_choices, default=0)
@@ -69,7 +71,7 @@ class Transaction(models.Model):
     tid = models.CharField(max_length = 500, null = True)
     buyer = models.CharField(max_length = 500, null = True)
     seller = models.ForeignKey(to = Institutes , on_delete= models.DO_NOTHING)
-    order_items = models.ManyToManyField(ProductInOrder)
+    # order_items = models.ManyToManyField(ProductInOrder)
     finalcost = models.FloatField(null = True)
     is_paid = models.IntegerField(default = 0)
 

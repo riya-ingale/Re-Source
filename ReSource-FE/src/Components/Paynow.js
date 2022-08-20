@@ -81,7 +81,7 @@ async function showRazorpay() {
 
   var options = {
     "key": "rzp_test_DfplOiJGao9t7P",
-    "id": data.order_id,
+    "order_id": data.order_id,
     "name": "Re-Source Resources", 
     "description": "Test Transaction",
     "entity": "order",
