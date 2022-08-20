@@ -1,0 +1,177 @@
+.profile-container {
+    margin-top: 110px;
+}
+.bg-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 18.75rem;
+    background: linear-gradient(310deg, rgba(33, 82, 255, 0.6), rgba(33, 212, 253, 0.6)) 50% center / cover, url(https://demos.creative-tim.com/soft-ui-dashboard-react/static/media/curved0.d146ec6e9401aa9d52c5.jpg);
+    border-radius: 1rem;
+    background-position: 50% center;
+    overflow: hidden;
+}
+.blur-bg {
+    display: flex;
+    overflow: hidden;
+    color: rgb(0, 0, 0,0.87);
+    transition: box-shadow 300ms cubic-bezier(0.4,0.2,1);
+    min-width: 0px;
+    overflow-wrap: break-word;
+    background-clip: border-box;
+    border: 0px solid rgba(0,0,0,0.125);
+    border-radius: 1rem;
+    backdrop-filter: saturate(200%) blur(30px);
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: rgb(255 255 255 / 90%) 0rem 0rem 0.0625rem 0.0625rem inset, rgb(0 0 0 / 5%) 0rem 1.25rem 1.6875rem 0rem;
+    position: relative;
+    margin-top: -64px;
+    margin-left: 24px;
+    margin-right: 24px;
+    padding: 16px;
+
+}
+.inner-blur {
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    -webkit-box-align: center;
+    align-items: center;
+}
+.row-blur{
+    width: 100%;
+}
+.profile-pic-div {
+    position: relative;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1;
+    overflow: hidden;
+    user-select: none;
+    transition: all 200ms ease-in-out 0s;
+    border-radius: 0.75rem;
+    background: transparent;
+    font-weight: 700;
+    box-shadow: rgb(0 0 0 / 12%) 0rem 0.3125rem 0.625rem 0rem;
+    width: 5.625rem;
+    height: 5.625rem;
+    font-size: 1rem;
+}
+.profile-image {
+    width: 100%;
+    text-align: center;
+    object-fit:contain;
+    object-position:left;
+    color: transparent;
+    height: auto;
+    margin: 24px;
+}
+.Profile-name{
+    margin: 0px;
+    font-size: 2.25rem;
+    line-height: 2.375;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    letter-spacing: 0em;
+    opacity: 1;
+    text-transform: none;
+    vertical-align: unset;
+    text-decoration: none;
+    color: rgb(52, 71, 103);
+    font-weight: 500;
+}
+/* Cards */
+.details-container {
+    margin-top: 50px;
+}
+  
+  .lires{
+    padding: 0%;
+    margin: 0;
+    font-size: 0.5 em;
+  }
+  #container {
+    max-width: 300px;
+  
+    /* Center the container in middle on horizontal axis */
+    margin: 0 auto;
+  
+    /* Add empty space above the container (20% of the view height) */
+    margin-top: 20vh;
+  }
+  
+  .profilecards {
+    /* Change background color */
+    background-color: white;
+  
+    /* Add border */
+    border: 1px solid #bacdd8;
+  
+    /* Add space between the border and the content */
+    padding: 8px;
+  
+    border-radius: 12px;
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+    width: 90%;
+    height: 500px;
+  }
+  .workforce-list { 
+    overflow: scroll;
+  }
+  
+
+  .card__details {
+    /* Add space around the details */
+    padding: 16px 8px 8px 8px;
+  }
+  /* Btns */
+  .leaderboard__profiles {
+    background-color: #fff;
+    border-radius: 0 0 12px 12px;
+    padding: 15px 15px 20px;
+    display: grid;
+    row-gap: 8px;
+  }
+  .leaderboard__profile {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    align-items: center;
+    padding: 10px 30px 10px 10px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 5px 7px -1px rgba(51, 51, 51, 0.23);
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.7, 0.98, 0.86, 0.98), box-shadow 0.25s cubic-bezier(0.7, 0.98, 0.86, 0.98);
+    background-color: #fff;
+    margin: 20px;
+  }
+  .leaderboard__profile:hover {
+    transform: scale(1.2);
+    box-shadow: 0 9px 47px 11px rgba(51, 51, 51, 0.18);
+  }
+  
+  .leaderboard__name {
+    color: #979cb0;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: 0.64px;
+    margin-left: 0px;
+  }
+  .detail-list {
+    font-size: 1.15rem;
+  }
+  .heading {
+    text-align: center;
+  }
+  .heading_name {
+    color: black;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  .res-cards {
+    margin-top: 50px;
+  }
