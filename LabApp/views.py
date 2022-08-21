@@ -7,6 +7,7 @@ from ResourceApp.serializers import *
 import json
 from django.http.response import JsonResponse
 from datetime import datetime
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -172,5 +173,116 @@ def edit_lab(request ,user_id, lab_id):
                 }) 
 
 
+@csrf_exempt
+def getlabs(request,page_num):
+    if request.method == 'GET':
+        # List of institutes,city to populate in the drop down along with their ids in asceding order of their name
+        institutes = Institutes.objects.filter(role_id = 3).values_list('id','name','city').order_by('name').all()
 
+        labsobjs = Labs.objects.all()
 
+        size = 3
+        page = page_num
+        paginator = Paginator(labsobjs, size)
+        labs = paginator.get_page(page)
+        serializer = LabSerializer(labs, many=True)
+
+        labs_data = []
+        for d in serializer.data:
+            d = dict(d)
+            d['institute_name'] = Institutes.objects.get(id = d['institute']).name
+            workforce = WorkForce.objects.get(id = d['workforce'])
+            d['workforce_name'] = workforce.name
+            d['workforce_contact'] = workforce.phone_no
+            d['workforce_email'] = workforce.email_id
+            d['start_time'] = str(d['start_time'])+":00:00"
+            d['end_time'] = str(d['end_time'])+":00:00"
+
+            labs_data.append(d)
+
+        return_data = {
+            'status':200,
+            'message':"All Labs fetched",
+            'total_count':paginator.count,      # total number of labs
+            'total_pages':paginator.num_pages,  # total number of pages
+            'labs_data':labs_data,    # labs data on that page
+            'institutes':list(institutes),      # list of institutes to populate in the dropdown
+        }
+        if labs.number == paginator.num_pages:
+            return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+        elif labs.number == 1:
+            return_data['next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
+        else:
+            return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+            return_data['next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
+        return JsonResponse(return_data)
+
+    # POST REQUEST FOR FILTER AND SEARCH 
+    elif request.method == 'POST':
+        institutes = Institutes.objects.filter(role_id = 3).values_list('id','name','city').order_by('name').all()
+        bodyflag = 0
+        # If searchtext is given then return searchtext, If one institute in the dropdown is given then return the institute id, if required date is given then return the date(type date)
+        bodyflag = 1
+        data = json.loads(request.body)
+
+        if ('searchtext' in data) and ('institute_id' in data):
+            search = data['searchtext']
+            institute_id = int(data['institute_id'])
+            
+            labsobjs = Labs.objects.filter(name__icontains=search, institute = institute_id).all()
+
+        elif ('searchtext' in data):
+            search = data['searchtext']
+            labsobjs = Labs.objects.filter(name__icontains=search).all()
+
+        elif ('institute_id' in data):
+            institute_id = data['institute_id']
+            labsobjs = Labs.objects.filter(institute = institute_id).all()
+        else:
+            labsobjs = Labs.objects.all()
+
+        if len(labsobjs) == 0:
+            return JsonResponse({
+            'status':404,
+            'message':"No such Lab Found",
+        })
+        else: 
+            size = 3
+            page = page_num
+            paginator = Paginator(labsobjs, size)
+            labs = paginator.get_page(page)
+            serializer = LabSerializer(labs, many=True)
+
+            labs_data = []
+            for d in serializer.data:
+                d = dict(d)
+                d['institute_name'] = Institutes.objects.get(id = d['institute']).name
+                workforce = WorkForce.objects.get(id = d['workforce'])
+                d['workforce_name'] = workforce.name
+                d['workforce_contact'] = workforce.phone_no
+                d['workforce_email'] = workforce.email_id
+                d['start_time'] = str(d['start_time'])+":00:00"
+                d['end_time'] = str(d['end_time'])+":00:00"
+                labs_data.append(d)
+
+            return_data = {
+            'status':200,
+            'message':"Resources Found",
+            'total_count':paginator.count,
+            'total_pages':paginator.num_pages,
+            'labs_data':labs_data,
+            'institutes':list(institutes)
+            }
+
+            if labs.number == paginator.num_pages and labs.number ==1:
+                pass
+            elif labs.number == paginator.num_pages:
+                return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+            elif labs.number == 1:
+                return_data['next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
+            else:
+                return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+                return_data['next_page']=request.build_absolute_uri()[:-1]+str(resoulabsrces.number+1)
+            if bodyflag:
+                return_data['body_data'] = data
+            return JsonResponse(return_data)
