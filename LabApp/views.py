@@ -8,6 +8,7 @@ import json
 from django.http.response import JsonResponse
 from datetime import datetime
 from django.core.paginator import Paginator
+import cv2
 
 # Create your views here.
 
@@ -286,3 +287,56 @@ def getlabs(request,page_num):
             if bodyflag:
                 return_data['body_data'] = data
             return JsonResponse(return_data)
+
+def paster(imgs):
+    leng = 0
+    for img in imgs:
+        # print(img[0])
+        temp = cv2.imread(img[0])
+        cv2.imwrite("./ReSource-FE/src/temp_images/temp"+str(leng+1)+".jpeg", temp)
+        # file_name.append("../temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]))
+        leng+=1
+    return
+
+
+@csrf_exempt
+def getdetails(request,lab_id):
+    if request.method == "GET":
+
+        labobj = Labs.objects.get(id = lab_id)
+        serializer = LabSerializer(labobj)
+
+        d = dict(serializer.data)
+        d['institute_name'] = Institutes.objects.get(id = d['institute']).name
+        workforce = WorkForce.objects.get(id = d['workforce'])
+        d['workforce_name'] = workforce.name
+        d['workforce_contact'] = workforce.phone_no
+        d['workforce_email'] = workforce.email_id
+        d['start_time'] = str(d['start_time'])+":00:00"
+        d['end_time'] = str(d['end_time'])+":00:00"
+        lab_data = d
+
+        resources = Resources.objects.filter(lab = labobj).all()
+        rserializer = ResourcesSerializer(resources, many = True)
+
+        imgs = []
+        resources_data = []
+        for d in rserializer.data:
+            d = dict(d)
+            try:
+                img = Image.objects.filter(resource = d['id']).values_list('image')[0]
+            except:
+                img = ["media/resource_images/default_image.jpeg"]
+            d['img'] = img[0]
+            imgs.append(img)
+            d['institute_name'] = labobj.institute.name
+            resources_data.append(d)
+        paster(imgs)
+
+        return JsonResponse({
+            'status':200,
+            'message':"Lab Details fetched",
+            'lab_data':lab_data,
+            "resources_data": resources_data,
+            'resource_images':imgs
+        })
