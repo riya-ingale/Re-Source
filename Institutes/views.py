@@ -185,7 +185,7 @@ def institute_proflie(request, id, r_num , l_num):
             d['img'] = img[0]
             imgs.append(img)
             resource_data.append(d)
-        
+        print(imgs)
         paster(imgs)
 
         return_data = {

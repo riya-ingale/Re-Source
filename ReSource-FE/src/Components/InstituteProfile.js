@@ -10,9 +10,11 @@ import EditIcon from '@mui/icons-material/Edit';
 
 export default function InstituteProfile() {
   const [loader,setLoader] = useState(false);
+  const [r_id,setR_id] = useState(1);
+  const [l_id,setL_id] = useState(1);
   const[res,setRes] = useState();
   useEffect(() =>{
-    fetch("http://127.0.0.1:8000/institute/profile/"+sessionStorage.getItem('user_id')+"/"+String(3))
+    fetch("http://127.0.0.1:8000/institute/institute_profile/"+sessionStorage.getItem('user_id')+"/"+r_id+"/"+l_id)
     .then(response=>response.json())
     .then(body=>
       {
@@ -21,6 +23,30 @@ export default function InstituteProfile() {
         console.log(body);
       })
   },[])
+
+  const handleLab = (e,p) =>{
+    setL_id(p);
+    fetch("http://127.0.0.1:8000/institute/institute_profile/"+sessionStorage.getItem('user_id')+"/"+r_id+"/"+p)
+    .then(response=>response.json())
+    .then(body=>
+      {
+        setRes(body);
+        setLoader(true);
+        console.log(body);
+      })
+  }
+
+  const handleRes = (e,p) =>{
+    setR_id(p);
+    fetch("http://127.0.0.1:8000/institute/institute_profile/"+sessionStorage.getItem('user_id')+"/"+p+"/"+l_id)
+    .then(response=>response.json())
+    .then(body=>
+      {
+        setRes(body);
+        setLoader(true);
+        console.log(body);
+      })
+  }
 
   return (
     <>
@@ -77,9 +103,9 @@ export default function InstituteProfile() {
             {res.institute_data.pincode?<li className="mb-2"><strong className='strlist'>Pincode: </strong>{res.institute_data.pincode}</li>:<div></div>}
               <li className="mb-2"><strong className='strlist'>Email: </strong>{res.institute_data.email}</li>
             {res.institute_data.phone_no?<li className="mb-2"><strong className='strlist'>Phone Number: </strong>{res.institute_data.phone_no}</li>:<div></div>}
-              <li className="mb-2"><strong className='strlist'>Ammount of Resources: </strong>421</li>
-              <li className="mb-2"><strong className='strlist'>Ammount of labs: </strong>{res.Labs_data.length}</li>
-              <li className="mb-2"><strong className='strlist'>Ammount of Workforce: </strong>{res.Workforce_data.length}</li>
+              <li className="mb-2"><strong className='strlist'>Ammount of Resources: </strong>{res.total_resource_count}</li>
+              <li className="mb-2"><strong className='strlist'>Ammount of labs: </strong>{res.total_lab_count}</li>
+              <li className="mb-2"><strong className='strlist'>Ammount of Workforce: </strong>{res.workforce_data.length}</li>
             </ul>
             </div>
             </div>
@@ -87,7 +113,7 @@ export default function InstituteProfile() {
         <div className='col-md-4'>
         <div className="card profilecards workforce-list">
             <div className="card__details">
-            {res.Workforce_data.map((item) =>(
+            {res.workforce_data.map((item) =>(
               item.status === 1?
             <article class="leaderboard__profile">
               <span class="leaderboard__name">{item.name}</span>
@@ -120,37 +146,10 @@ export default function InstituteProfile() {
       {/* Resources */}
       <p className='heading res-cards'><h3 class="heading_name">Resources</h3></p>
       <div className="row">
+        {res.resource_data.map((item,index)=>(
           <div className="col-md-4 colvr">
             <div className="card rescard">
-              <img src={chem} className="imgres" alt="Equipment Name" />
-
-              {/* <!-- A div with card__details  to hold the details in the card  --> */}
-              <div className="card__details">
-                {/* <!-- Span with tag class for the tag --> */}
-                {/* <span className="tag">Nature</span>
-
-                <span className="tag">Lake</span> */}
-
-                {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
-                {/* <span class="discount">Partially Available</span> */}
-
-                <div className="">
-                  <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
-                  </ul>
-                </div>
-
-                <button className="btn-vr">Book Now</button>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4 colvr">
-            <div className="card rescard">
-              <img src={bio} className="imgres" alt="Equipment Name" />
+              <img src={require("../temp_images/temp"+String(index+1)+".jpeg")} className="imgres" alt="Equipment Name" />
 
               {/* <!-- A div with card__details class to hold the details in the card  --> */}
               <div className="card__details">
@@ -160,86 +159,34 @@ export default function InstituteProfile() {
                 <span className="tag">Lake</span> */}
 
                 {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
-
-                <div className="">
-                  <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
-                  </ul>
-                </div>
-                <button className="btn-vr">Book Now</button>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4 colvr">
-            <div className="card rescard">
-              <img src={phy} className="imgres" alt="Equipment Name" />
-
-              {/* <!-- A div with card__details class to hold the details in the card  --> */}
-              <div className="card__details">
-                {/* <!-- Span with tag class for the tag --> */}
-                {/* <span className="tag">Nature</span>
-
-                <span className="tag">Lake</span> */}
-
-                {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
+                <div className="name">Equipment Name: {item.name}</div>
                 {/* <span class="discount">Partially Available</span> */}
                 <div className="">
                   <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
+                    {/* <li className="lires boldline">Availability: Partially Available</li> */}
+                    <li className="lires">Cost: {item.cost} Rs/hour</li>
+                    <li className="lires">Subject: {item.subject}</li>
+                    <li className="lires">Quantity: {item.quantity}</li>
                   </ul>
                 </div>
-
-                <button className="btn-vr">Book Now</button>
+                <a href={'/resdetail/'+item.id}>
+                <button className="btn-vr">Book Now</button></a>
               </div>
             </div>
           </div>
+          ))}
         </div>
         <div className="d-flex justify-content-center">
         {/* <Button variant="text">Show More</Button> */}
-        <Pagination count={10} variant="outlined"  color="primary" />
+        <Pagination count={res.total_resource_pages} variant="outlined" onChange={handleRes} color="primary" />
         </div>
         {/* Labs  */}
         <p className='heading'><h3 class="heading_name">Labs</h3></p>
         <div className="row">
+         {res.lab_data.map((item)=>(
           <div className="col-md-4 colvr">
             <div className="card rescard">
-              <img src={chem} className="imgres" alt="Equipment Name" />
-
-              {/* <!-- A div with card__details  to hold the details in the card  --> */}
-              <div className="card__details">
-                {/* <!-- Span with tag class for the tag --> */}
-                {/* <span className="tag">Nature</span>
-
-                <span className="tag">Lake</span> */}
-
-                {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
-                {/* <span class="discount">Partially Available</span> */}
-
-                <div className="">
-                  <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
-                  </ul>
-                </div>
-
-                <button className="btn-vr">Book Now</button>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4 colvr">
-            <div className="card rescard">
-              <img src={bio} className="imgres" alt="Equipment Name" />
+              <img src={require("../temp_images/default_image.jpeg")} className="imgres" alt="Equipment Name" />
 
               {/* <!-- A div with card__details class to hold the details in the card  --> */}
               <div className="card__details">
@@ -249,51 +196,26 @@ export default function InstituteProfile() {
                 <span className="tag">Lake</span> */}
 
                 {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
-
-                <div className="">
-                  <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
-                  </ul>
-                </div>
-                <button className="btn-vr">Book Now</button>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4 colvr">
-            <div className="card rescard">
-              <img src={phy} className="imgres" alt="Equipment Name" />
-
-              {/* <!-- A div with card__details class to hold the details in the card  --> */}
-              <div className="card__details">
-                {/* <!-- Span with tag class for the tag --> */}
-                {/* <span className="tag">Nature</span>
-
-                <span className="tag">Lake</span> */}
-
-                {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
+                <div className="name">Lab Name: {item.name}</div>
                 {/* <span class="discount">Partially Available</span> */}
                 <div className="">
                   <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
+                    {/* <li className="lires boldline">Availability: Partially Available</li> */}
+                    <li className="lires">Timings: {item.start_time}:00 - {item.end_time}:00 Hrs</li>
+                    <li className="lires">Institute Name: {res.institute_data.name}</li>
+                    {/* <li className="lires">Capacity: 100</li> */}
                   </ul>
                 </div>
 
-                <button className="btn-vr">Book Now</button>
+                <button className="btn-vr">More Details</button>
               </div>
             </div>
           </div>
+          ))}
         </div>
         <div className="d-flex justify-content-center">
         {/* <Button variant="text">Show More</Button> */}
-        <Pagination count={10} variant="outlined"  color="primary" />
+        <Pagination count={res.total_lab_pages} variant="outlined" onChange={handleLab}  color="primary" />
         </div>
     </div>  :<div></div> }
     </>
