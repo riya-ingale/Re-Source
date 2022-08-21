@@ -70,23 +70,23 @@ def add_students(request , id):
     #     for ele in elements:
     #         # add in db
 
-@csrf_exempt
-def generateicard(request, id):
-    if request.method == 'post':
-        data = json.loads(request.body())
-        order_id = data['order_id']
-        products = ProductInOrder.objects.filter(order = order_id)
-        for p in products:
-            visitor = p.visitor
-            url = 'http://8000/institute/profile/id/role'
-            qrcode_img = qrcode.make(url)
-            canvas = Image.new('RGB' , (300, 300) , 'white')
-            draw = ImageDraw.Draw(canvas)
-            canvas.paste(qrcode_img)
-            canvas.save('id_card.png')
-            # canvas.close()
-            # buffer = BytesIO()
-            # canvas.sasve(buffer , 'PNG')
+# @csrf_exempt
+# def generateicard(request, id):
+#     if request.method == 'post':
+#         data = json.loads(request.body())
+#         order_id = data['order_id']
+#         products = ProductInOrder.objects.filter(order = order_id)
+#         for p in products:
+#             visitor = p.visitor
+#             url = 'http://8000/institute/profile/id/role'
+#             qrcode_img = qrcode.make(url)
+#             canvas = Image.new('RGB' , (300, 300) , 'white')
+#             draw = ImageDraw.Draw(canvas)
+#             canvas.paste(qrcode_img)
+#             canvas.save('id_card.png')
+#             # canvas.close()
+#             # buffer = BytesIO()
+#             # canvas.sasve(buffer , 'PNG')
 
 
 

@@ -24,7 +24,7 @@ def profile(request, id , role_id):
             pserializer = InstituteSerializer(pending_univ, many = True)
 
             ugc_staff = WorkForce.objects.filter(role_id = 9 , status = 1)
-            staffserializer = WorkForceSerializer(ugc_staff)
+            staffserializer = WorkForceSerializer(ugc_staff , many = True)
 
             return JsonResponse({
                     'status' : 200,
@@ -39,7 +39,7 @@ def profile(request, id , role_id):
             curr_ins = Institutes.objects.get(id = id)
             serializer = InstituteSerializer(curr_ins)
 
-            institutes = Institutes.objects.filter(university = curr_ins.name, status = 1)
+            institutes = Institutes.objects.filter(university = curr_ins.name, status = 1 , role_id = 3)
             iserializer = InstituteSerializer(institutes , many = True)
 
             pending_institute = Institutes.objects.filter(university = curr_ins.name, status = 0)
@@ -62,8 +62,9 @@ def profile(request, id , role_id):
             workforce = WorkForce.objects.filter(institute = id , status = 1)
             wfserializer = WorkForceSerializer(workforce , many = True)
 
-     
-            resource = Resources.objects.filter(institute = id, is_approved = 1)
+            lab_ids = [lab.id for lab in labs]
+            print(lab_ids)
+            resource = Resources.objects.filter(lab__in = lab_ids, is_approved = 1)
             rserializer = ResourcesSerializer(resource , many = True)
 
             serializer = InstituteSerializer(curr_ins)
@@ -80,35 +81,27 @@ def profile(request, id , role_id):
         elif role_id == 4:
             labs = Labs.objects.filter(workforce = id)
             lserializer = LabSerializer(labs , many = True)
-            if len(labs)>0:
-                lab_ids = [lab.id for lab in labs]
-                resource = Resources.objects.filter(lab__in= lab_ids, is_approved = 1)
-                rserializer = ResourcesSerializer(resource , many = True)
+            
+            lab_ids = [lab.id for lab in labs]
+            resource = Resources.objects.filter(lab__in= lab_ids)
+            rserializer = ResourcesSerializer(resource , many = True)
 
-                today_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today(), is_approved = 1)
-                todayserializer = BookslotSeializer(today_slots, many = True)
+            today_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today())
+            todayserializer = BookslotSeializer(today_slots, many = True)
 
-                tomorrow_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today() + datetime.timedelta(days = 1), is_approved = 1)
-                tomserializer = BookslotSeializer(today_slots, many = True)
+            tomorrow_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today() + datetime.timedelta(days = 1))
+            tomserializer = BookslotSeializer(tomorrow_slots, many = True)
 
 
-                return JsonResponse({
-                    'status': 200,
-                    'message': 'Fetched',
-                    'lab_data': lserializer.data,
-                    'resource_data' : rserializer.data,
-                    'today_slots': todayserializer.data,
-                    'tomorrow_slots':tomserializer.data
+            return JsonResponse({
+                'status': 200,
+                'message': 'Fetched',
+                'lab_data': lserializer.data,
+                'resource_data' : rserializer.data,
+                'today_slots': todayserializer.data,
+                'tomorrow_slots':tomserializer.data
 
-                })
-            else:
-                return JsonResponse({
-                    'status': 200,
-                    'message': 'Fetched',
-                    'lab_data': lserializer.data,
-                    'resource_data' : []
-
-                })
+            })
 
         elif role_id == 6:
             student = Students.objects.get(id = id)
