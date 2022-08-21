@@ -23,8 +23,8 @@ def profile(request, id , role_id):
             pending_univ = Institutes.objects.filter(role_id = 2 , status = 0)
             pserializer = InstituteSerializer(pending_univ, many = True)
 
-            ugc_staff = workforce.objects.filter(role_id = 9 , status = 1)
-            staffserializer = WorkForceSerializer.objects.filter(ugc_staff)
+            ugc_staff = WorkForce.objects.filter(role_id = 9 , status = 1)
+            staffserializer = WorkForceSerializer(ugc_staff)
 
             return JsonResponse({
                     'status' : 200,

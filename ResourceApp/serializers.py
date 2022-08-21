@@ -1,4 +1,4 @@
-from ResourceApp.models import Book_slots, Cart, Transaction
+from ResourceApp.models import Book_slots, Cart, Transaction, Order
 from rest_framework import serializers
 from Institutes.models import *
 

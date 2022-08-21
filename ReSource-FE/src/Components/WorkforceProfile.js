@@ -1,5 +1,6 @@
-import React , {useState,useEffect} from 'react';
+import React from 'react';
 import "../Css/intituteprofile.css";
+import "../Css/wfprofile.css";
 import img from '../Images/user-account.png';
 import { Link } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
@@ -8,23 +9,9 @@ import bio from "../Images/images.jpg";
 import phy from "../Images/microscope.jpg";
 import EditIcon from '@mui/icons-material/Edit';
 
-export default function InstituteProfile() {
-  const [loader,setLoader] = useState(false);
-  const[res,setRes] = useState();
-  useEffect(() =>{
-    fetch("http://127.0.0.1:8000/institute/profile/"+sessionStorage.getItem('user_id')+"/"+String(3))
-    .then(response=>response.json())
-    .then(body=>
-      {
-        setRes(body);
-        setLoader(true);
-        console.log(body);
-      })
-  },[])
-
+export default function WorkforceProfile() {
   return (
     <>
-    {loader?
     <div className='container profile-container'>
       <div className='bg-box'>
       </div>
@@ -38,7 +25,7 @@ export default function InstituteProfile() {
             </div>
             <div className='col-md-10'>
               <p>
-                <h1 className="Profile-name">{res.institute_data.name}</h1>
+                <h1 className="Profile-name">Institute Name</h1>
               </p>
             </div>
           </div>
@@ -47,22 +34,23 @@ export default function InstituteProfile() {
       <div className='container details-container'>
       <div className='row'>
         <div className='col-md-4'>
-        <div className="card profilecards">
-            <div className="card__details">
+        <div className="card profilecards slots">
+            <div className="card__details ">
+            <h3>Today's Booked Slots</h3>
             <article class="leaderboard__profile">
-              <Link to={"/labrequest"}><span class="leaderboard__name">Lab Requests</span></Link>
+              <span class="slottime">9:00-11:00</span>
             </article>
     
             <article class="leaderboard__profile">
-            <Link to={"/wfrequest"}><span class="leaderboard__name">Workforce Requests</span></Link>
+              <span class="slottime">9:00-11:00</span>
             </article>
     
             <article class="leaderboard__profile">
-            <Link to={"/"}><span class="leaderboard__name">Resource Request</span></Link>
+              <span class="slottime">9:00-11:00</span>
             </article>
 
             <article class="leaderboard__profile">
-            <Link to={"/"}><span class="leaderboard__name">Edit Request</span></Link>
+            <span class="slottime">9:00-11:00</span>
             </article>
             </div>
             </div>
@@ -72,14 +60,13 @@ export default function InstituteProfile() {
             <div className="card__details">
             <h3>Profile details <Link to="/"><EditIcon></EditIcon></Link></h3>
             <ul className="list-bullets detail-list">
-            {res.institute_data.city?<li className="mb-2"><strong className='strlist'>City: </strong> {res.institute_data.city}</li>:<div></div>}
-            {res.institute_data.state?<li className="mb-2"><strong className='strlist'>State: </strong>{res.institute_data.state}</li>:<div></div>}
-            {res.institute_data.pincode?<li className="mb-2"><strong className='strlist'>Pincode: </strong>{res.institute_data.pincode}</li>:<div></div>}
-              <li className="mb-2"><strong className='strlist'>Email: </strong>{res.institute_data.email}</li>
-            {res.institute_data.phone_no?<li className="mb-2"><strong className='strlist'>Phone Number: </strong>{res.institute_data.phone_no}</li>:<div></div>}
+              <li className="mb-2"><strong className='strlist'>Department: </strong> Accounts</li>
+              <li className="mb-2"><strong className='strlist'>Position: </strong> Assistant</li>
+              <li className="mb-2"><strong className='strlist'>Institute: </strong>VIT</li>
+              <li className="mb-2"><strong className='strlist'>Email: </strong>421202</li>
+              <li className="mb-2"><strong className='strlist'>Phone Number: </strong>421202324</li>
               <li className="mb-2"><strong className='strlist'>Ammount of Resources: </strong>421</li>
-              <li className="mb-2"><strong className='strlist'>Ammount of labs: </strong>{res.Labs_data.length}</li>
-              <li className="mb-2"><strong className='strlist'>Ammount of Workforce: </strong>{res.Workforce_data.length}</li>
+              <li className="mb-2"><strong className='strlist'>Ammount of labs: </strong>24</li>
             </ul>
             </div>
             </div>
@@ -87,38 +74,36 @@ export default function InstituteProfile() {
         <div className='col-md-4'>
         <div className="card profilecards workforce-list">
             <div className="card__details">
-            {res.Workforce_data.map((item) =>(
-              item.status === 1?
+            <h3>Tommorow's Booked Slots</h3>
             <article class="leaderboard__profile">
-              <span class="leaderboard__name">{item.name}</span>
-            </article>
-            :<div></div>
-            ))}
-            {/* <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 2</span>
+              <span class="slottime">9:00-11:00</span>
             </article>
     
             <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 3</span>
-            </article>
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 4</span>
+              <span class="slottime">9:00-11:00</span>
             </article>
     
             <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 5</span>
+              <span class="slottime">9:00-11:00</span>
+            </article>
+            <article class="leaderboard__profile">
+              <span class="slottime">9:00-11:00</span>
             </article>
     
             <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 6</span>
-            </article> */}
+              <span class="slottime">9:00-11:00</span>
+            </article>
+    
+            <article class="leaderboard__profile">
+              <span class="slottime">9:00-11:00</span>
+            </article>
             </div>
             </div>
         </div>
       </div>
       </div>
       {/* Resources */}
-      <p className='heading res-cards'><h3 class="heading_name">Resources</h3></p>
+      <p className='heading res-cards'><h3 class="heading_name">Resources Managed By You</h3></p>
       <div className="row">
           <div className="col-md-4 colvr">
             <div className="card rescard">
@@ -207,7 +192,7 @@ export default function InstituteProfile() {
         <Pagination count={10} variant="outlined"  color="primary" />
         </div>
         {/* Labs  */}
-        <p className='heading'><h3 class="heading_name">Labs</h3></p>
+        <p className='heading'><h3 class="heading_name">Labs Managed By You</h3></p>
         <div className="row">
           <div className="col-md-4 colvr">
             <div className="card rescard">
@@ -295,7 +280,7 @@ export default function InstituteProfile() {
         {/* <Button variant="text">Show More</Button> */}
         <Pagination count={10} variant="outlined"  color="primary" />
         </div>
-    </div>  :<div></div> }
+    </div>   
     </>
   )
 }
