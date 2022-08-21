@@ -4,10 +4,12 @@ from django.http.response import JsonResponse
 from ResourceApp.models import *
 from Institutes.models import *
 from django.contrib.sites.shortcuts import get_current_site
+from ResourceApp.serializers import CartSerializer
 import razorpay
 from ReSource import settings
 from datetime import datetime
 from django.http import HttpResponse
+import pandas as pd
 
 
 razorpay_client = razorpay.Client(auth=(settings.razorpay_id , settings.razorpay_account_id))
@@ -15,9 +17,33 @@ razorpay_client = razorpay.Client(auth=(settings.razorpay_id , settings.razorpay
 
 # @csrf_exempt
 # def add_students(request , id):
-#     if request.method == 'GET':
+#     if request.method == 'POST':
+    
 #         data = json.loads(request.body)
-#         role_id = data['Role']
+#         cid = data['id']
+#         cart = Cart.objects.get(id = cid)
+
+#         if id != cart.workforce:
+#             return JsonResponse('It is not your cart' , safe = False)
+
+#         cart.visitors = data['file']
+#         serializer = CartSerializer(cart)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return JsonResponse(data = {
+#                 'status':200,
+#                 'message': 'Data saved success fully',
+#                 'data': serializer.data
+#             })
+#         else:
+#             return JsonResponse('Invalid Data' , safe = False)
+    
+#     else:
+
+        
+
+
+
 #         if role_id!=4 or role_id!=5:
 #             return JsonResponse('Access not allowed' , safe = False)
 #         items = Cart.objects.filter(workforce = id)
@@ -217,6 +243,7 @@ def handlerequest(request):
             #return render(paymentfailed.html)
     
         # return JsonResponse('1 st try hit, Error in retrieving')
+
 
 
 
