@@ -3,5 +3,7 @@ from LabApp import views
 
 urlpatterns = [
     path('add/' , views.addlab,name = 'addLab'),
-    path('edit/<user_id>/<lab_id>' , views.edit_lab , name= "editLab")
+    path('edit/<user_id>/<lab_id>' , views.edit_lab , name= "editLab"),
+    path('all/<page_num>' , views.getlabs, name = 'viewAllLabs'),
+    path('view/<lab_id>' , views.getdetails, name = 'viewLabDetails'),
 ]
