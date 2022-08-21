@@ -89,10 +89,118 @@ def add_students(request , id):
 #             # canvas.sasve(buffer , 'PNG')
 
 
+@csrf_exempt
+def requesttopay(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        user_id = data['user_id']
+
+        user = WorkForce.objects.get(id = user_id)
+        items = Cart.objects.filter(workforce = user_id)
+        final_price = 0
+        if len(items)>0:
+            order = Order.objects.create(finalcost = final_price, workforce = user)
+            sell_univ = {}
+            for item in items:
+                product_in_order = ProductInOrder.objects.create(workforce = item.workforce,
+                buyer_institute = item.buyer_institute, seller_institute = item.seller_institute,
+                resource = item.resource, units = item.units, date = item.date,
+                start_time = item.start_time, end_time = item.end_time, cost = item.cost, order_id = order.id)
+                product_in_order.save()
+
+                cost = item.resource.cost * item.units
+                final_price += cost
+                count = 0
+                if item.seller_institute in sell_univ:
+                    sell_univ[item.seller_institute]['id'].append(product_in_order)
+                    sell_univ[item.seller_institute]['cost']+=cost
+                else:
+                    count+=1
+                    sell_univ[item.seller_institute] = {'id': [product_in_order] , 'cost': cost}
+            
+            add_cost = 0
+            for key, value in sell_univ.items():
+                add_cost += value['cost'] * 1.18 * 0.02
+      
+            gst_percent = 0.18
+            order.finalcost = ((final_price * (1 + gst_percent)) + add_cost) * 1.02041
+
+            print(order.finalcost)
+            order.save()
+            return JsonResponse(data={
+                "message":"Order has been sent to the Accounts to Pay",
+                "status":200
+            })
+        else:
+            return JsonResponse(data={
+                "message":"No Items in Cart",
+                "status":404
+            })
 
 
 @csrf_exempt
 def payment(request):
+    print('HERE')
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        order_id = data['order_id']
+        # role = data['Role']
+        order = Order.objects.get(id = order_id)
+        user = order.workforce
+        if order:
+            order_currency = 'INR'
+
+            print(order.finalcost)
+
+            callback_url = 'http://'+ str(get_current_site(request))+'/handlerequest/'
+            print(callback_url)
+
+            razorpay_order = razorpay_client.order.create(dict(
+                amount = int(order.finalcost * 100), currency = order_currency,
+                receipt = str(order.id), payment_capture = '1'))
+
+            print(razorpay_order['id'])
+            order.razorpay_order_id = razorpay_order['id']
+            order.save()
+
+            sell_univ = {}
+
+            items = ProductInOrder.objects.filter(order_id= order_id).all()
+            for item in items:
+                cost = item.resource.cost * item.units
+                count = 0
+                if item.seller_institute in sell_univ:
+                    sell_univ[item.seller_institute]['id'].append(item)
+                    sell_univ[item.seller_institute]['cost']+=cost
+                else:
+                    count+=1
+                    sell_univ[item.seller_institute] = {'id': [item] , 'cost': cost}
+
+            now = datetime.now()
+            date_time = now.strftime('%m%YODR%H%M')
+            count = 0
+            for key,value in sell_univ.items():
+                transaction = Transaction.objects.create(order = order,
+                tid = date_time+str(count), buyer = user.institute.id,
+                # seller = Institutes.objects.get(id = key), finalcost = value['cost'] * 1.02 + order.finalcost * 0.02),
+                seller = Institutes.objects.get(id = key), finalcost = value['cost']*1.18)
+                # transaction.order_items.add(*value['id'])
+                transaction.save()
+            
+            return JsonResponse(data = {
+            "key": str(settings.razorpay_id),"amount":int(order.finalcost*100), "currency": "INR", "name": "Re-Source Resources", "description": "Test Transaction","amount_paid": 0,"amount_due":int(order.finalcost*100), "order_id": razorpay_order['id'], "entity": "order",
+            "receipt": razorpay_order['id'], "status": "created", "attempts": 0, "notes": [],
+            "callback_url": callback_url,
+            "prefill": { "name": user.name,"email": user.email_id,"contact": "+91" + str(user.phone_no)},
+            "theme": {"color": "#2BA977"}})
+        else:
+            return JsonResponse(data = {
+                "message":"No such Order",
+                "status":404
+            })
+
+@csrf_exempt
+def paymentold(request):
     print('HERE')
     if request.method == 'POST':
         data = json.loads(request.body)
