@@ -1,3 +1,4 @@
+import dataclasses
 from pprint import isreadable
 from Institutes.serializers import *
 from ResourceApp.serializers import *
@@ -7,6 +8,8 @@ from ResourceApp.models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 import datetime
+from django.core.paginator import Paginator
+import cv2
 
 # Create your views here.
 @csrf_exempt
@@ -52,56 +55,6 @@ def profile(request, id , role_id):
                     'institute_data':iserializer.data,
                     'pending_institutes':piserializer.data
                 })
-                
-        elif role_id == 3:
-            curr_ins = Institutes.objects.get(id = id)
-
-            labs = Labs.objects.filter(institute = id, status = 1)
-            lserializer = LabSerializer(labs , many = True)
-
-            workforce = WorkForce.objects.filter(institute = id , status = 1)
-            wfserializer = WorkForceSerializer(workforce , many = True)
-
-            lab_ids = [lab.id for lab in labs]
-            print(lab_ids)
-            resource = Resources.objects.filter(lab__in = lab_ids, is_approved = 1)
-            rserializer = ResourcesSerializer(resource , many = True)
-
-            serializer = InstituteSerializer(curr_ins)
-            
-            return JsonResponse({
-                'status' : 200,
-                'message' : 'fetched',
-                'institute_data': serializer.data,
-                'Labs_data': lserializer.data,
-                'Workforce_data':wfserializer.data,
-                'resource_data' : rserializer.data 
-            })
-        
-        elif role_id == 4:
-            labs = Labs.objects.filter(workforce = id)
-            lserializer = LabSerializer(labs , many = True)
-            
-            lab_ids = [lab.id for lab in labs]
-            resource = Resources.objects.filter(lab__in= lab_ids)
-            rserializer = ResourcesSerializer(resource , many = True)
-
-            today_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today())
-            todayserializer = BookslotSeializer(today_slots, many = True)
-
-            tomorrow_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today() + datetime.timedelta(days = 1))
-            tomserializer = BookslotSeializer(tomorrow_slots, many = True)
-
-
-            return JsonResponse({
-                'status': 200,
-                'message': 'Fetched',
-                'lab_data': lserializer.data,
-                'resource_data' : rserializer.data,
-                'today_slots': todayserializer.data,
-                'tomorrow_slots':tomserializer.data
-
-            })
 
         elif role_id == 6:
             student = Students.objects.get(id = id)
@@ -185,7 +138,151 @@ def profile(request, id , role_id):
             'status':401,
             'message' : 'Nahi jaga hai, role badal'
         })              
-       
+
+def paster(imgs):
+    leng = 0
+    for img in imgs:
+        # print(img[0])
+        temp = cv2.imread(img[0])
+        cv2.imwrite("./ReSource-FE/src/temp_images/temp"+str(leng+1)+".jpeg", temp)
+        # file_name.append("../temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]))
+        leng+=1
+    return
+
+@csrf_exempt      
+def institute_proflie(request, id, r_num , l_num):
+    if request.method == 'GET':
+        curr_ins = Institutes.objects.get(id = id)
+        serializer = InstituteSerializer(curr_ins)
+
+        labsobjs = Labs.objects.filter(institute = id, status = 1)
+        lab_ids = [lab.id for lab in labsobjs]
+        size = 3
+        paginator2 = Paginator(labsobjs , size)
+        labs = paginator2.get_page(l_num)
+        lserializer = LabSerializer(labs , many = True)
+
+
+        workforce = WorkForce.objects.filter(institute = id , status = 1)
+        wfserializer = WorkForceSerializer(workforce , many = True)
+
+        
+        print(lab_ids)
+        resourceobjs = Resources.objects.filter(lab__in = lab_ids, is_approved = 1)
+
+        paginator1 = Paginator(resourceobjs , size)
+        resources = paginator1.get_page(r_num)
+        rserializer = ResourcesSerializer(resources , many = True)
+
+        imgs = []
+        resource_data = []
+        for d in rserializer.data:
+            d = dict(d)
+            try:
+                img = Image.objects.filter(resource = d['id']).values_list('image')[0]
+            except:
+                img = ["media/resource_images/default_image.jpeg"]
+            d['img'] = img[0]
+            imgs.append(img)
+            resource_data.append(d)
+        
+        paster(imgs)
+
+        return_data = {
+            'status':200,
+            'message': 'All resource and labs fetched',
+            'total_resource_count' : paginator1.count,
+            'total_resource_pages': paginator1.num_pages,
+            'resource_data': resource_data,
+            'images':len(imgs),
+            'total_lab_count':paginator2.count,
+            'total_lab_pages':paginator2.num_pages,
+            'lab_data':lserializer.data,
+            'institute_data':serializer.data,
+            'workforce_data':wfserializer.data
+        }
+
+        if resources.number == paginator1.num_pages:
+            return_data['resource_previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+        elif resources.number == 1:
+            return_data['resource_next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+        else:
+            return_data['resource_previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+            return_data['resource_next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+
+        if labs.number == paginator2.num_pages:
+            return_data['lab_previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+        elif resources.number == 1:
+            return_data['lab_next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
+        else:
+            return_data['lab_previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+            return_data['lab_next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
+
+        
+        
+        return JsonResponse(return_data)
+
+@csrf_exempt
+def workforce_profile(request, id , r_num , l_num):
+    if request.method == "GET":
+        workforce = WorkForce.objects.get(id = id)
+        wfserializer = WorkForceSerializer(workforce)
+
+        labsobjs = Labs.objects.filter(workforce = id)
+        lab_ids = [lab.id for lab in labsobjs]
+
+        size = 3
+        paginator2 = Paginator(labsobjs , size)
+        labs = paginator2.get_page(l_num)
+        lserializer = LabSerializer(labs , many = True)
+        
+        
+        print(lab_ids)
+        resourceobjs = Resources.objects.filter(lab__in= lab_ids)
+        paginator1 = Paginator(resourceobjs , size)
+        resources = paginator1.get_page(r_num)
+        rserializer = ResourcesSerializer(resources , many = True)
+
+        imgs = []
+        resource_data = []
+        for d in rserializer.data:
+            d = dict(d)
+            try:
+                img = Image.objects.filter(resource = d['id']).values_list('image')[0]
+            except:
+                img = ["media/resource_images/default_image.jpeg"]
+            d['img'] = img[0]
+            imgs.append(img)
+            resource_data.append(d)
+        
+        paster(imgs)
+
+        today_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today())
+        todayserializer = BookslotSeializer(today_slots, many = True)
+
+        tomorrow_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today() + datetime.timedelta(days = 1))
+        tomserializer = BookslotSeializer(tomorrow_slots, many = True)
+
+        return_data = {
+            'status':200,
+            'message': 'All resource and labs fetched',
+            'total_resource_count' : paginator1.count,
+            'total_resource_pages': paginator1.num_pages,
+            'resource_data': resource_data,
+            'images':len(imgs),
+            'total_lab_count':paginator2.count,
+            'total_lab_pages':paginator2.num_pages,
+            'lab_data':lserializer.data,
+            'workforce_data':wfserializer.data,
+            'today_slots': todayserializer.data,
+            'tomorrow_slots':tomserializer.data
+
+        }
+
+        return JsonResponse(return_data)
+
+
+
     
 @csrf_exempt
 def editprofile(request, id, role_id):
