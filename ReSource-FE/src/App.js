@@ -20,6 +20,7 @@ import InstituteCompletion from "./Components/InstituteCompletion";
 import WorkforceRequest from "./Components/WorkforceRequest";
 import Paynow from "./Components/Paynow";
 import Labrequest from "./Components/Labrequest";
+import InstituteRequests from "./Components/InstituteRequests";
 
 function App() {
   return (
@@ -34,13 +35,15 @@ function App() {
           <Route exact path="/profile" element={<><Header/><Profile/><Footer/></>}/>{/* Pending */}
           <Route exact path="/resdetail/:id" element={<><Header/><Resourcedetail/><Footer/></>}/>
           <Route exact path="/cart" element={<><Header/><Cart/><Footer/></>}/>
-          <Route exact path="/instituteProfile" element={<InstituteProfile/>}/>{/* Pending */}
+          <Route exact path="/instituteProfile" element={<><Header/><InstituteProfile/><Footer/></>}/>{/* Pending */}
           <Route exact path="/addlab" element={<><Header/><Addlab/><Footer/></>}/>
           <Route exact path="/addwf" element={<><Header/><AddWorkforce/><Footer/></>}/>{/* Pending */}
           <Route exact path="/wfrequest" element={<><Header/><WorkforceRequest/><Footer/></>}/>{/* Pending */}
           <Route exact path="/pay/:id" element={<Paynow/>}/>
           <Route exact path="/editlab/:lab_id" element={<><Header/><Addlab/><Footer/></>}/>
-          <Route exact path="/labreq" element={<><Header/><Labrequest/><Footer/></>}/>{/* Pending */}
+         {/* Pending */}
+          <Route exact path="/labrequest" element={<><Header/><Labrequest/><Footer/></>}/>
+          <Route exact path="/intituterequest" element={<><Header/><InstituteRequests/><Footer/></>}/>
         </Routes>
     </Router>
   );
