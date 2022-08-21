@@ -128,7 +128,7 @@ def profile(request, id , role_id):
             selltransactions = Transaction.objects.filter(seller = institute)
 
             pending_orders = Order.objects.filter(institute = institute.id , request_status = 0)
-            pserializer =OrderSerializer(pending_orders, many = True)
+            pserializer = OrderSerializer(pending_orders, many = True)
 
             bserializer = OrderSerializer(buytransactions , many = True)
             sserializer = TransactionSerializer(selltransactions , many = True)

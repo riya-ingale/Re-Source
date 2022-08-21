@@ -32,6 +32,7 @@ class Cart(models.Model):
     end_time = models.TimeField()
     cost =  models.IntegerField()
     is_approved = models.IntegerField(default = 1)
+    visitor = models.FileField(null = True)
 
 class ProductInOrder(models.Model):
     id = models.AutoField(primary_key = True)
@@ -45,7 +46,7 @@ class ProductInOrder(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     cost =  models.FloatField()
-    #visitor = models.DataField()
+    visitor = models.FileField(null = True)
 
 
 class Order(models.Model):
@@ -56,9 +57,11 @@ class Order(models.Model):
     )
     id = models.AutoField(primary_key = True)
     workforce = models.ForeignKey(to = WorkForce, on_delete = models.DO_NOTHING)
+    institute = models.ForeignKey(to = Institutes, on_delete= models.DO_NOTHING)
     # order_items = models.ManyToManyField(ProductInOrder)
     finalcost = models.FloatField(null = True)
     datetime_of_payment = models.DateTimeField(default=timezone.now)
+    request_status = models.IntegerField(default = 0)
     payment_status = models.IntegerField(choices = payment_status_choices, default=0)
     # related to razorpay
     razorpay_order_id = models.CharField(max_length=500, null=True, blank=True)
