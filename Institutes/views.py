@@ -1,3 +1,4 @@
+from pprint import isreadable
 from Institutes.serializers import *
 from ResourceApp.serializers import *
 from django.http.response import JsonResponse
@@ -5,28 +6,65 @@ from Institutes.models import *
 from ResourceApp.models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
+import datetime
 
 # Create your views here.
 @csrf_exempt
 def profile(request, id , role_id):
     if request.method == 'GET':
         role_id = int(role_id)
-        if role_id == 1 or role_id == 2:
+        if role_id == 1:
             curr_ins = Institutes.objects.get(id = id)
-            print('Im here')
             serializer = InstituteSerializer(curr_ins)
+
+            universities = Institutes.objects.filter(role_id = 2 , status = 1)
+            userializer = InstituteSerializer(universities, many = True)
+
+            pending_univ = Institutes.objects.filter(role_id = 2 , status = 0)
+            pserializer = InstituteSerializer(pending_univ, many = True)
+
+            ugc_staff = workforce.objects.filter(role_id = 9 , status = 1)
+            staffserializer = WorkForceSerializer.objects.filter(ugc_staff)
+
             return JsonResponse({
                     'status' : 200,
                     'message' : 'fetched',
-                    'data': serializer.data
+                    'data': serializer.data,
+                    'universities':userializer.data,
+                    'pending_universities':pserializer.data,
+                    'ugc_staff':staffserializer.data
                 })
+
+        if role_id == 2:
+            curr_ins = Institutes.objects.get(id = id)
+            serializer = InstituteSerializer(curr_ins)
+
+            institutes = Institutes.objects.filter(university = curr_ins.name, status = 1)
+            iserializer = InstituteSerializer(institutes , many = True)
+
+            pending_institute = Institutes.objects.filter(university = curr_ins.name, status = 0)
+            piserializer = InstituteSerializer(pending_institute , many = True)
+
+            return JsonResponse({
+                    'status' : 200,
+                    'message' : 'fetched',
+                    'data': serializer.data,
+                    'institute_data':iserializer.data,
+                    'pending_institutes':piserializer.data
+                })
+                
         elif role_id == 3:
             curr_ins = Institutes.objects.get(id = id)
-            labs = Labs.objects.filter(institute = id)
+
+            labs = Labs.objects.filter(institute = id, status = 1)
             lserializer = LabSerializer(labs , many = True)
 
-            workforce = WorkForce.objects.filter(institute = id)
+            workforce = WorkForce.objects.filter(institute = id , status = 1)
             wfserializer = WorkForceSerializer(workforce , many = True)
+
+     
+            resource = Resources.objects.filter(institute = id, is_approved = 1)
+            rserializer = ResourcesSerializer(resource , many = True)
 
             serializer = InstituteSerializer(curr_ins)
             
@@ -35,21 +73,42 @@ def profile(request, id , role_id):
                 'message' : 'fetched',
                 'institute_data': serializer.data,
                 'Labs_data': lserializer.data,
-                'Workforce_data':wfserializer.data
+                'Workforce_data':wfserializer.data,
+                'resource_data' : rserializer.data 
             })
         
         elif role_id == 4:
-            workforce = WorkForce.objects.get(id = id)
-            wfserializer = WorkForceSerializer(workforce)
-
             labs = Labs.objects.filter(workforce = id)
             lserializer = LabSerializer(labs , many = True)
-            return JsonResponse({
-                'status': 200,
-                'message': 'Fetched',
-                'lab_data': lserializer.data,
-                'workforce_data':wfserializer.data
-            })
+            if len(labs)>0:
+                lab_ids = [lab.id for lab in labs]
+                resource = Resources.objects.filter(lab__in= lab_ids, is_approved = 1)
+                rserializer = ResourcesSerializer(resource , many = True)
+
+                today_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today(), is_approved = 1)
+                todayserializer = BookslotSeializer(today_slots, many = True)
+
+                tomorrow_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today() + datetime.timedelta(days = 1), is_approved = 1)
+                tomserializer = BookslotSeializer(today_slots, many = True)
+
+
+                return JsonResponse({
+                    'status': 200,
+                    'message': 'Fetched',
+                    'lab_data': lserializer.data,
+                    'resource_data' : rserializer.data,
+                    'today_slots': todayserializer.data,
+                    'tomorrow_slots':tomserializer.data
+
+                })
+            else:
+                return JsonResponse({
+                    'status': 200,
+                    'message': 'Fetched',
+                    'lab_data': lserializer.data,
+                    'resource_data' : []
+
+                })
 
         elif role_id == 6:
             student = Students.objects.get(id = id)
@@ -64,16 +123,41 @@ def profile(request, id , role_id):
             data = WorkForce.objects.get(id = id)
             institute = data.institute
             wfserializer = WorkForceSerializer(data)
-            buytransactions = Transaction.objects.filter(buyer = institute.id)
+
+            buytransactions = Order.objects.filter(institute = institute.id, payment_status = 1)
             selltransactions = Transaction.objects.filter(seller = institute)
-            bserializer = TransactionSerializer(buytransactions , many = True)
+
+            pending_orders = Order.objects.filter(institute = institute.id , request_status = 0)
+            pserializer =OrderSerializer(pending_orders, many = True)
+
+            bserializer = OrderSerializer(buytransactions , many = True)
             sserializer = TransactionSerializer(selltransactions , many = True)
+
             return JsonResponse({
                 'status':200,
                 'message':'Fetched',
                 'workforce':wfserializer.data,
                 'bdata': bserializer.data,
-                'sdata':sserializer.data
+                'sdata':sserializer.data,
+                'pending_orders':pserializer.data
+            })
+        
+        elif role_id == 9:
+            workforce = WorkForce.objects.get(id = id)
+            serializer = WorkForceSerializer(workforce)
+
+            remain_transactions = Transaction.objects.filter(is_paid = 0)
+            rtserializer = TransactionSerializer(remain_transactions , many = True)
+
+            completed_transactions = Transaction.objects.filter(is_paid = 1)
+            ctserializer = TransactionSerializer(completed_transactions , many = True)
+
+            return JsonResponse(data = {
+                'status' : 200,
+                'message': 'data Feteched',
+                'workforce' : serializer.data,
+                'remain_transactions':rtserializer.data,
+                'completed_transactions':ctserializer.data
             })
 
         else:

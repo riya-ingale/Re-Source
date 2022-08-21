@@ -10,61 +10,86 @@ from ReSource import settings
 from datetime import datetime
 from django.http import HttpResponse
 import pandas as pd
+import qrcode
+from PIL import Image, ImageDraw
+from io import BytesIO
+from django.core.files import File
 
 
 razorpay_client = razorpay.Client(auth=(settings.razorpay_id , settings.razorpay_account_id))
 
 
-# @csrf_exempt
-# def add_students(request , id):
-#     if request.method == 'POST':
+@csrf_exempt
+def add_students(request , id):
+    if request.method == 'POST':
     
-#         data = json.loads(request.body)
-#         cid = data['id']
-#         cart = Cart.objects.get(id = cid)
+        data = json.loads(request.body)
+        cid = data['id']
+        cart = Cart.objects.get(id = cid)
 
-#         if id != cart.workforce:
-#             return JsonResponse('It is not your cart' , safe = False)
+        if id != cart.workforce:
+            return JsonResponse('It is not your cart' , safe = False)
 
-#         cart.visitors = data['file']
-#         serializer = CartSerializer(cart)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(data = {
-#                 'status':200,
-#                 'message': 'Data saved success fully',
-#                 'data': serializer.data
-#             })
-#         else:
-#             return JsonResponse('Invalid Data' , safe = False)
+        cart.visitors = data['file']
+        serializer = CartSerializer(cart)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(data = {
+                'status':200,
+                'message': 'Data saved success fully',
+                'data': serializer.data
+            })
+        else:
+            return JsonResponse('Invalid Data' , safe = False)
     
-#     else:
+    # else:
 
         
 
 
 
-#         if role_id!=4 or role_id!=5:
-#             return JsonResponse('Access not allowed' , safe = False)
-#         items = Cart.objects.filter(workforce = id)
-#         dates = {}
-#         for ele in items:
-#             try:
-#                 dates[ele.date].append(Institutes.objects.get(id = ele.seller))
-#             except:
-#                 dates[ele.date] = [Institutes.objects.get(id = ele.seller)]
-#         return JsonResponse(data = {
-#             'status' : 200,
-#             'message': 'dates fetched',
-#             'data'   : dates
-#         })
+    #     if role_id!=4 or role_id!=5:
+    #         return JsonResponse('Access not allowed' , safe = False)
+    #     items = Cart.objects.filter(workforce = id)
+    #     dates = {}
+    #     for ele in items:
+    #         try:
+    #             dates[ele.date].append(Institutes.objects.get(id = ele.seller))
+    #         except:
+    #             dates[ele.date] = [Institutes.objects.get(id = ele.seller)]
+    #     return JsonResponse(data = {
+    #         'status' : 200,
+    #         'message': 'dates fetched',
+    #         'data'   : dates
+    #     })
 
-#     else:
-#         data = json.loads(request.body)
-#         items = Cart.objects.filter(workforce = id)
-#         elements = [f'{ele.seller}/{ele.date}' for ele in items]
-#         for ele in elements:
-#             # add in db
+    # else:
+    #     data = json.loads(request.body)
+    #     items = Cart.objects.filter(workforce = id)
+    #     elements = [f'{ele.seller}/{ele.date}' for ele in items]
+    #     for ele in elements:
+    #         # add in db
+
+@csrf_exempt
+def generateicard(request, id):
+    if request.method == 'post':
+        data = json.loads(request.body())
+        order_id = data['order_id']
+        products = ProductInOrder.objects.filter(order = order_id)
+        for p in products:
+            visitor = p.visitor
+            url = 'http://8000/institute/profile/id/role'
+            qrcode_img = qrcode.make(url)
+            canvas = Image.new('RGB' , (300, 300) , 'white')
+            draw = ImageDraw.Draw(canvas)
+            canvas.paste(qrcode_img)
+            canvas.save('id_card.png')
+            # canvas.close()
+            # buffer = BytesIO()
+            # canvas.sasve(buffer , 'PNG')
+
+
+
 
 @csrf_exempt
 def payment(request):
@@ -186,7 +211,7 @@ def handlerequest(request):
             print('paymentfailed')
             return HttpResponse('Payment Failed')
         # result = razorpay_client.utility.verify_payment_signature(params_dict)
-        amount = order.finalcost * 100
+        # amount = order.finalcost * 100
         # razorpay_client.payment.capture(payment_id , amount)
         order.payment_status = 1
         order.save()

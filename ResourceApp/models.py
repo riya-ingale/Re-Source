@@ -45,6 +45,7 @@ class ProductInOrder(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     cost =  models.FloatField()
+    #visitor = models.DataField()
 
 
 class Order(models.Model):

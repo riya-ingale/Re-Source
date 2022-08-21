@@ -1,7 +1,11 @@
-from ResourceApp.models import Cart, Transaction
+from ResourceApp.models import Book_slots, Cart, Transaction
 from rest_framework import serializers
 from Institutes.models import *
 
+class BookslotSeializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book_slots
+        fields = '__all__'
 
 class ResourcesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,6 +17,11 @@ class ResourcesSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
+        fields = '__all__'
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
         fields = '__all__'
 
 class CartSerializer(serializers.ModelSerializer):
