@@ -3,5 +3,6 @@ from PlaceOrder import views
 
 urlpatterns = [
     path('payment/' , views.payment),
-    path('handlerequest/' , views.handlerequest)
+    path('handlerequest/' , views.handlerequest),
+    path("requesttopay/", views.requesttopay)
 ]

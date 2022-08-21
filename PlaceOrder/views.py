@@ -96,10 +96,10 @@ def requesttopay(request):
         user_id = data['user_id']
 
         user = WorkForce.objects.get(id = user_id)
-        items = Cart.objects.filter(workforce = user_id)
+        items = Cart.objects.filter(workforce = user_id, is_approved = 1)
         final_price = 0
         if len(items)>0:
-            order = Order.objects.create(finalcost = final_price, workforce = user)
+            order = Order.objects.create(finalcost = final_price, workforce = user, institute = user.institute)
             sell_univ = {}
             for item in items:
                 product_in_order = ProductInOrder.objects.create(workforce = item.workforce,
@@ -117,7 +117,8 @@ def requesttopay(request):
                 else:
                     count+=1
                     sell_univ[item.seller_institute] = {'id': [product_in_order] , 'cost': cost}
-            
+                item.is_approved = 2
+                item.save()
             add_cost = 0
             for key, value in sell_univ.items():
                 add_cost += value['cost'] * 1.18 * 0.02
@@ -126,17 +127,19 @@ def requesttopay(request):
             order.finalcost = ((final_price * (1 + gst_percent)) + add_cost) * 1.02041
 
             print(order.finalcost)
+            
             order.save()
+
+            # Cart.query.filter_by(is_approved__in = [-1,2] ).delete()
             return JsonResponse(data={
                 "message":"Order has been sent to the Accounts to Pay",
                 "status":200
             })
         else:
             return JsonResponse(data={
-                "message":"No Items in Cart",
+                "message":"No Items in Cart which are approved and not already sent in the order",
                 "status":404
             })
-
 
 @csrf_exempt
 def payment(request):
@@ -161,6 +164,7 @@ def payment(request):
 
             print(razorpay_order['id'])
             order.razorpay_order_id = razorpay_order['id']
+            order.request_status=  1 
             order.save()
 
             sell_univ = {}

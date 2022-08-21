@@ -31,7 +31,7 @@ class Cart(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     cost =  models.IntegerField()
-    is_approved = models.IntegerField(default = 1)
+    is_approved = models.IntegerField(default = 1) # 1 for approved, 0 for pending, -1 for rejected, 2 for made an order
     visitor = models.FileField(null = True)
 
 class ProductInOrder(models.Model):

@@ -185,7 +185,18 @@ const Cart = () => {
       navigate('/cart');
   } 
   const handlepayment = () =>{
-    navigate('/pay/'+sessionStorage.getItem('user_id'));
+    fetch("http://127.0.0.1:8000/placeorder/requesttopay/"
+    ,{method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({"user_id":sessionStorage.getItem('user_id')})
+  }
+    ).then(async response=>{
+      const data = await response.json();
+      console.log(data)
+      if(data['status'] == 200){
+        console.log("Order sent to the Accounts Department")
+      }})
+      navigate('/cart');
   }
   return (
    isloaded ?
@@ -208,7 +219,6 @@ const Cart = () => {
           <div>
 
          <Product>
-           
            <ProductDetail>
              <Image src={require("../temp_images/temp"+String(index+1)+".jpeg")} />
              <Details>
@@ -241,6 +251,11 @@ const Cart = () => {
                {item.is_approved===-1 &&
                <ProductSize>
                <Chip label="Rejected" color="error"  />
+               </ProductSize>
+               }
+               {item.is_approved===2 &&
+               <ProductSize>
+               <Chip label="Order sent" color="success"  />
                </ProductSize>
                }
           
