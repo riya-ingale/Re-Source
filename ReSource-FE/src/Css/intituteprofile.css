@@ -120,7 +120,7 @@
     height: 500px;
   }
   .workforce-list { 
-    overflow: scroll;
+    overflow-y: scroll;
   }
   
 
@@ -160,9 +160,11 @@
     font-size: 20px;
     letter-spacing: 0.64px;
     margin-left: 0px;
+    width: 200px;
   }
   .detail-list {
-    font-size: 1.15rem;
+    font-size: 1.0rem;
+
   }
   .heading {
     text-align: center;
@@ -175,3 +177,33 @@
   .res-cards {
     margin-top: 50px;
   }
+  .addstaffbtn{
+    float: right;
+  }
+  
+/* RESPONSIVE DESIGNS */
+/* // Small devices (landscape phones, 576px and up) */
+@media (max-width: 576px) 
+{
+  .profilecards {
+    margin-top: 30px;
+    overflow-y: scroll;
+  }    
+}
+
+/* // Medium devices (tablets, 768px and up) */
+ @media (min-width: 576px) and (max-width: 768px)
+ {		
+    
+ }
+
+/* // Large devices (desktops, 992px and up)
+@media (min-width: 992px) { ... } */
+
+ /* // Extra large devices (large desktops, 1200px and up) */
+ @media screen and (min-width: 1400px) {
+
+  }
+@media (min-width: 1900px)
+{
+}

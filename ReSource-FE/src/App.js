@@ -21,6 +21,10 @@ import WorkforceRequest from "./Components/WorkforceRequest";
 import Paynow from "./Components/Paynow";
 import Labrequest from "./Components/Labrequest";
 import InstituteRequests from "./Components/InstituteRequests";
+import WorkforceProfile from "./Components/WorkforceProfile";
+import UniversityProfile from "./Components/UniversityProfile";
+import UGCProfile from "./Components/UGCProfile";
+import UGCStaffProfile from "./Components/UGCStaffProfile";
 
 function App() {
   return (
@@ -44,6 +48,10 @@ function App() {
          {/* Pending */}
           <Route exact path="/labrequest" element={<><Header/><Labrequest/><Footer/></>}/>
           <Route exact path="/intituterequest" element={<><Header/><InstituteRequests/><Footer/></>}/>
+          <Route exact path="/wfprofile" element={<><Header/><WorkforceProfile/><Footer/></>}/>
+          <Route exact path="/universityProfile" element={<><Header/><UniversityProfile/><Footer/></>}/>
+          <Route exact path="/ugcProfile" element={<><Header/><UGCProfile/><Footer/></>}/>
+          <Route exact path="/ugcStaffProfile" element={<><Header/><UGCStaffProfile/><Footer/></>}/>
         </Routes>
     </Router>
   );
