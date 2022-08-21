@@ -4,7 +4,7 @@ from django.http.response import JsonResponse
 from ResourceApp.models import *
 from Institutes.models import *
 from django.contrib.sites.shortcuts import get_current_site
-from ResourceApp.serializers import CartSerializer
+from ResourceApp.serializers import CartSerializer, TransactionSerializer
 import razorpay
 from ReSource import settings
 from datetime import datetime
@@ -380,6 +380,28 @@ def handlerequest(request):
             #return render(paymentfailed.html)
     
         # return JsonResponse('1 st try hit, Error in retrieving')
+
+@csrf_exempt
+def settle_transaction(request):
+    if request.method == "POST":
+        #authenticate role_id from jwt
+        data = json.loads(request.body)
+        transaction_id = data['tid']
+        try:
+            transaction = Transaction.objects.get(id = transaction_id)   
+        except:
+            return JsonResponse('Transaction doesnot exist')
+
+        transaction.is_paid = 1
+        transaction.save()
+
+        return JsonResponse(data = {
+            'status': 200,
+            'message':'Money will be credited',
+        })
+
+
+    
 
 
 

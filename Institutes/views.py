@@ -73,8 +73,17 @@ def profile(request, id , role_id):
             buytransactions = Order.objects.filter(institute = institute.id, payment_status = 1)
             selltransactions = Transaction.objects.filter(seller = institute)
 
+            pen_or = []
             pending_orders = Order.objects.filter(institute = institute.id , request_status = 0)
             pserializer = OrderSerializer(pending_orders, many = True)
+
+            for po in pserializer.data:
+                dict(po)   
+                order_id = po['id']
+                products = ProductInOrder.objects.get(order_id = order_id)
+                productserializer = PIOSerializer(products)
+                po['products'] = dict(productserializer.data)
+                pen_or.append(po)
 
             bserializer = OrderSerializer(buytransactions , many = True)
             sserializer = TransactionSerializer(selltransactions , many = True)
@@ -85,7 +94,7 @@ def profile(request, id , role_id):
                 'workforce':wfserializer.data,
                 'bdata': bserializer.data,
                 'sdata':sserializer.data,
-                'pending_orders':pserializer.data
+                'pending_orders':pen_or
             })
         
         elif role_id == 9:
@@ -750,7 +759,20 @@ def lab_requests(request , user_id):
             'message' : 'Unauthorized for you role'
         })
 
-
+@csrf_exempt
+def add_ugcstaff(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        serializer = WorkForceSerializer(data = data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(data = {
+                'status': 200,
+                'message': 'UGc_staff added',
+                'data' : serializer.data
+            })
+        else:
+            return JsonResponse('Data Invalid')
 
 
                 

@@ -459,13 +459,11 @@ def getdetails(request,r_id):
         })
 
 @csrf_exempt
-def resource_edit(request,  id):
+def resource_edit(request, uid, role_id, rid):
     if request.method == 'GET':
-        data = json.loads(request.body)
-        uid = data['id']
-        role_id = data['Role']
+        uid , role_id , rid = int(uid) , int(role_id) , int(rid)
         if role_id == 4:
-            resource = Resources.objects.get(id = id)
+            resource = Resources.objects.get(id = rid)
             owner_id = resource.lab.workforce.id
             if owner_id != uid:
                 return JsonResponse(data = {
@@ -479,7 +477,7 @@ def resource_edit(request,  id):
                 'resource_data' : serializer.data
             })
         elif role_id == 3:
-            resource = Resources.objects.get(id = id)
+            resource = Resources.objects.get(id = rid)
             owner_id = resource.lab.institute.id
             if owner_id != uid:
                 return JsonResponse(data = {
@@ -499,49 +497,47 @@ def resource_edit(request,  id):
             })
     
     else:
+        uid , role_id , rid = int(uid) , int(role_id) , int(rid)
         data = json.loads(request.body)
-        uid = data['uid']
-        role_id = data['Role']
-        if role_id == 3:
-            
-            resource = Resources.objects.get(id = id)
+        if rid!=data['id']:
+                return JsonResponse('conflict : url id donot match' , safe = False)
+
+        if role_id == 3:  
+            resource = Resources.objects.get(id = rid)
             owner_id = resource.lab.institute.id
             if owner_id!=uid:
                 return JsonResponse(data = {
                         'status': 401,
                         'message': 'It is not your lab you dont have access'
                     })
-            del data['id']
-            del data['Role']
 
             serializer = ResourcesSerializer(resource , data = data)
             if serializer.is_valid():
                 serializer.save()
             return JsonResponse(data = {
                 'status':200,
-                'message': 'Resource Fetched',
+                'message': 'Edit Done',
                 'resource_data' : serializer.data
             })
         elif role_id == 4:
 
-            resource = Resources.objects.get(id = id)
+            resource = Resources.objects.get(id = rid)
             owner_id = resource.lab.workforce.id
             if owner_id!=uid:
                 return JsonResponse(data = {
                         'status': 401,
                         'message': 'It is not your lab you dont have access'
                     })
-            del data['id']
-            del data['Role']
 
             data['edit_approval'] = 0
 
             serializer = ResourcesSerializer(resource , data = data)
             if serializer.is_valid():
                 serializer.save()
+
             return JsonResponse(data = {
                 'status':200,
-                'message': 'Resource Fetched',
+                'message': 'Send for approval',
                 'resource_data' : serializer.data
             })
 

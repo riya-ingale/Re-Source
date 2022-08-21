@@ -12,5 +12,6 @@ urlpatterns = [
     path('resource_approval/<id>' , views.resource_approval),
     
     path('workforce_requests/<user_id>', views.workforce_requests, name = "workforceRequests"),
-    path('lab_requests/<user_id>', views.lab_requests, name = "LabRequests")
+    path('lab_requests/<user_id>', views.lab_requests, name = "LabRequests"),
+    path('addstaff/' , views.add_ugcstaff)
 ]

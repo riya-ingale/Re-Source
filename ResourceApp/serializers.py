@@ -1,4 +1,4 @@
-from ResourceApp.models import Book_slots, Cart, Transaction, Order
+from ResourceApp.models import Book_slots, Cart, ProductInOrder, Transaction, Order
 from rest_framework import serializers
 from Institutes.models import *
 
@@ -28,5 +28,11 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = '__all__'
+
+class PIOSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductInOrder
+        fields = '__all__'
+
 
 
