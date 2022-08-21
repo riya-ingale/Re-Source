@@ -75,7 +75,7 @@ async function showRazorpay() {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({"order_id":3}),
-  }).then((t) => t.json());
+  }).then((t) => t.json())
   console.log(sessionStorage.getItem("user_id"))
   console.log(data);
 
