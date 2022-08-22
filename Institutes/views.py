@@ -267,9 +267,20 @@ def workforce_profile(request, id , r_num , l_num):
         paster(imgs)
 
         today_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today())
+        today_names = []
+        for i in range(len(today_slots)):
+            record = {}
+            record['lab_name'] = today_slots[i].resource.lab.name
+            record['resource_name'] = today_slots[i].resource.name
+            today_names.append(record)
         todayserializer = BookslotSeializer(today_slots, many = True)
 
         tomorrow_slots = Book_slots.objects.filter(lab__in = lab_ids , date = datetime.date.today() + datetime.timedelta(days = 1))
+        tomorrow_names = []
+        for i in range(len(tomorrow_slots)):
+            record = {}
+            record['lab_name'] = tomorrow_slots[i].resource.lab.name
+            record['resource_name'] = tomorrow_slots[i].resource.name
         tomserializer = BookslotSeializer(tomorrow_slots, many = True)
 
         return_data = {
@@ -284,7 +295,9 @@ def workforce_profile(request, id , r_num , l_num):
             'lab_data':lserializer.data,
             'workforce_data':wfserializer.data,
             'today_slots': todayserializer.data,
-            'tomorrow_slots':tomserializer.data
+            'tomorrow_slots':tomserializer.data,
+            'today_names':today_names,
+            'tomrrow_names':tomorrow_names
 
         }
 
@@ -488,46 +501,64 @@ def workforce_request(request , id):
             'message' : 'page not found'
         })
 
-@csrf_exempt
-def lab_request(request , id):
-    if request.method == "POST":
-        user = Institutes.objects.get(id = id)
-        role_id = user.role_id
-        if role_id == 3:
-            data = json.loads(request.body)
-            lab = Labs.objects.get(id = data['id'])
-            if lab.institute != id:
-                return JsonResponse('Lab doesnt fall under your institution' , safe = False)
+# @csrf_exempt
+# def lab_request(request , id):
+#     if request.method == "POST":
+#         user = Institutes.objects.get(id = id)
+#         role_id = user.role_id
+#         if role_id == 3:
+#             data = json.loads(request.body)
+#             lab = Labs.objects.get(id = data['id'])
+#             if lab.institute != id:
+#                 return JsonResponse('Lab doesnt fall under your institution' , safe = False)
             
-            lab.status = data['status']
-            serializer = LabSerializer(lab)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(data = {
-                    'status': 200,
-                    'message': 'Status Updated',
-                    'data': serializer.data
-                })
-            else:
-                return JsonResponse(data = {
-                    'status' : 400,
-                    'message': 'Invalid Data',
-                    'data' : serializer.errors
-                })
-        else:
-            return JsonResponse(data = {
-                'status': 401,
-                'message': 'Role has no access'
-            })
+#             lab.status = data['status']
+#             serializer = LabSerializer(lab)
+#             if serializer.is_valid():
+#                 serializer.save()
+#                 return JsonResponse(data = {
+#                     'status': 200,
+#                     'message': 'Status Updated',
+#                     'data': serializer.data
+#                 })
+#             else:
+#                 return JsonResponse(data = {
+#                     'status' : 400,
+#                     'message': 'Invalid Data',
+#                     'data' : serializer.errors
+#                 })
+#         else:
+#             return JsonResponse(data = {
+#                 'status': 401,
+#                 'message': 'Role has no access'
+#             })
     
-    else:
-        return JsonResponse(data = {
-            'status': 404,
-            'message' : 'page not found'
-        })
+#     else:
+#         # user = Institutes.objects.get(id = id)
+#         # role_id = user.role_id
+#         # if role_id == 3:
+#         #     labs = Labs.objects.filter(institute = id , status = 0)
+#         #     lserializer = LabSerializer(labs , many = True)
+#         #     d = []
+#         #     for ele in lserializer.data:
+#         #         print(ele)
+#         #         ele['workforce_name'] = ele['workforce'].name
+#         #         d.append(ele)
+            
+#         #     return JsonResponse(data = {
+#         #         'status': 200,
+#         #         'message': "Labs Fetched",
+#         #         'data': d
+        
+#         #     })
+#         # else:
+#         return JsonResponse(data = {
+#                 'status': 404,
+#                 'message' : 'page not found'
+#         })
 
 @csrf_exempt
-def resource_request(request , id):
+def resource_addrequest(request , id):
     if request.method == "POST":
         user = Institutes.objects.get(id = id)
         role_id = user.role_id
@@ -559,13 +590,42 @@ def resource_request(request , id):
             })
     
     else:
-        return JsonResponse(data = {
-            'status': 404,
-            'message' : 'page not found'
-        })
+        user = Institutes.objects.get(id = id)
+        role_id = user.role_id
+        if role_id == 3:
+            labs = Labs.objects.filter(institute = id)
+            lab_ids = {}
+            for ele in labs:
+                lab_ids[ele.id] = [ele.name, ele.workforce.name]
+            resources = Resources.objects.filter(lab__in = lab_ids.keys() , is_approved = 0)
+            rserializer = ResourcesSerializer(resources , many = True)
+            d = []
+            imgs = []
+            for ele in rserializer.data:
+                dict(ele)
+                print(ele['lab'])
+                try:
+                    img = Image.objects.filter(resource = d['id']).value_list('image')[0]
+                except:
+                    img = ["media/resource_images/default_image.jpeg"]
+                ele['image'] = img[0]
+                imgs.append(img)
+                ele['lab_name'], ele['workforce'] = lab_ids[ele['lab']]
+                d.append(ele)
+            paster(imgs)
+            return JsonResponse(data = {
+                'status': 200,
+                'message': "Resources Fetched",
+                'data': d
+            })
+        else:
+            return JsonResponse(data = {
+                'status': 404,
+                'message' : 'page not found'
+            })
 
 @csrf_exempt
-def resource_approval(request , id):
+def resource_rentapproval(request , id):
     if request.method == 'POST':
         user = Institutes.objects.get(id = id)
         role_id = user.role_id
@@ -598,10 +658,32 @@ def resource_approval(request , id):
             })
     
     else:
-        return JsonResponse(data = {
-            'status': 404,
-            'message' : 'page not found'
-        })
+        user = Institutes.objects.get(id = id)
+        role_id = user.role_id
+        if role_id == 3:
+            cart = Cart.objects.filter(seller_institute = id , is_approved = 0)
+            cserializer = CartSerializer(cart , many = True)
+            d = []
+            imgs = []
+            print(len(cart))
+            for i in range(len(cart)):
+                try:
+                    img = Image.objects.filter(resource = cart[i].resource.id).value_list('image')[0]
+                except:
+                    img = ["media/resource_images/default_image.jpeg"]
+                
+                d.append({'buyer_institute':cart[i].workforce.institute.name , 
+                'resource': cart[i].resource.name , 'bworkforce':cart[i].workforce.name
+                ,'image':img[0]})
+                imgs.append(img)
+            paster(imgs)
+            return JsonResponse(data = {
+                'status':200,
+                'message':'pending rent requests feteched',
+                'resource_data': cserializer.data,
+                'names_images':d
+            })
+
 @csrf_exempt
 def workforce_requests(request , user_id):
     # GET route to show all the workforce requests to the institute role
