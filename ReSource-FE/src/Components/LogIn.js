@@ -71,6 +71,9 @@ export default class LogIn extends Component {
         else if(data['Role'] === 4){
           window.location.href = '/wfprofile'
         }
+        else if(data['Role']===2){
+          window.location.href = '/universityProfile'
+        }
         // const cookies = new Cookies();
         // cookies.set('username', data['username'], { path: '/' });
         // window.location.href = '/'

@@ -9,6 +9,7 @@ import chem from "../Images/chem-quip.jpg";
 import bio from "../Images/images.jpg";
 import phy from "../Images/microscope.jpg";
 import EditIcon from '@mui/icons-material/Edit';
+import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'; 
 
 export default function AccountsProfile() {
   return (
@@ -87,6 +88,7 @@ export default function AccountsProfile() {
               <span class="">OrderID: qwertuxhrfcv</span><br></br>
               <span class="">Cost: Rs 3000</span><br></br>
               <span class="">Institute Name: Vidyalankar Institute Of Technology</span>
+            
             </article>
 
             <article class="account__profile">
