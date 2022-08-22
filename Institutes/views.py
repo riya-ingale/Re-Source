@@ -342,7 +342,7 @@ def editprofile(request, id, role_id):
 
 def allrequests(request,id, role_id):
     if request.method == 'GET':
-        role_id = role_id
+        role_id = int(role_id)
         if role_id == 1:
             pending_universities = Institutes.objects.filter(role_id = 2, status = 0)
             serializer = InstituteSerializer(pending_universities , many = True)
@@ -371,15 +371,29 @@ def allrequests(request,id, role_id):
             lab_edits = Labs.objects.filter(institute = id , edit_approval = 0)
             leserializer = LabSerializer(lab_edits , many = True)
 
-            resource_approve = Cart.objects.filter(seller = id, is_approved = 0)
+            resource_approve = Cart.objects.filter(seller_institute = id, is_approved = 0)
             raserializer = CartSerializer(resource_approve, many = True)
 
-            add_resource = Resources.ojbects.filter(institute = id , status = 0)
+            add_resource = Resources.objects.filter(lab__in= lab_ids, is_approved = 0)
             arserializer = ResourcesSerializer(add_resource , many = True)
 
             resource_edits = Resources.objects.filter(lab__in= lab_ids , edit_approval = 0)
             reserializer = ResourcesSerializer(resource_edits , many = True)
-
+            
+            imgs = []
+            resource_data = []
+            for d in reserializer.data:
+                d = dict(d)
+                try:
+                    img = Image.objects.filter(resource = d['id']).values_list('image')[0]
+                except:
+                    img = ["media/resource_images/default_image.jpeg"]
+                d['img'] = img[0]
+                imgs.append(img)
+                resource_data.append(d)
+            # print(imgs)
+            paster(imgs)
+            
             pending_workforce = WorkForce.objects.filter(institute = id , status = 0)
             wfserializer = WorkForceSerializer(pending_workforce , many = True)
 
@@ -390,7 +404,8 @@ def allrequests(request,id, role_id):
                 'lab_edit_requests':leserializer.data,
                 'resource_edit_requests':reserializer.data,
                 'resource_approve': raserializer.data,
-                'add_resource':arserializer.data
+                'add_resource':arserializer.data,
+                'edit_img':len(imgs)
             })
         else:
             return JsonResponse('role has no access' , safe = False)
@@ -566,24 +581,24 @@ def resource_addrequest(request , id):
         if role_id == 3:
             data = json.loads(request.body)
             resource = Resources.objects.get(id = data['id'])
-            if resource.institute != id:
-                return JsonResponse('Resource doesnt fall under your institution' , safe = False)
+            # if resource.institute_id != id:
+            #     return JsonResponse('Resource doesnt fall under your institution' , safe = False)
             
-            resource.status = data['status']
+            resource.is_approved = data['status']
+            print(resource)
             serializer = ResourcesSerializer(resource)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(data = {
+            resource.save()
+            return JsonResponse(data = {
                     'status': 200,
                     'message': 'Status Updated',
                     'data': serializer.data
                 })
-            else:
-                return JsonResponse(data = {
-                    'status' : 400,
-                    'message': 'Invalid Data',
-                    'data' : serializer.errors
-                })
+            # else:
+            #     return JsonResponse(data = {
+            #         'status' : 400,
+            #         'message': 'Invalid Data',
+            #         'data' : serializer.errors
+            #     })
         else:
             return JsonResponse(data = {
                 'status': 401,
@@ -606,18 +621,21 @@ def resource_addrequest(request , id):
                 dict(ele)
                 print(ele['lab'])
                 try:
-                    img = Image.objects.filter(resource = d['id']).value_list('image')[0]
-                except:
+                    img = Image.objects.filter(resource_id = ele['id']).values_list('image')[0]
+                except Exception as e:
+                    print(e)
                     img = ["media/resource_images/default_image.jpeg"]
                 ele['image'] = img[0]
                 imgs.append(img)
                 ele['lab_name'], ele['workforce'] = lab_ids[ele['lab']]
                 d.append(ele)
             paster(imgs)
+            print(imgs)
             return JsonResponse(data = {
                 'status': 200,
                 'message': "Resources Fetched",
-                'data': d
+                'data': d,
+                'images':len(imgs)
             })
         else:
             return JsonResponse(data = {
@@ -632,26 +650,27 @@ def resource_rentapproval(request , id):
         role_id = user.role_id
         if role_id == 3:
             data = json.loads(request.body)
-            item = Cart.objects.get(id = data['id'])
-
-            if item.seller != id:
+            item = Cart.objects.get(c_id = data['id'])
+            print(type(item.seller_institute),type(id))
+            if item.seller_institute != int(id):
                 return JsonResponse('Access not allowed' , safe = False)
 
             item.is_approved = data['status']
             serializer = CartSerializer(item)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(data = {
+            # if serializer.is_valid():
+            #     serializer.save()
+            item.save()
+            return JsonResponse(data = {
                     'status': 200,
                     'message': 'Status Updated',
                     'data': serializer.data
                 })
-            else:
-                return JsonResponse(data = {
-                    'status' : 400,
-                    'message': 'Invalid Data',
-                    'data' : serializer.errors
-                })
+            # else:
+            #     return JsonResponse(data = {
+            #         'status' : 400,
+            #         'message': 'Invalid Data',
+            #         'data' : serializer.errors
+            #     })
         else:
             return JsonResponse(data = {
                 'status': 401,
@@ -669,7 +688,7 @@ def resource_rentapproval(request , id):
             print(len(cart))
             for i in range(len(cart)):
                 try:
-                    img = Image.objects.filter(resource = cart[i].resource.id).value_list('image')[0]
+                    img = Image.objects.filter(resource = cart[i].resource.id).values_list('image')[0]
                 except:
                     img = ["media/resource_images/default_image.jpeg"]
                 

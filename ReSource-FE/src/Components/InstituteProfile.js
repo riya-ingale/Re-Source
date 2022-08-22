@@ -84,12 +84,17 @@ export default function InstituteProfile() {
             </article>
     
             <article class="leaderboard__profile">
-            <Link to={"/"}><span class="leaderboard__name">Resource Request</span></Link>
+            <Link to={"/resource_addrequest"}><span class="leaderboard__name">Resource Approval</span></Link>
             </article>
 
             <article class="leaderboard__profile">
-            <Link to={"/"}><span class="leaderboard__name">Edit Request</span></Link>
+            <Link to={"/edit_req"}><span class="leaderboard__name">Edit Request</span></Link>
             </article>
+
+            <article class="leaderboard__profile">
+            <Link to={"/resource_request"}><span class="leaderboard__name">Resource Request</span></Link>
+            </article>
+
             </div>
             </div>
         </div>

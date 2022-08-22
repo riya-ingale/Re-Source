@@ -25,7 +25,8 @@ import UniversityProfile from "./Components/UniversityProfile";
 import UGCProfile from "./Components/UGCProfile";
 import UGCStaffProfile from "./Components/UGCStaffProfile";
 import AccountsProfile from "./Components/AccountsProfile";
-
+import Resourceaddreq from "./Components/ResourceApproval";
+import Resourcereq from "./Components/ResourceRequest";
 function App() {
   return (
     <Router>
@@ -52,6 +53,9 @@ function App() {
           <Route exact path="/ugcProfile" element={<><Header/><UGCProfile/><Footer/></>}/>
           <Route exact path="/ugcStaffProfile" element={<><Header/><UGCStaffProfile/><Footer/></>}/>
           <Route exact path="/accountsProfile" element={<><Header/><AccountsProfile/><Footer/></>}/>
+          <Route exact path="/resource_addrequest" element = {<><Header/><Resourceaddreq/><Footer/></>}/>
+          <Route exact path="/resource_request" element={<><Header/><Resourcereq/><Footer/></>}/>
+          <Route exact path="/edit_req" element={<><Header/><Resourcereq/><Footer/></>}/>
         </Routes>
     </Router>
   );

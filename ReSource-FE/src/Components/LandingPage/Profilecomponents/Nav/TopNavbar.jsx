@@ -126,12 +126,12 @@
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value={10}>Institute </MenuItem>
-                    <MenuItem value={21}>University</MenuItem>
-                    <MenuItem value={22}>UGC</MenuItem>
-                    <MenuItem value={10}>Accountant </MenuItem>
-                    <MenuItem value={21}>Lab Assistant</MenuItem>
-                    <MenuItem value={22}>Teacher</MenuItem>
+                    <MenuItem value={3}>Institute </MenuItem>
+                    <MenuItem value={2}>University</MenuItem>
+                    <MenuItem value={1}>UGC</MenuItem>
+                    <MenuItem value={8}>Accountant </MenuItem>
+                    <MenuItem value={4}>Lab Assistant</MenuItem>
+                    <MenuItem value={5}>Teacher</MenuItem>
                   </Select>
                 </FormControl>
               </li>

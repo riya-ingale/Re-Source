@@ -4,7 +4,7 @@ from Institutes import views
 urlpatterns = [
     path('profile/<id>/<role_id>' , views.profile),
     path('profile/edit/<id>/<role_id>' , views.editprofile),
-    path('pendingrequests/<id>' , views.allrequests),
+    path('pendingrequests/<id>/<role_id>' , views.allrequests),
     path('institute_request/<id>' , views.institution_request),
     path('workforce_profile/<id>/<r_num>/<l_num>' , views.workforce_profile),
     path('institute_profile/<id>/<r_num>/<l_num>' , views.institute_proflie),
