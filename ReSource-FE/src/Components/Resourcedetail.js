@@ -129,7 +129,7 @@ const book_slot = (e) =>{
   console.log(slotbook);
   const required_quantity = Number(sessionStorage.getItem('Quantity'));
   const date = sessionStorage.getItem("Date");
-  const workforce_id = 6 //sessionStorage.getItem("user_id");
+  const workforce_id = sessionStorage.getItem("user_id");
   const resource_id = id;
   const slots_overall = [];
   var iterator = 0;

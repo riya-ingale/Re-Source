@@ -14,12 +14,12 @@ export default function Final() {
     const quantity = sessionStorage.getItem("Quantity");
     const cost = sessionStorage.getItem("Cost");
     // const lab_id = sessionStorage.getItem("username");
-    const username = "riya@gmail.com"; //sessionStorage.getItem("username")
+    const username = sessionStorage.getItem("username")
     const req_approval = 0;
-    const role_id = 4; //sessionStorage.getItem("role_id")
+    const role_id = sessionStorage.getItem("role_id")
     const logindata = {name,specification,subject,dimension,details,quantity,cost,req_approval,img,role_id};
     console.log(logindata);
-    const lab_id = 2
+    const lab_id = sessionStorage.getItem("lab_id")
     const url = 'http://127.0.0.1:8000/resource/add/'+username+"/"+lab_id;
     
     fetch(url, {//role id update require wait for landing page
