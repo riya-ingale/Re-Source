@@ -50,14 +50,12 @@ export default function UniversityProfile() {
             <div className="card__details">
             <h3>Profile details <Link to="/"><EditIcon></EditIcon></Link></h3>
             <ul className="list-bullets detail-list">
-              <li className="mb-2"><strong className='strlist'>City: </strong> Pune</li>
-              <li className="mb-2"><strong className='strlist'>State: </strong> Mahrashtra</li>
-              <li className="mb-2"><strong className='strlist'>Pincode: </strong>421202</li>
+            {res.data.city?<li className="mb-2"><strong className='strlist'>City: </strong> {res.data.city}</li>:<div></div>}
+            {res.data.state?<li className="mb-2"><strong className='strlist'>State: </strong>{res.data.state}</li>:<div></div>}
+            {res.data.pincode?<li className="mb-2"><strong className='strlist'>Pincode: </strong>{res.data.pincode}</li>:<div></div>}
               <li className="mb-2"><strong className='strlist'>Email: </strong>421202</li>
-              <li className="mb-2"><strong className='strlist'>Phone Number: </strong>421202324</li>
-              <li className="mb-2"><strong className='strlist'>Ammount of Resources: </strong>421</li>
-              <li className="mb-2"><strong className='strlist'>Ammount of labs: </strong>24</li>
-              <li className="mb-2"><strong className='strlist'>Ammount of Institutes: </strong>20</li>
+              {res.data.phone_no?<li className="mb-2"><strong className='strlist'>Phone Number: </strong>{res.data.phone_no}</li>:<div></div>}
+              <li className="mb-2"><strong className='strlist'>Ammount of Institutes: </strong>{res.institute_data.length}</li>
             </ul>
             </div>
             </div>
@@ -68,28 +66,11 @@ export default function UniversityProfile() {
         <h3>Approved Institutes</h3>
         <div className="card profilecards workforce-list">
             <div className="card__details">
+              { res.institute_data.map((item,index)=>(
             <article class="leaderboard__profile">
-              <span class="leaderboard__name">Institute 1</span>
+              <span class="leaderboard__name">{item.name}</span>
             </article>
-    
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Institute 2</span>
-            </article>
-    
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Institute 3</span>
-            </article>
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Institute 4</span>
-            </article>
-    
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Institute 5</span>
-            </article>
-    
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Institute 6</span>
-            </article>
+              ))}
             </div>
             </div>
         </div>

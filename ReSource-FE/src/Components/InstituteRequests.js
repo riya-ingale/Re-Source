@@ -1,7 +1,38 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import "../Css/instituteRequest.css"
 
 export default function InstituteRequests() {
+
+    const [res,setRes] = useState();
+    const [load,setLoad] = useState(false);
+    useEffect(()=>{
+        fetch("http://127.0.0.1:8000/institute/institute_request/"+sessionStorage.getItem('user_id'))
+        .then(response => response.json())
+        .then(body =>{
+            setRes(body);
+            console.log(body);
+            setLoad(true);
+        })
+    },[])
+
+    const handleAccept = (e,id) =>{
+        console.log(id);
+        fetch("http://127.0.0.1:8000/institute/resource_addrequest/"+sessionStorage.getItem('user_id'), {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({"id":id,'status':1})
+        })
+        window.location.href ="/resource_addrequest";
+    }
+    const handleReject = (e,id) =>{
+        console.log(id);
+        fetch("http://127.0.0.1:8000/institute/resource_addrequest/"+sessionStorage.getItem('user_id'), {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({"id":id,'status':-1})
+        })
+        window.location.href ="/resource_addrequest";
+    }
   return (
     <>
     <div className='container institute-request-container'>
