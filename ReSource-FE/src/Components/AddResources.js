@@ -42,7 +42,7 @@ export default function AddResources() {
     newStep > 0 && newStep <= steps.length && setCurrentStep(newStep);
   };
   return (
-    <div className="my-20 mx-auto rounded-2xl card pb-1 bg-white shadow-2xl border-solid border-2 border-blue-600 md:w-1/2">
+    <div className="my-20 mx-auto rounded-2xl card pb-1 bg-white shadow-2xl border-solid border-2 border-blue-600 md:w-1/2 resource-card">
       {/* Stepper */}
       <div className="horizontal container mt-5 ">
         <Stepper steps={steps} currentStep={currentStep} />

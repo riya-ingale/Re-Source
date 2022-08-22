@@ -10,7 +10,6 @@ import Header from "./Components/Header";
 import Indexbody from './Components/Indexbody';
 import LogIn from "./Components/LogIn";
 import ViewResources from "./Components/ViewResources";
-import Profile from "./Components/Profile";
 import Resourcedetail from "./Components/Resourcedetail";
 import Cart from "./Components/Cart";
 import InstituteProfile from "./Components/InstituteProfile";
@@ -25,18 +24,18 @@ import WorkforceProfile from "./Components/WorkforceProfile";
 import UniversityProfile from "./Components/UniversityProfile";
 import UGCProfile from "./Components/UGCProfile";
 import UGCStaffProfile from "./Components/UGCStaffProfile";
+import AccountsProfile from "./Components/AccountsProfile";
 
 function App() {
   return (
     <Router>
         <Routes>
-          <Route exact path="/" element={<><Indexbody/></>}/>{/* Pending */}
+          <Route exact path="/" element={<Indexbody/>}/>{/* Pending */}
           <Route exact path="/login" element={<><LogIn/></>}/>
           <Route exact path="/addres" element={<AddResources/>}/>
           <Route exact path="/header" element={<Header/>}/>
           <Route exact path="/footer" element={<Footer/>}/>
           <Route exact path="/viewres" element={<><Header/><ViewResources/><Footer/></>}/>
-          <Route exact path="/profile" element={<><Header/><Profile/><Footer/></>}/>{/* Pending */}
           <Route exact path="/resdetail/:id" element={<><Header/><Resourcedetail/><Footer/></>}/>
           <Route exact path="/cart" element={<><Header/><Cart/><Footer/></>}/>
           <Route exact path="/instituteProfile" element={<><Header/><InstituteProfile/><Footer/></>}/>{/* Pending */}
@@ -52,6 +51,7 @@ function App() {
           <Route exact path="/universityProfile" element={<><Header/><UniversityProfile/><Footer/></>}/>
           <Route exact path="/ugcProfile" element={<><Header/><UGCProfile/><Footer/></>}/>
           <Route exact path="/ugcStaffProfile" element={<><Header/><UGCStaffProfile/><Footer/></>}/>
+          <Route exact path="/accountsProfile" element={<><Header/><AccountsProfile/><Footer/></>}/>
         </Routes>
     </Router>
   );

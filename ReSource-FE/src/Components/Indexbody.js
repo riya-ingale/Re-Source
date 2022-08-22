@@ -1,20 +1,19 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-import "../Css/index.css"
-import heroimg from "../Images/home2.jpg"
+import React from "react";
+import { Helmet } from "react-helmet";
+// Screens
+import Landing from "./LandingPage/Profilescreens/Landing.jsx";
+import "./LandingPage/Profilestyle/flexboxgrid.min.css";
+import "./LandingPage/Profilestyle/index.css";
 
-export default class indexbody extends Component {
-  render() {
-    return (
-      <>
-      <section>
-        <div class="overlay"></div>
-        <div class="aspect text" data-aspect="2:1" data-s-aspect="1:1">
-          <h1>Re-Source</h1>
-          {/* <p>Over a ratio of 1:1</p> */}
-        </div>
-      </section>
-      </>
-    )
-  }
+export default function Indexbody() {
+  return (
+    <>
+      <Helmet>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap" rel="stylesheet" />
+      </Helmet>
+      <Landing />
+    </>
+  )
 }

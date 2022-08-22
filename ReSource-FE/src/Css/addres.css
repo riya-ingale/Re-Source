@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
+.resource-card{
+  background-color: #ffffff !important;
+}
 .wrapper {
   display: flex;
   justify-content: center;
