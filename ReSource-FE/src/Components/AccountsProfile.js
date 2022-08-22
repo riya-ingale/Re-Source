@@ -55,7 +55,7 @@ export default function AccountsProfile() {
 //     "attempts": 0,
 //     "notes": [],
 //     "created_at": 1582628071,
-  
+
 //     'callback_url': "http://127.0.0.1:8000/placeorder/handlerequest/",
 //     prefill: {
 //         name: "ABS",
@@ -70,7 +70,7 @@ export default function AccountsProfile() {
 //   paymentObject.open();
 // }
 
- 
+
   return (
     <>
     <div className='container profile-container'>
@@ -104,7 +104,7 @@ export default function AccountsProfile() {
               <span class="">Institute Name: Vidyalankar Institute Of Technology</span>
               <span class=""><button className="btn-vr">Pay Now</button></span>
             </article>
-    
+
             <article class="account__profile">
               <span class="">OrderID: qwertuxhrfcv</span><br></br>
               <span class="">Cost: Rs 3000</span><br></br>
@@ -155,7 +155,7 @@ export default function AccountsProfile() {
               <span class="">OrderID: qwertuxhrfcv</span><br></br>
               <span class="">Cost: Rs 3000</span><br></br>
               <span class="">Institute Name: Vidyalankar Institute Of Technology</span>
-            
+
             </article>
 
             <article class="account__profile">
