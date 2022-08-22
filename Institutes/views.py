@@ -74,15 +74,16 @@ def profile(request, id , role_id):
             selltransactions = Transaction.objects.filter(seller = institute)
 
             pen_or = []
-            pending_orders = Order.objects.filter(institute = institute.id , request_status = 0)
+            pending_orders = Order.objects.filter(institute = institute.id , request_status = 0).all()
             pserializer = OrderSerializer(pending_orders, many = True)
 
             for po in pserializer.data:
                 dict(po)   
                 order_id = po['id']
-                products = ProductInOrder.objects.get(order_id = order_id)
-                productserializer = PIOSerializer(products)
-                po['products'] = dict(productserializer.data)
+                products = ProductInOrder.objects.filter(order_id = order_id).all()
+                productserializer = PIOSerializer(products, many = True)
+                print(productserializer.data)
+                po['products'] = productserializer.data
                 pen_or.append(po)
 
             bserializer = OrderSerializer(buytransactions , many = True)

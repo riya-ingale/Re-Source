@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import "../Css/intituteprofile.css";
 import "../Css/wfprofile.css";
 import "../Css/accounts_profile.css";
@@ -11,6 +11,26 @@ import phy from "../Images/microscope.jpg";
 import EditIcon from '@mui/icons-material/Edit';
 
 export default function AccountsProfile() {
+  const [loader,setLoader] = useState(false);
+  const[res,setRes] = useState();
+  useEffect(() =>{
+    fetch("http://127.0.0.1:8000/institute/profile/"+sessionStorage.getItem('user_id')+'/'+sessionStorage.getItem('role_id'))
+    .then(response=>response.json())
+    .then(body=>
+      {
+        setRes(body);
+        setLoader(true);
+        console.log(body);
+      })
+  },[])
+  const handlepay = (e,id) =>{
+    fetch("http://127.0.0.1:8000/placeorder/handlepayment/"+id, { //role id update require wait for landing page
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(slot)
+    })
+
+  }
   return (
     <div className='container profile-container'>
       <div className='bg-box'>
@@ -38,9 +58,10 @@ export default function AccountsProfile() {
             <div className="card__details ">
             <h3>Rented Resources</h3>
             <article class="account__profile">
-              <span class="">OrderID: qwertuxhrfcv</span><br></br>
-              <span class="">Cost: Rs 3000</span><br></br>
+              <span class="">OrderID: { res.pending_orders.id }</span><br></br>
+              <span class="">Cost: Rs { res.pending_orders.finalcost }</span><br></br>
               <span class="">Institute Name: Vidyalankar Institute Of Technology</span>
+              <button onClick={event =>handlepay(event,res.pending_orders.id)}>PAY NOW</button>
             </article>
     
             <article class="account__profile">
