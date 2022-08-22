@@ -48,7 +48,7 @@ export default class LogIn extends Component {
       const password = this.state.loginpass
       console.log("Username " + username + " Password "+password)
       const logindata = {username,password}
-      fetch('http://127.0.0.1:8000/api/signup/4', { //role id update require wait for landing page
+      fetch('http://127.0.0.1:8000/api/signup/'+sessionStorage.getItem('role_id'), { //role id update require wait for landing page
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(logindata)
@@ -95,7 +95,7 @@ export default class LogIn extends Component {
       const institute = this.state.signininsti
       console.log("Username " + username + " Password "+password)
       const logindata = {username,password,institute}
-      fetch('http://127.0.0.1:8000/api/register/4', {//role id update require wait for landing page
+      fetch('http://127.0.0.1:8000/api/register/'+sessionStorage.getItem('role_id'), {//role id update require wait for landing page
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(logindata)

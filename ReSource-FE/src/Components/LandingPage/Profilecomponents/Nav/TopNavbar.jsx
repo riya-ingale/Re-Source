@@ -28,7 +28,14 @@ export default function TopNavbar() {
 
   const handleChange = (event) => {
     setRole(event.target.value);
+    sessionStorage.setItem("role_id",event.target.value);
+    window.location.href = '/login'
   };
+
+  const handleRole = (event,role) =>{
+    sessionStorage.setItem("role_id",role);
+    window.location.href = '/login'
+  }
   return (
     <>
       <Wrapper
@@ -124,12 +131,12 @@ export default function TopNavbar() {
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value={10}>Institute </MenuItem>
-                  <MenuItem value={21}>University</MenuItem>
-                  <MenuItem value={22}>UGC</MenuItem>
-                  <MenuItem value={10}>Accountant </MenuItem>
-                  <MenuItem value={21}>Lab Assistant</MenuItem>
-                  <MenuItem value={22}>Teacher</MenuItem>
+                  <MenuItem value={3} onclick={event => handleRole(event,3)}>Institute </MenuItem>
+                  <MenuItem value={2} onclick={event => handleRole(event,2)}>University</MenuItem>
+                  <MenuItem value={1} onclick={event => handleRole(event,1)}>UGC</MenuItem>
+                  <MenuItem value={8} onclick={event => handleRole(event,8)}>Accountant </MenuItem>
+                  <MenuItem value={4} onclick={event => handleRole(event,4)}>Lab Assistant</MenuItem>
+                  <MenuItem value={5} onclick={event => handleRole(event,5)}>Teacher</MenuItem>
                 </Select>
               </FormControl>
             </li>
