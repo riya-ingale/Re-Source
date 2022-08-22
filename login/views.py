@@ -76,7 +76,7 @@ def signup(request,id = 0):
             logindata = json.loads(request.body)
             username = logindata['username']
             password = logindata['password']
-            if id in [1,2,3,7,8]:
+            if id in [1,2,3]:
                 try:
                     t = Institutes.objects.get(email = username)
                     if t.status != 1:
@@ -89,7 +89,7 @@ def signup(request,id = 0):
                         return JsonResponse({'status':403,"message":"Password Incorrect"}) 
                 except:
                     return JsonResponse({'status':403,"message":"Email Does not exists"})
-            elif id in [4,5]:
+            elif id in [4,5,7,8]:
                 try:
                     t = WorkForce.objects.get(email_id = username)
                     if t.status != 1:

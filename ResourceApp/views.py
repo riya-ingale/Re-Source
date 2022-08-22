@@ -14,13 +14,11 @@ import cv2
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_http_methods
 
-
 @csrf_exempt
-def addresources(request,username,lab_id):
+def addresources(request,user_id,role_id,lab_id):
     if request.method == "POST":
         data = json.loads(request.body)
-        role_id = data['role_id']
-        if role_id in [3,4]:
+        if role_id == 4:
             t = Labs.objects.get(id = lab_id)
             data['lab'] = t.id
             serializer = ResourcesSerializer(data = data)
@@ -43,7 +41,7 @@ def addresources(request,username,lab_id):
                 'status':200,
                 'message':'SUCCESS',
                 'data': serializer.data,
-                'username':username,
+                'user_id':user_id,
                 'role_id':role_id
             })
             else:
