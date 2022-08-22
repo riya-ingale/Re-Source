@@ -23,7 +23,7 @@ export default function Header() {
   };
   return (
     
-    <Wrapper id="home" className="landing-page-container flexSpaceCenter" style={{padding: "0px"}}>
+    <Wrapper id="home" className="landing-page-container flexSpaceCenter">
       <LeftSide className="flexCenter">
         <div>
           <h1 className="extraBold font60">We are Resource Sharing Agency.</h1>
