@@ -96,7 +96,7 @@ async function showRazorpay(e,id) {
         <div className='col-md-4'>
         <div className="card profilecards slots">
             <div className="card__details ">
-            <h3>Rented Resources</h3>
+            <h3>Pending Orders</h3>
             <article class="account__profile">
               <span class="">OrderID: { res.pending_orders[0].id }</span><br></br>
               <span class="">Cost: Rs { res.pending_orders[0].finalcost }</span><br></br>
