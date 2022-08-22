@@ -196,7 +196,7 @@ const Cart = () => {
       if(data['status'] == 200){
         console.log("Order sent to the Accounts Department")
       }})
-      navigate('/cart');
+      window.location.href = '/cart';
   }
   return (
    isloaded ?

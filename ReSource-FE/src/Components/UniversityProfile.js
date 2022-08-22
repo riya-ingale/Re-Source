@@ -1,12 +1,29 @@
-import React from 'react';
+import React, {useState,useEffect} from 'react';
 import "../Css/intituteprofile.css";
 import img from '../Images/user-account.png';
 import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
+import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'; 
 
 export default function UniversityProfile() {
+  const [loader,setLoader] = useState(false);
+  const[res,setRes] = useState();
+  useEffect(() =>{
+    fetch("http://127.0.0.1:8000/institute/profile/"+sessionStorage.getItem('user_id')+"/"+sessionStorage.getItem('role_id'))
+    .then(response=>response.json())
+    .then(body=>
+      {
+        setRes(body);
+        setLoader(true);
+        console.log(body);
+      })
+  },[])
+  const pendingreq = (e) =>{
+    window.location.href = "/intituterequest"
+  }
   return (
     <>
+    {loader?
     <div className='container profile-container'>
       <div className='bg-box'>
       </div>
@@ -20,7 +37,7 @@ export default function UniversityProfile() {
             </div>
             <div className='col-md-10'>
               <p>
-                <h1 className="Profile-name">Institute Name</h1>
+                <h1 className="Profile-name">{res.data.name}</h1>
               </p>
             </div>
           </div>
@@ -45,7 +62,10 @@ export default function UniversityProfile() {
             </div>
             </div>
         </div>
+        
         <div className='col-md-6'>
+        <button className='btn btn-primary addstaffbtn' onClick={pendingreq}>Pending Institutes<AddCircleRoundedIcon></AddCircleRoundedIcon></button>
+        <h3>Approved Institutes</h3>
         <div className="card profilecards workforce-list">
             <div className="card__details">
             <article class="leaderboard__profile">
@@ -76,7 +96,7 @@ export default function UniversityProfile() {
       </div>
       </div>
       
-    </div>   
+    </div>   :<div></div>}
     </>
   )
 }
