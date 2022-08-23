@@ -423,11 +423,17 @@
     transition: 0s;
     transform: translate(0, 5%);
   }
+
+  .pagination-div{
+    margin-bottom: 30px;
+  }
   /* RESPONSIVE DESIGNS */
 /* // Small devices (landscape phones, 576px and up) */
 @media (max-width: 576px) 
 {
-  
+  .lab-row {
+    width: 100vw;
+  }
   
 }
 
