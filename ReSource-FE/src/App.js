@@ -35,6 +35,7 @@ import ViewProfileInstitute from "./Components/ViewProfileInstitute";
 import ViewUniversityProfile from "./Components/ViewUniversityProfile";
 import ViewAccountsProfile from "./Components/ViewAccountsProfile";
 import ViewLabAssistantProfile from "./Components/ViewLabAssistantProfile";
+import UGCStaffform from "./Components/UGCStaffform";
 
 function App() {
   return (
@@ -73,6 +74,9 @@ function App() {
           <Route exact path="/viewUniversityProfile" element={<><Header/><ViewUniversityProfile/><Footer/></>}/>
           <Route exact path="/viewAccountsProfile" element={<><Header/><ViewAccountsProfile/><Footer/></>}/>
           <Route exact path="/viewlabassistantprofile" element={<><Header/><ViewLabAssistantProfile/><Footer/></>}/>
+          {/* Extra Lab Detail Routes */}
+          <Route exact path="/labdetail" element = {<><Header/><LabDetail/><Footer/></>}/>
+          <Route exact path="/ugcstaffform" element = {<><Header/><UGCStaffform/><Footer/></>}/>
         </Routes>
     </Router>
   );
