@@ -13,5 +13,6 @@ urlpatterns = [
     path('workforce_requests/<user_id>', views.workforce_requests, name = "workforceRequests"),
     path('lab_requests/<user_id>', views.lab_requests, name = "LabRequests"),
     path('institute_requests/<user_id>', views.institute_requests, name = "institute_requests"),
-    path('addstaff/' , views.add_ugcstaff)
+    path('addstaff/' , views.add_ugcstaff),
+    path('get_university/<page_num>', views.get_university, name  ="get_university")
 ]

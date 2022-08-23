@@ -955,3 +955,79 @@ def institute_requests(request , user_id):
             'status': 401,
             'message' : 'Unauthorized for you role'
         })
+
+@csrf_exempt
+def get_university(request,page_num):
+    if request.method == 'GET':
+        # List of institutes,city to populate in the drop down along with their ids in asceding order of their name
+
+        universityobjs = Institutes.objects.filter(role_id = 2, status = 1).all()
+        size = 3
+        page = page_num
+        paginator = Paginator(universityobjs, size)
+        university = paginator.get_page(page)
+        serializer = InstituteSerializer(university, many=True)
+
+        return_data = {
+            'status':200,
+            'message':"All University fetched",
+            'total_count':paginator.count,      # total number of labs
+            'total_pages':paginator.num_pages,  # total number of pages
+            'university_data':serializer.data    # labs data on that page
+        }
+        if university.number == paginator.num_pages and university.number ==1:
+            pass
+        elif university.number == paginator.num_pages:
+            return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(university.number-1)
+        elif university.number == 1:
+            return_data['next_page']=request.build_absolute_uri()[:-1]+str(university.number+1)
+        else:
+            return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(university.number-1)
+            return_data['next_page']=request.build_absolute_uri()[:-1]+str(university.number+1)
+        return JsonResponse(return_data)
+
+    # POST REQUEST FOR FILTER AND SEARCH 
+    elif request.method == 'POST':
+        bodyflag = 0
+        # If searchtext is given then return searchtext
+        bodyflag = 1
+        data = json.loads(request.body)
+
+        if ('searchtext' in data):
+            search = data['searchtext']
+            universityobjs = Institutes.objects.filter(name__icontains=search, role_id = 2, status = 1).all()
+        else:
+            universityobjs = Institutes.objects.filter(role_id = 2, status = 1).all()
+
+        if len(universityobjs) == 0:
+            return JsonResponse({
+            'status':404,
+            'message':"No such University Found",
+        })
+        else: 
+            size = 3
+            page = page_num
+            paginator = Paginator(universityobjs, size)
+            university = paginator.get_page(page)
+            serializer = InstituteSerializer(university, many=True)
+
+            return_data = {
+            'status':200,
+            'message':"Universities Found",
+            'total_count':paginator.count,
+            'total_pages':paginator.num_pages,
+            'data':serializer.data
+            }
+
+            if university.number == paginator.num_pages and university.number ==1:
+                pass
+            elif university.number == paginator.num_pages:
+                return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(university.number-1)
+            elif university.number == 1:
+                return_data['next_page']=request.build_absolute_uri()[:-1]+str(university.number+1)
+            else:
+                return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(university.number-1)
+                return_data['next_page']=request.build_absolute_uri()[:-1]+str(university.number+1)
+            if bodyflag:
+                return_data['body_data'] = data
+            return JsonResponse(return_data)
