@@ -22,7 +22,7 @@ export default function ResourceRequest() {
       })
     }
       else if(type === 'edit_req'){
-        fetch("http://127.0.0.1:8000/institute/pendingrequests/"+sessionStorage.getItem('user_id')+"/"+sessionStorage.getItem("role_id"))
+        fetch("http://127.0.0.1:8000/institute/resource_editrequests/"+sessionStorage.getItem('user_id'))
       .then(response => response.json())
       .then(body =>{
           setRes(body);
@@ -43,13 +43,13 @@ export default function ResourceRequest() {
       window.location.href ="/resource_request";
     }
     else if(type === 'edit_req'){
-      // console.log(id);
-      // fetch("http://127.0.0.1:8000/institute/resource_rentapproval/"+sessionStorage.getItem('user_id'), {
-      // method: 'POST',
-      // headers: { "Content-Type": "application/json" },
-      // body: JSON.stringify({"id":id,'status':1})
-      // })
-      // window.location.href ="/edit_req";
+      console.log(id);
+      fetch("http://127.0.0.1:8000/institute/resource_editrequests/"+sessionStorage.getItem('user_id'), {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({"resource_id":id,'status':1})
+      })
+      window.location.href ="/edit_req";
     }
   }
   const handleReject = (e,id) =>{
@@ -63,13 +63,13 @@ export default function ResourceRequest() {
       window.location.href ="/resource_request";
     } 
     else if(type === 'edit_req'){
-      // console.log(id);
-      // fetch("http://127.0.0.1:8000/institute/resource_rentapproval/"+sessionStorage.getItem('user_id'), {
-      // method: 'POST',
-      // headers: { "Content-Type": "application/json" },
-      // body: JSON.stringify({"id":id,'status':-1})
-      // })
-      // window.location.href ="/edit_req";
+      console.log(id);
+      fetch("http://127.0.0.1:8000/institute/resource_editrequests/"+sessionStorage.getItem('user_id'), {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({'resource_id':id,'status':-1})
+      })
+      window.location.href ="/edit_req";
     }
   }
 
@@ -120,7 +120,7 @@ export default function ResourceRequest() {
     {load && type === 'edit_req'?
     <div className="containner c-view-res">
     <div className="row">
-      {res.resource_edit_requests.map((item,index) =>(
+      {res.data.map((item,index) =>(
       <div className="col-md-4 colvr">
         <div className="card rescard">
           <img src={require("../temp_images/temp"+String(index+1)+".jpeg")} className="imgres" alt="Equipment Name" />
@@ -144,10 +144,10 @@ export default function ResourceRequest() {
             </div>
             <div className='row'>
               <div className='col-md-6'>
-                  <button className="btn-vr" onClick={event=>handleAccept(event,item.c_id)}>Accept</button>
+                  <button className="btn-vr" onClick={event=>handleAccept(event,item.id)}>Accept</button>
               </div>
               <div className='col-md-6'>
-                  <button className="btn-vr" onClick={event=>handleReject(event,item.c_id)}>Reject</button>
+                  <button className="btn-vr" onClick={event=>handleReject(event,item.id)}>Reject</button>
               </div>
             </div>
           </div>

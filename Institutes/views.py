@@ -418,7 +418,7 @@ def allrequests(request,id, role_id):
 
 # post route for request acceptance 
 @csrf_exempt
-def institution_request(request , id):
+def institution_requests(request , id):
     if request.method == "POST":
         user = Institutes.objects.get(id = id)
         role_id = user.role_id
@@ -478,6 +478,7 @@ def institution_request(request , id):
             'status': 404,
             'message' : 'page not found'
         })
+
 
 @csrf_exempt
 def workforce_request(request , id):
@@ -1031,3 +1032,90 @@ def get_university(request,page_num):
             if bodyflag:
                 return_data['body_data'] = data
             return JsonResponse(return_data)
+
+
+@csrf_exempt
+def resource_editrequests(request, user_id):
+    if request.method == "GET":
+        try:
+            institute = Institutes.objects.filter(id = int(user_id))[0]
+        except:
+            return JsonResponse(data = {
+                'status': 401,
+                'message' : 'No such Institute'
+            })
+        role = institute.role_id
+        if role == 3:
+            labs = Labs.objects.filter(institute = institute).all()
+            resources = Resources.objects.filter(lab__in = labs, edit_approval = 0, is_approved = 1).all()
+            if resources:
+                serializer = ResourcesSerializer(resources , many = True)
+                resources_data = []
+                imgs = []
+                for item in serializer.data:
+                    item = dict(item)
+                    try:
+                        img = Image.objects.filter(resource_id = item['id']).values_list('image')[0]
+                    except Exception as e:
+                        img = ["media/resource_images/default_image.jpeg"]
+                    item['image'] = img[0]
+                    imgs.append(img)
+                    item['lab_name'] = Labs.objects.get(id = item['lab']).name
+                    resources_data.append(item)
+                paster(imgs)
+
+                return JsonResponse(data = {
+                'status': 200,
+                'message' : 'Edited Resources Fetched',
+                "data" : resources_data
+                })
+            else:
+                return JsonResponse(data = {
+                'status': 404,
+                'message' : 'No Pending Edit Resource Requests'
+                })
+        else:
+            return JsonResponse(data = {
+            'status': 401,
+            'message' : 'Unauthorized for you role'
+        })
+    elif request.method == "POST":
+        try:
+            institute = Institutes.objects.filter(id = int(user_id))[0]
+        except:
+            return JsonResponse(data = {
+                'status': 401,
+                'message' : 'Unauthorized for you role'
+            })
+        role = institute.role_id
+        if role == 3:
+            data = json.loads(request.body)
+            print("Data - ",data)
+            status = data['status']              # 1 for approved, -1 for rejected
+            resource_id = data['resource_id']    # the one who is approved or rejected
+            try:
+                resource = Resources.objects.filter(id = int(resource_id))[0]
+            except:
+                return JsonResponse(data = {
+                'status': 400,
+                'message' : 'Resource id doesnt exist'
+            })
+            if resource.lab.institute.id != institute.id:
+                return JsonResponse(data = {
+                'status': 401,
+                'message' : 'Resource doesnt belong to your Institute'
+            })
+            action = ["",'approved', 'rejected']
+            resource.edit_approval = status
+            resource.save()
+            serializer  = ResourcesSerializer(resource)
+            return JsonResponse(data = {
+            'status': 200,
+            'message' : f'Resource {resource.name} is {action[status]}',
+            "data" : serializer.data
+            })
+        else:
+            return JsonResponse(data = {
+            'status': 401,
+            'message' : 'Unauthorized for you role'
+        })
