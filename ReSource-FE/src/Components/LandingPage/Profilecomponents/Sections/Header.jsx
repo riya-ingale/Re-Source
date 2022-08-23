@@ -23,7 +23,7 @@ export default function Header() {
   };
   return (
     
-    <Wrapper id="home" className="landing-page-container flexSpaceCenter">
+    <Wrapper id="home" className="landing-page-container flexSpaceCenter" style={{paddingTop: "0px"}} >
       <LeftSide className="flexCenter">
         <div>
           <h1 className="extraBold font60">We are Resource Sharing Agency.</h1>
@@ -89,7 +89,7 @@ export default function Header() {
 const Wrapper = styled.section`
   padding-top: 80px;
   width: 100%;
-  min-height: 840px;
+  min-height: 50vw;
   @media (max-width: 960px) {
     flex-direction: column;
   }

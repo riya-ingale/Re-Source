@@ -29,6 +29,13 @@ import Resourceaddreq from "./Components/ResourceApproval";
 import Resourcereq from "./Components/ResourceRequest";
 import ViewLab from "./Components/ViewLabs";
 import LabDetail from "./Components/LabDetails";
+import UniversityList from "./Components/UniversityList"
+import InstituteList from "./Components/InstituteList"
+import ViewProfileInstitute from "./Components/ViewProfileInstitute";
+import ViewUniversityProfile from "./Components/ViewUniversityProfile";
+import ViewAccountsProfile from "./Components/ViewAccountsProfile";
+import ViewLabAssistantProfile from "./Components/ViewLabAssistantProfile";
+
 function App() {
   return (
     <Router>
@@ -60,6 +67,12 @@ function App() {
           <Route exact path="/edit_req" element={<><Header/><Resourcereq/><Footer/></>}/>
           <Route exact path="/viewlab" element={<><Header/><ViewLab/><Footer/></>}/>
           <Route exact path="/labdetail/:id" element = {<><Header/><LabDetail/><Footer/></>}/>
+          <Route exact path="/universityList" element={<><Header/><UniversityList/><Footer/></>}/>
+          <Route exact path="/instituteList" element={<><Header/><InstituteList/><Footer/></>}/>
+          <Route exact path="/viewInstituteProfile" element={<><Header/><ViewProfileInstitute/><Footer/></>}/>
+          <Route exact path="/viewUniversityProfile" element={<><Header/><ViewUniversityProfile/><Footer/></>}/>
+          <Route exact path="/viewAccountsProfile" element={<><Header/><ViewAccountsProfile/><Footer/></>}/>
+          <Route exact path="/viewlabassistantprofile" element={<><Header/><ViewLabAssistantProfile/><Footer/></>}/>
         </Routes>
     </Router>
   );
