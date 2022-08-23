@@ -1047,7 +1047,7 @@ def resource_editrequests(request, user_id):
         role = institute.role_id
         if role == 3:
             labs = Labs.objects.filter(institute = institute).all()
-            resources = Resources.objects.filter(lab__in = labs, edit_approval = 0).all()
+            resources = Resources.objects.filter(lab__in = labs, edit_approval = 0, is_approved = 1).all()
             if resources:
                 serializer = ResourcesSerializer(resources , many = True)
                 resources_data = []
@@ -1090,8 +1090,9 @@ def resource_editrequests(request, user_id):
         role = institute.role_id
         if role == 3:
             data = json.loads(request.body)
+            print("Data - ",data)
             status = data['status']              # 1 for approved, -1 for rejected
-            resource_id = data["resource_id"]    # the one who is approved or rejected
+            resource_id = data['resource_id']    # the one who is approved or rejected
             try:
                 resource = Resources.objects.filter(id = int(resource_id))[0]
             except:
