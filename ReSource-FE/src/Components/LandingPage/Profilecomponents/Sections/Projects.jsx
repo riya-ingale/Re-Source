@@ -18,9 +18,7 @@ export default function Projects() {
           <HeaderInfo>
             <h1 className="font40 extraBold">Institutes Affiliated</h1>
             <p className="font13">
-              Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-              <br />
-              labore et dolore magna aliquyam erat, sed diam voluptua.
+              
             </p>
           </HeaderInfo>
           <div className="row textCenter">
@@ -28,7 +26,7 @@ export default function Projects() {
               <ProjectBox
                 img={ProjectImg1}
                 title="VIT (Wadala)"
-                text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor."
+                text=""
                 action={() => alert("clicked")}
               />
             </div>
@@ -36,7 +34,7 @@ export default function Projects() {
               <ProjectBox
                 img={ProjectImg2} 
                 title="VSIT"
-                text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor."
+                text=""
                 action={() => alert("clicked")}
               />
             </div>
@@ -44,7 +42,7 @@ export default function Projects() {
               <ProjectBox
                 img={ProjectImg3}
                 title="Vidyalankar Polytechnic"
-                text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor."
+                text=""
                 action={() => alert("clicked")}
               />
             </div>
@@ -54,7 +52,7 @@ export default function Projects() {
               <ProjectBox
                 img={ProjectImg4}
                 title="Awesome Project"
-                text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor."
+                text=""
                 action={() => alert("clicked")}
               />
             </div>
@@ -62,7 +60,7 @@ export default function Projects() {
               <ProjectBox
                 img={ProjectImg5}
                 title="Awesome Project"
-                text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor."
+                text=""
                 action={() => alert("clicked")}
               />
             </div>
@@ -70,7 +68,7 @@ export default function Projects() {
               <ProjectBox
                 img={ProjectImg6}
                 title="Awesome Project"
-                text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor."
+                text=""
                 action={() => alert("clicked")}
               />
             </div>
@@ -82,7 +80,7 @@ export default function Projects() {
           </div>
         </div>
       </div>
-      <div className="lightBg">
+      <div className="lightBg" style={{marginTop: "30px"}}>
         <div className="landing-page-container">
           <Advertising className="flexSpaceCenter">
             <AddLeft>
@@ -93,19 +91,11 @@ export default function Projects() {
               </AddLeftInner>
             </AddLeft>
             <AddRight>
-              <h4 className="font15 semiBold">A few words about company</h4>
-              <h2 className="font40 extraBold">A Study of Creativity</h2>
-              <p className="font12">
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed
-                diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-              </p>
+              <h4 className="font15 semiBold">A few words about us</h4>
+              <h2 className="font40 extraBold">Helping you rent and experiment</h2>
+             
               <ButtonsRow className="flexNullCenter" style={{ margin: "30px 0" }}>
-                <div style={{ width: "190px" }}>
-                  <FullButton title="Get Started" action={() => alert("clicked")} />
-                </div>
-                <div style={{ width: "190px", marginLeft: "15px" }}>
-                  <FullButton title="Contact Us" action={() => alert("clicked")} border />
-                </div>
+                
               </ButtonsRow>
             </AddRight>
           </Advertising>

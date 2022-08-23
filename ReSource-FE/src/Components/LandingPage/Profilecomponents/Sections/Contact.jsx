@@ -11,12 +11,8 @@ export default function Contact() {
       <div >
         <div className="landing-page-container">
           <HeaderInfo>
-            <h1 className="font40 extraBold">Let's get in touch</h1>
-            <p className="font13">
-              
-              <br />
-              
-            </p>
+            <h1 className="font40 extraBold" style={{marginTop:"30px"}}>Let's get in touch</h1>
+            
           </HeaderInfo>
           <div className="row" style={{ paddingBottom: "30px" }}>
             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
