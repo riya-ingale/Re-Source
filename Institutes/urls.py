@@ -20,5 +20,9 @@ urlpatterns = [
 
     path('addstaff/' , views.add_ugcstaff),
 
-    path('get_university/<page_num>', views.get_university, name  ="get_university")
+    path('get_university/<page_num>', views.get_university, name  ="get_university"), # All University Page
+
+    path("view_institute/<user_id>", views.view_institute, name = "view_institute")
+
+
 ]

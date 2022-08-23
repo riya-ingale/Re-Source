@@ -1,5 +1,4 @@
-import dataclasses
-from pprint import isreadable
+
 from Institutes.serializers import *
 from ResourceApp.serializers import *
 from django.http.response import JsonResponse
@@ -957,6 +956,7 @@ def institute_requests(request , user_id):
             'message' : 'Unauthorized for you role'
         })
 
+
 @csrf_exempt
 def get_university(request,page_num):
     if request.method == 'GET':
@@ -1119,3 +1119,61 @@ def resource_editrequests(request, user_id):
             'status': 401,
             'message' : 'Unauthorized for you role'
         })
+
+@csrf_exempt
+def view_institute(request, user_id):
+    if request.method == "GET":
+        try:
+            institute = Institutes.objects.filter(id = user_id)[0]
+        except:
+            return JsonResponse(data={
+                "message":"No such Institute",
+                "status":404
+            })
+        if institute.role_id == 3:
+            institute_serializer = InstituteSerializer(institute)
+            labs = Labs.objects.filter(institute = institute, status = 1).all()
+            labs_serializer = LabSerializer(labs, many = True)
+            lab_data = []
+            for lab in labs_serializer.data:
+                lab = dict(lab)
+                start_time  = lab['start_time']+":00"
+                lab['start_time'] = datetime.datetime.strptime(start_time, '%H:%M').time()
+                end_time  = lab['end_time']+":00"
+                lab['end_time'] = datetime.datetime.strptime(end_time, '%H:%M').time()
+                lab['institute_name'] = Institutes.objects.filter(id = int(lab['institute']))[0].name
+                lab['workforce_name'] = WorkForce.objects.get(id  = int(lab['workforce'])).name
+                lab_data.append(lab)
+
+            imgs = []
+            resource_data = []
+            resources = Resources.objects.filter(lab__in = labs, is_approved = 1).all()
+            resource_serializer = ResourcesSerializer(resources, many  =True)
+            for resource in resource_serializer.data:
+                resource = dict(resource)
+                try:
+                    img = Image.objects.filter(resource = resource['id']).values_list('image')[0]
+                except:
+                    img = ["media/resource_images/default_image.jpeg"]
+                resource['img'] = img[0]
+                imgs.append(img)
+                lab_id = resource['lab']
+                lab = Labs.objects.filter(id = lab_id)[0]
+                ins = lab.institute.name
+                resource['institute_name'] = ins
+                resource_data.append(resource)
+            paster(imgs)
+            
+            return JsonResponse(data = {
+                "status":200,
+                "message":"Institute data fetched",
+                "institute_data":institute_serializer.data,
+                "resource_data":resource_data,
+                "lab_data":lab_data,
+                "images":imgs
+            })
+        else:
+            return JsonResponse(data  ={
+                "message":"No such Institute",
+                "status":404
+            })
