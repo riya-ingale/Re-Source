@@ -27,6 +27,8 @@ import UGCStaffProfile from "./Components/UGCStaffProfile";
 import AccountsProfile from "./Components/AccountsProfile";
 import Resourceaddreq from "./Components/ResourceApproval";
 import Resourcereq from "./Components/ResourceRequest";
+import ViewLab from "./Components/ViewLabs";
+import LabDetail from "./Components/LabDetails";
 function App() {
   return (
     <Router>
@@ -56,6 +58,8 @@ function App() {
           <Route exact path="/resource_addrequest" element = {<><Header/><Resourceaddreq/><Footer/></>}/>
           <Route exact path="/resource_request" element={<><Header/><Resourcereq/><Footer/></>}/>
           <Route exact path="/edit_req" element={<><Header/><Resourcereq/><Footer/></>}/>
+          <Route exact path="/viewlab" element={<><Header/><ViewLab/><Footer/></>}/>
+          <Route exact path="/labdetail/:id" element = {<><Header/><LabDetail/><Footer/></>}/>
         </Routes>
     </Router>
   );
