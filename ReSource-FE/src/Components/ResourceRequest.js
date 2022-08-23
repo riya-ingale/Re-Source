@@ -43,13 +43,13 @@ export default function ResourceRequest() {
       window.location.href ="/resource_request";
     }
     else if(type === 'edit_req'){
-      // console.log(id);
-      // fetch("http://127.0.0.1:8000/institute/resource_rentapproval/"+sessionStorage.getItem('user_id'), {
-      // method: 'POST',
-      // headers: { "Content-Type": "application/json" },
-      // body: JSON.stringify({"id":id,'status':1})
-      // })
-      // window.location.href ="/edit_req";
+      console.log(id);
+      fetch("http://127.0.0.1:8000/institute/resource_rentapproval/"+sessionStorage.getItem('user_id'), {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({"id":id,'status':1})
+      })
+      window.location.href ="/edit_req";
     }
   }
   const handleReject = (e,id) =>{
@@ -63,13 +63,13 @@ export default function ResourceRequest() {
       window.location.href ="/resource_request";
     } 
     else if(type === 'edit_req'){
-      // console.log(id);
-      // fetch("http://127.0.0.1:8000/institute/resource_rentapproval/"+sessionStorage.getItem('user_id'), {
-      // method: 'POST',
-      // headers: { "Content-Type": "application/json" },
-      // body: JSON.stringify({"id":id,'status':-1})
-      // })
-      // window.location.href ="/edit_req";
+      console.log(id);
+      fetch("http://127.0.0.1:8000/institute/resource_rentapproval/"+sessionStorage.getItem('user_id'), {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({"id":id,'status':-1})
+      })
+      window.location.href ="/edit_req";
     }
   }
 
