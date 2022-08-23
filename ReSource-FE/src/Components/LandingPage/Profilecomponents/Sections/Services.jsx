@@ -18,9 +18,7 @@ export default function Services() {
           <HeaderInfo>
             <h1 className="font40 extraBold">Our Awesome Services</h1>
             <p className="font13">
-              Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-              <br />
-              labore et dolore magna aliquyam erat, sed diam voluptua.
+              
             </p>
             {/* hi */}
           </HeaderInfo>
@@ -29,26 +27,26 @@ export default function Services() {
               <ServiceBox
                 icon="browser"
                 title="Resource Allocation"
-                subtitle="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
+                subtitle="All can practice real-life science and gain practical knowledge."
               />
             </ServiceBoxWrapper>
             <ServiceBoxWrapper>
               <ServiceBox
                 icon="monitor"
-                title="Payment Analytics"
-                subtitle="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore."
+                title="Interactive UI"
+                subtitle="A simple yet effetive interface that conveys all information to all users ."
               />
             </ServiceBoxWrapper>
-            <ServiceBoxWrapper>
+            <ServiceBoxWrapper >
               <ServiceBox
                 icon="hierarchy"
                 title="Role Based Hierarchy"
-                subtitle="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat."
+                subtitle="Making system more secure and optimal for all users. "
               />
             </ServiceBoxWrapper>
-             <ServiceBoxWrapper>
+             {/* <ServiceBoxWrapper>
               <ServiceBox icon="printer" title="Secure ID Card" subtitle="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor." />
-            </ServiceBoxWrapper> 
+            </ServiceBoxWrapper>  */}
           </ServiceBoxRow>
         </div>
         <div className="lightBg">

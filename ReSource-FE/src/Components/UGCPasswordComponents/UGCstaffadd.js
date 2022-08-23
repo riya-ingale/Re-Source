@@ -1,5 +1,7 @@
 import { useState } from "react";
 import "../../Css/ugcStaffForm.css";
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
 export const UGCstaffadd = () => {
   const [fullName, setFullname] = useState("");
@@ -50,73 +52,59 @@ export const UGCstaffadd = () => {
   return (
     <>
       <div className="container">
-        <div className="title">Create Staff</div>
-        <div className="content">
+        <div className="title form-title">Create Staff</div>
+        <div className=" form-content">
           <form action="#">
-            <div className="user-details">
-              <div className="input-box">
-                <span className="details">Full Name</span>
-                <input
-                  type="text"
-                  placeholder="Enter your Full Name"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullname(e.target.value)}
-                />
-              </div>
-              <div className="input-box">
-                <span className="details">Email</span>
-                <input
-                  type="text"
-                  placeholder="Enter your Email-id"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="input-box">
-                <span className="details">Password</span>
-                <input
-                  type="Text"
-                  placeholder="Generated Password"
-                  style={{ padding: 4 }}
-                  required
-                  readOnly
-                  value={password}
-                />
-                <span
-                  className="generate-password-btn"
-                  onClick={generatePassword}
-                >
-                  Generate Password
-                </span>
-              </div>
-            </div>
-            {/* <div class="gender-details">
-              <input type="radio" name="gender" id="dot-1">
-              <input type="radio" name="gender" id="dot-2">
-              <input type="radio" name="gender" id="dot-3">
-              <span class="gender-title">Gender</span>
-              <div class="category">
-                <label for="dot-1">
-                <span class="dot one"></span>
-                <span class="gender">Male</span>
-              </label>
-              <label for="dot-2">
-                <span class="dot two"></span>
-                <span class="gender">Female</span>
-              </label>
-              <label for="dot-3">
-                <span class="dot three"></span>
-                <span class="gender">Prefer not to say</span>
-                </label>
-              </div>
-            </div> */}
-            <div className="button">
-              <input type="submit" defaultValue="Register" />
+          <div className="row">
+          <div className="col-md-6">
+              <TextField
+              required
+              className="form-input"
+              id="name"
+              label="Name"
+              defaultValue="Name"
+            />
+          </div>
+          <div className="col-md-6">
+            <TextField
+            required
+            className="form-input"
+            id="mail"
+            label="Email"
+            defaultValue="Enter Email ID"
+          />
+          </div>
+        </div>
+        <div className="row" style={{width: "548px"}}>
+          <div className="col-md-6">
+            <TextField
+            className="form-input"
+            id="outlined-read-only-input"
+            
+            label="Password"
+            value={password}
+            InputProps={{
+              readOnly: true,
+            }}
+            
+          />
+          </div>
+          <div className="col-md-6">
+            <button
+                    className="generate-password-btn btn btn-outline-succes"
+                    onClick={generatePassword}
+                  >
+                    Generate Password
+            </button>
+          </div>
+        </div>
+            <div className="btn btn-primary form-btn">
+              <input className="Submit-Button" type="submit" defaultValue="Submit" />
             </div>
           </form>
         </div>
+        {/* New Form */}
+      
       </div>
     </>
   );
