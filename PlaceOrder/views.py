@@ -96,7 +96,7 @@ def requesttopay(request):
         user_id = data['user_id']
 
         user = WorkForce.objects.get(id = user_id)
-        items = Cart.objects.filter(workforce = user_id, is_approved = 1)
+        items = Cart.objects.filter(workforce = user_id, is_approved = 1).all()
         final_price = 0
         if len(items)>0:
             order = Order.objects.create(finalcost = final_price, workforce = user, institute = user.institute)
@@ -117,8 +117,8 @@ def requesttopay(request):
                 else:
                     count+=1
                     sell_univ[item.seller_institute] = {'id': [product_in_order] , 'cost': cost}
-                item.is_approved = 2
-                item.save()
+                # item.is_approved = 2
+                item.delete()
             add_cost = 0
             for key, value in sell_univ.items():
                 add_cost += value['cost'] * 1.18 * 0.02
@@ -327,6 +327,15 @@ def handlerequest(request):
         # razorpay_client.payment.capture(payment_id , amount)
         order.payment_status = 1
         order.save()
+        
+        items = ProductInOrder.objects.filter(order_id = order.id).all()
+        for item in items:
+            start_time = order.start_time
+            start_time = start_time.strftime("%H:%M:%S")
+            end_time = order.end_time
+            end_time = end_time.strftime("%H:%M:%S")
+            db = Book_slots(resource = item.resource, date = item.date, start_time = start_time[0:2] , end_time = end_time[0:2], lab = item.resource.lab.id, units = item.units, approved = 1)
+            db.save()
         print('PaymentDone')
             ## send emails to students
     

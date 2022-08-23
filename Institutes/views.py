@@ -48,6 +48,7 @@ def profile(request, id , role_id):
             pending_institute = Institutes.objects.filter(university = curr_ins.name, status = 0)
             piserializer = InstituteSerializer(pending_institute , many = True)
 
+            
             return JsonResponse({
                     'status' : 200,
                     'message' : 'fetched',
@@ -718,7 +719,7 @@ def workforce_requests(request , user_id):
         role = user.role_id
         if role == 3:
             workforce_data = []
-            workforces  = WorkForce.objects.filter(status = 0, institute_id = user.id).all()
+            workforces  = WorkForce.objects.filter(status = 0, institute = user).all()
             if workforces:
                 serializer = WorkForceSerializer(workforces,many = True)
                 for item in serializer.data:
@@ -877,4 +878,80 @@ def add_ugcstaff(request):
             return JsonResponse('Data Invalid')
 
 
-                
+#Institute Requests Get and Post route
+@csrf_exempt
+def institute_requests(request , user_id):
+    # GET route to show all the workforce requests to the institute role
+    if request.method == "GET":
+        try:
+            university = Institutes.objects.filter(id = int(user_id))[0]
+        except:
+            return JsonResponse(data = {
+                'status': 401,
+                'message' : 'No such University'
+            })
+        role = university.role_id
+        if role == 2:
+            institute_data = []
+            institutes  = Institutes.objects.filter(status = 0, university = university.name, role_id = 3).all()
+            if institutes:
+                serializer = InstituteSerializer(institutes,many = True)
+                for item in serializer.data:
+                    item = dict(item)
+                    institute_data.append(item)
+                return JsonResponse(data = {
+                'status': 200,
+                'message' : 'Institute Requests Fetched',
+                "data" : institute_data
+                })
+            else:
+                return JsonResponse(data = {
+                'status': 404,
+                'message' : 'No Pending Institute Requests'
+                })
+        else:
+            return JsonResponse(data = {
+            'status': 401,
+            'message' : 'Unauthorized for you role'
+        })
+        
+    # POST route to approve/ disapprove the workforce
+    elif request.method == "POST":
+        try:
+            university = Institutes.objects.filter(id = int(user_id))[0]
+        except:
+            return JsonResponse(data = {
+                'status': 401,
+                'message' : 'Unauthorized for you role'
+            })
+        role = university.role_id
+        if role == 2:
+            data = json.loads(request.body)
+            status = data['status']                # 1 for approved, -1 for rejected
+            institute_id = data["institute_id"]    # the one who is approved or rejected
+            try:
+                institute = Institutes.objects.filter(id = int(institute_id))[0]
+            except:
+                return JsonResponse(data = {
+                'status': 400,
+                'message' : 'Institute id doesnt exist'
+            })
+            if institute.university != university.name:
+                return JsonResponse(data = {
+                'status': 401,
+                'message' : 'Institute doesnt belong to your University'
+            })
+            action = ["",'approved', 'rejected']
+            institute.status = status
+            institute.save()
+            serializer  = InstituteSerializer(institute)
+            return JsonResponse(data = {
+            'status': 200,
+            'message' : f'Institute {institute.name} is {action[status]}',
+            "data" : serializer.data
+            })
+        else:
+            return JsonResponse(data = {
+            'status': 401,
+            'message' : 'Unauthorized for you role'
+        })
