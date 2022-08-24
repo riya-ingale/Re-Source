@@ -154,9 +154,8 @@ const book_slot = (e) =>{
         console.log(msg['message'])
       }
     })
-
+    window.location.href = '/cart';
 }
-
 
 var slotting = <div></div>;
 if(slots !== '' && slots!== undefined){

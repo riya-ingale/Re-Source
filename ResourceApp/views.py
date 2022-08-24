@@ -628,6 +628,8 @@ def addslots(request):
             "message":"Unauthorized Access, Please Login",
             "status":401
         })
+    role_id = info['role_id']
+    workforce_id = info['user_id']
 
     if request.method == "POST":
         data = json.loads(request.body)
@@ -639,8 +641,6 @@ def addslots(request):
         #     "resource_id":9,
         #     "workforce_id":1,
         # }
-    
-        workforce_id = data['workforce_id']
         workforce = WorkForce.objects.filter(id = workforce_id)[0]
         if workforce.role_id in [3,4,5]:
             buyer_institute_id = workforce.institute.id
