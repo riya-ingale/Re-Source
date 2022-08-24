@@ -89,7 +89,7 @@ def signup(request,id):
                         return JsonResponse({'status':403,"message":"Verify Email First"})
                     # if check_password(password, t.password):
                     if password == t.password:
-                        dt = datetime.now() + timedelta(days = 10)
+                        dt = datetime.now() + timedelta(days = 2)
                         token_data = {'user_id':t.id , 'role_id':id, 'exp': dt.timestamp()}
                         key = settings.SECRET_KEY
                         token = jwt.encode(token_data, key, 'HS256')
@@ -107,7 +107,7 @@ def signup(request,id):
                     if t.status != 1:
                         return JsonResponse({'status':403,"message":"Verify Email First"})
                     if password == t.password:
-                        dt = datetime.now() + timedelta(days = 10)
+                        dt = datetime.now()  + timedelta(days  = 2)             
                         token_data = {'user_id':t.id , 'role_id':id, 'exp': dt.timestamp()}
                         key = settings.SECRET_KEY
                         token = jwt.encode(token_data, key, 'HS256')
@@ -122,9 +122,9 @@ def signup(request,id):
                     t = Students.objects.get(email = username)
                     if t.status != 1:
                         return JsonResponse({'status':403,"message":"Verify Email First"})
-                        
+
                     if password == t.password:
-                        dt = datetime.now() + timedelta(days = 10)
+                        dt = datetime.now() + timedelta(days = 2)
                         token_data = {'user_id':t.id , 'role_id':id ,'exp': dt.timestamp()}
                         key = settings.SECRET_KEY
                         token = jwt.encode(token_data, key, 'HS256')

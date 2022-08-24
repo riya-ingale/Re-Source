@@ -1,0 +1,19 @@
+from importlib.resources import Resource
+import jwt
+from ReSource import settings
+from datetime import datetime
+
+class Check():
+    def check_auth(token):
+        try:
+            info = jwt.decode(token , settings.SECRET_KEY , 'HS256', {'verify_signature': True})
+            if info['exp'] < datetime.now().timestamp():
+                info['status'] = 0
+                return info
+            else:
+                info['status'] = 1
+                return info
+
+        except:
+            info = {"status":0}
+            return info
