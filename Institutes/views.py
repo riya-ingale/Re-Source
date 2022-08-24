@@ -1420,3 +1420,58 @@ def view_university(request, user_id):
                 "status":404
             })
 
+
+def view_labAssitant(request,user_id):
+    if request.method == "GET":
+        try:
+            workforce = WorkForce.objects.get(id  =int(user_id))
+        except:
+            return JsonResponse(data = {
+                "message":"No workforce Found",
+                "status":404
+            })
+        if workforce:
+            role = workforce.role_id
+            if role == 4:
+                serializer = WorkForceSerializer(workforce)
+                data = serializer.data
+
+                labs = Labs.objects.filter(workforce= workforce).all()
+                lab_serializer = LabSerializer(labs, many = True)
+                labs_data = []
+                for lab in lab_serializer.data:
+                    d = dict(lab)
+                    d['institute_name'] = Institutes.objects.get(id = d['institute']).name
+                    workforce = WorkForce.objects.get(id = d['workforce'])
+                    d['workforce_name'] = workforce.name
+                    d['workforce_contact'] = workforce.phone_no
+                    d['workforce_email'] = workforce.email_id
+                    d['start_time'] = str(d['start_time'])+":00:00"
+                    d['end_time'] = str(d['end_time'])+":00:00"
+                    labs_data.append(d)
+                if labs:
+                    resources = Resources.objects.filter(lab__in = labs).all()
+                    resource_serializer = ResourcesSerializer(resources, many = True)
+                    return JsonResponse(data = {
+                        "message":"Workforce Details Fetched",
+                        "status":200,
+                        "data":data,
+                        "labs_data":labs_data,
+                        "resources_data":resource_serializer.data
+                    })
+                else:
+                    return JsonResponse(data  = {
+                        "message":"Workforce Details fetched",
+                        "status":200,
+                        "data":data
+                })
+            else:
+                return JsonResponse(data = {
+                    "message":"Workforce Not Found",
+                    "status":404
+                })
+        else:
+            return JsonResponse(data ={
+                "message":"No such User",
+                "status":404
+            })

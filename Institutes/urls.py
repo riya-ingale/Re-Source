@@ -25,6 +25,6 @@ urlpatterns = [
 
     path("view_allinstitutes/<page_num>",views.view_allinstitutes, name= "view_allinstitutes"),
     path("view_institute/<user_id>", views.view_institute, name = "view_institute"),
-    path('view_university/<user_id>', views.view_university, name = "view_university")
-
+    path('view_university/<user_id>', views.view_university, name = "view_university"),
+    path('view_labAssitant/<user_id>', views.view_labAssitant, name = "view_labAssitant")
 ]
