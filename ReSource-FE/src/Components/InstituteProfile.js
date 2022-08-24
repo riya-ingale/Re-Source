@@ -3,9 +3,6 @@ import "../Css/intituteprofile.css";
 import img from '../Images/user-account.png';
 import { Link } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
-import chem from "../Images/chem-quip.jpg";
-import bio from "../Images/images.jpg";
-import phy from "../Images/microscope.jpg";
 import EditIcon from '@mui/icons-material/Edit';
 
 export default function InstituteProfile() {
@@ -14,7 +11,9 @@ export default function InstituteProfile() {
   const [l_id,setL_id] = useState(1);
   const[res,setRes] = useState();
   useEffect(() =>{
-    fetch("http://127.0.0.1:8000/institute/institute_profile/"+sessionStorage.getItem('user_id')+"/"+r_id+"/"+l_id)
+    fetch("http://127.0.0.1:8000/institute/institute_profile/"+r_id+"/"+l_id,{
+      headers:{'token':sessionStorage.getItem('token')}
+    })
     .then(response=>response.json())
     .then(body=>
       {
@@ -26,7 +25,7 @@ export default function InstituteProfile() {
 
   const handleLab = (e,p) =>{
     setL_id(p);
-    fetch("http://127.0.0.1:8000/institute/institute_profile/"+sessionStorage.getItem('user_id')+"/"+r_id+"/"+p)
+    fetch("http://127.0.0.1:8000/institute/institute_profile/"+r_id+"/"+p)
     .then(response=>response.json())
     .then(body=>
       {
@@ -38,7 +37,7 @@ export default function InstituteProfile() {
 
   const handleRes = (e,p) =>{
     setR_id(p);
-    fetch("http://127.0.0.1:8000/institute/institute_profile/"+sessionStorage.getItem('user_id')+"/"+p+"/"+l_id)
+    fetch("http://127.0.0.1:8000/institute/institute_profile/"+p+"/"+l_id)
     .then(response=>response.json())
     .then(body=>
       {
