@@ -210,8 +210,10 @@ export default function InstituteProfile() {
                     {/* <li className="lires">Capacity: 100</li> */}
                   </ul>
                 </div>
-
+                <a href={'/labdetail/'+item.id}>
                 <button className="btn-vr">More Details</button>
+
+                </a>
               </div>
             </div>
           </div>
