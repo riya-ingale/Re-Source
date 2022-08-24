@@ -36,6 +36,8 @@ import ViewUniversityProfile from "./Components/ViewUniversityProfile";
 import ViewAccountsProfile from "./Components/ViewAccountsProfile";
 import ViewLabAssistantProfile from "./Components/ViewLabAssistantProfile";
 import UGCStaffform from "./Components/UGCStaffform";
+import Error404 from "./Components/Error404";
+import Error503 from "./Components/Error503";
 
 function App() {
   return (
@@ -77,6 +79,8 @@ function App() {
           {/* Extra Lab Detail Routes */}
           <Route exact path="/labdetail" element = {<><Header/><LabDetail/><Footer/></>}/>
           <Route exact path="/ugcstaffform" element = {<><Header/><UGCStaffform/><Footer/></>}/>
+          <Route exact path="/error404" element = {<Error404/>}/>    
+          <Route exact path="/error503" element = {<Error503/>}/>
         </Routes>
     </Router>
   );
