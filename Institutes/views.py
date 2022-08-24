@@ -1408,10 +1408,19 @@ def resource_editrequests(request):
 
 @csrf_exempt
 def view_allinstitutes(request, page_num):
-    token = request.headers['Token']
+    try:
+            token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
     info = Check.check_auth(token)
     if info['status'] == 0:
-        return JsonResponse('Unauthorized access please login')
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
 
     if request.method == 'GET':
 
