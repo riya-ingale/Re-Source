@@ -1,4 +1,3 @@
-
 from Institutes.serializers import *
 from ResourceApp.serializers import *
 from django.http.response import JsonResponse
@@ -957,6 +956,7 @@ def institute_requests(request , user_id):
         })
 
 
+# View all list of universities
 @csrf_exempt
 def get_university(request,page_num):
     if request.method == 'GET':
@@ -1120,6 +1120,7 @@ def resource_editrequests(request, user_id):
             'message' : 'Unauthorized for you role'
         })
 
+
 @csrf_exempt
 def view_institute(request, user_id):
     if request.method == "GET":
@@ -1177,3 +1178,35 @@ def view_institute(request, user_id):
                 "message":"No such Institute",
                 "status":404
             })
+
+@csrf_exempt
+def view_university(request, user_id):
+    if request.method == "GET":
+        try:
+            university = Institutes.objects.filter(id = user_id)[0]
+        except:
+            return JsonResponse(data={
+                "message":"No such University",
+                "status":404
+            })
+        if university.role_id == 2:
+            university_serializer = InstituteSerializer(university)
+            institutes = Institutes.objects.filter(university = university.name, status = 1, role_id  =3).all()
+            institute_serializer = InstituteSerializer(institutes, many = True)
+            institute_data = []
+            for ins in institute_serializer.data:
+                ins = dict(ins)
+                institute_data.append(ins)
+
+            return JsonResponse(data = {
+                "status":200,
+                "message":"University data fetched",
+                "university_data":university_serializer.data,
+                "institute_data":institute_data
+            })
+        else:
+            return JsonResponse(data  ={
+                "message":"No such University",
+                "status":404
+            })
+
