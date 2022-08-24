@@ -73,7 +73,7 @@ function App() {
           <Route exact path="/labdetail/:id" element = {<><Header/><LabDetail/><Footer/></>}/>
           <Route exact path="/universityList" element={<><Header/><UniversityList/><Footer/></>}/>
           <Route exact path="/instituteList" element={<><Header/><InstituteList/><Footer/></>}/>
-          <Route exact path="/viewInstituteProfile" element={<><Header/><ViewProfileInstitute/><Footer/></>}/>
+          <Route exact path="/viewInstituteProfile/:id" element={<><Header/><ViewProfileInstitute/><Footer/></>}/>
           <Route exact path="/viewUniversityProfile" element={<><Header/><ViewUniversityProfile/><Footer/></>}/>
           <Route exact path="/viewAccountsProfile" element={<><Header/><ViewAccountsProfile/><Footer/></>}/>
           <Route exact path="/viewlabassistantprofile" element={<><Header/><ViewLabAssistantProfile/><Footer/></>}/>

@@ -1521,7 +1521,7 @@ def view_allinstitutes(request, page_num):
 
         if ('searchtext' in data):
             search = data['searchtext']
-            instituteobjs = Institutes.objects.filter(name__icontains=search).all()
+            instituteobjs = Institutes.objects.filter(name__icontains=search,role_id=3,status=1).all()
         else:
             instituteobjs = Institutes.objects.filter(role_id = 3, status = 1).all()
 
