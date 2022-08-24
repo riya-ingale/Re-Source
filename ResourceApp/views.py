@@ -14,11 +14,13 @@ import cv2
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_http_methods
 from ReSource import settings
+from ReSource.utils import Check
 import jwt
 
 @csrf_exempt
 def addresources(request,user_id,role_id,lab_id):
     if request.method == "POST":
+
         data = json.loads(request.body)
         if role_id == 4:
             t = Labs.objects.get(id = lab_id)
@@ -598,13 +600,13 @@ def cart(request,user_id):
     if request.method == "GET":
         ########### authentication ###########
         token = request.headers['Token']
-        
-        info = jwt.decode(token , settings.SECRET_KEY , 'HS256')
-        if info['exp'] < datetime.now().timestamp():
+        info = Check.check_auth(token)
+        if info['status'] == 0:
             return JsonResponse(data = {
                 'status': 401,
                 'message' : 'Unauthorized access please login'
             })
+        print(info)
         user_id = info["user_id"]
         ######################################333
         cart_items = Cart.objects.filter(workforce_id = user_id).all()
