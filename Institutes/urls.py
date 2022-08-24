@@ -7,8 +7,8 @@ urlpatterns = [
     path('pendingrequests/<id>/<role_id>' , views.allrequests),
 
     path('institute_request/<id>' , views.institution_requests),
-    path('workforce_profile/<r_num>/<l_num>' , views.workforce_profile),
-    path('institute_profile/<id>/<r_num>/<l_num>' , views.institute_proflie),
+    path('workforce_profile/<id>/<r_num>/<l_num>' , views.workforce_profile),
+    path('institute_profile/<r_num>/<l_num>' , views.institute_proflie),
 
     path('resource_addrequest/<id>', views.resource_addrequest),
     path('resource_rentapproval/<id>' , views.resource_rentapproval),
@@ -25,6 +25,6 @@ urlpatterns = [
 
     path("view_allinstitutes/<page_num>",views.view_allinstitutes, name= "view_allinstitutes"),
     path("view_institute/<user_id>", views.view_institute, name = "view_institute"),
-    path('view_university/<user_id>', views.view_university, name = "view_university")
-
+    path('view_university/<user_id>', views.view_university, name = "view_university"),
+    path('view_labAssitant/<user_id>', views.view_labAssitant, name = "view_labAssitant")
 ]

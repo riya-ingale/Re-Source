@@ -1,12 +1,14 @@
 import React,{useState,useEffect} from 'react';
 import "../Css/instituteRequest.css"
+import { Link } from "react-router-dom";
+
 
 export default function InstituteRequests() {
 
     const [res,setRes] = useState();
     const [load,setLoad] = useState(false);
     useEffect(()=>{
-        fetch("http://127.0.0.1:8000/institute/institute_request/"+sessionStorage.getItem('user_id'))
+        fetch("http://127.0.0.1:8000/institute/institute_requests/"+sessionStorage.getItem('user_id'))
         .then(response => response.json())
         .then(body =>{
             setRes(body);
@@ -17,21 +19,21 @@ export default function InstituteRequests() {
 
     const handleAccept = (e,id) =>{
         console.log(id);
-        fetch("http://127.0.0.1:8000/institute/resource_addrequest/"+sessionStorage.getItem('user_id'), {
+        fetch("http://127.0.0.1:8000/institute/institute_requests/"+sessionStorage.getItem('user_id'), {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({"id":id,'status':1})
         })
-        window.location.href ="/resource_addrequest";
+        window.location.href ="/intituterequest";
     }
     const handleReject = (e,id) =>{
         console.log(id);
-        fetch("http://127.0.0.1:8000/institute/resource_addrequest/"+sessionStorage.getItem('user_id'), {
+        fetch("http://127.0.0.1:8000/institute/institute_requests/"+sessionStorage.getItem('user_id'), {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({"id":id,'status':-1})
         })
-        window.location.href ="/resource_addrequest";
+        window.location.href ="/intituterequest";
     }
   return (
     <>
@@ -74,6 +76,8 @@ export default function InstituteRequests() {
                                 <li className="mb-2"><strong className='strlist'>Phone: </strong> 9778365432</li>
                                 <li className="mb-2"><strong className='strlist'>Email: </strong>david2445@gmail.com</li>
                                 <li className="mb-2"><strong className='strlist'>City: </strong>david2445@gmail.com</li>
+                                <li className="mb-2"><strong className='strlist'>Accrediation :</strong><a href="ReSource-FE/src/temp_accredition/sample_accrediation.pdf" download>Download</a></li>
+
                             </ul>
                         </div>
                     </div>
