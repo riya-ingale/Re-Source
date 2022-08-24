@@ -2,10 +2,12 @@ import { useState } from "react";
 import "../../Css/ugcStaffForm.css";
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import {Routes, Route, useNavigate, useLocation} from 'react-router-dom';
 
 export const UGCstaffadd = () => {
   const [fullName, setFullname] = useState("");
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const passwordGen = {
     length: 12,
@@ -48,7 +50,29 @@ export const UGCstaffadd = () => {
 
     generateTheWord(length, uppercase, lowercase, numbers, symbols);
   }
-
+  const submission = (e) =>{
+    console.log(fullName,password,email);
+    fetch('http://127.0.0.1:8000/institute/addstaff/', { //role id update require wait for landing page
+      method: 'POST',
+      headers: { "Content-Type": "application/json" ,'Authorization':sessionStorage.getItem('token')},
+      body: JSON.stringify({'name':fullName,"email_id":email,"password":password})
+    }).then(async response=>{
+      const data = await response.json();
+      console.log(data)
+      if(data['status'] == 200){
+        console.log("Successfully added a staff")
+      }})
+    navigate('/ugcProfile');
+  }
+  const handlename = (e) =>{
+    setFullname(e.target.value);
+  }
+  const handlemail = (e) =>{
+    setEmail(e.target.value);
+  }
+  const handlepass = (e) =>{
+    setPassword(e.target.value);
+  }
   return (
     <>
       <div className="container">
@@ -62,7 +86,8 @@ export const UGCstaffadd = () => {
               className="form-input"
               id="name"
               label="Name"
-              defaultValue="Name"
+              defaultValue=""
+              onChange={handlename}
             />
           </div>
           <div className="col-md-6">
@@ -71,7 +96,8 @@ export const UGCstaffadd = () => {
             className="form-input"
             id="mail"
             label="Email"
-            defaultValue="Enter Email ID"
+            defaultValue=""
+            onChange={handlemail}
           />
           </div>
         </div>
@@ -83,9 +109,10 @@ export const UGCstaffadd = () => {
             
             label="Password"
             value={password}
-            InputProps={{
-              readOnly: true,
-            }}
+            // InputProps={{
+            //   readOnly: true,
+            // }}
+            onChange={handlepass}
             
           />
           </div>
@@ -99,7 +126,7 @@ export const UGCstaffadd = () => {
           </div>
         </div>
             <div className="btn btn-primary form-btn">
-              <input className="Submit-Button" type="submit" defaultValue="Submit" />
+            <button type='button' onClick={submission}>Register</button>
             </div>
           </form>
         </div>

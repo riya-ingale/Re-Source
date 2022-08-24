@@ -156,11 +156,25 @@ def requesttopay(request):
 
 @csrf_exempt
 def payment(request):
-    print('HERE')
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    user_id = info['user_id']
+    role_id = data['role_id']
+
     if request.method == 'POST':
         data = json.loads(request.body)
         order_id = data['order_id']
-        # role = data['Role']
         order = Order.objects.get(id = order_id)
         user = order.workforce
         if order:
@@ -356,8 +370,10 @@ def handlerequest(request):
             "message": "PAYMENT DONE",
             'order_id': order.id,
             'transaction_id': order.razorpay_payment_id,
-            'amount': order.finalcost
+            'amount': order.finalcost,
+            "status":200
         }
+        return JsonResponse(data = data)
                 
                 #========sending invoice via email===============
                 # result = BytesIO()
@@ -396,15 +412,29 @@ def handlerequest(request):
                 # email.send(fail_silently=False)
 
                 # return render('path/paymentsuccess.html' , data)
-        return HttpResponse(data)
         
-    
             #return render(paymentfailed.html)
     
         # return JsonResponse('1 st try hit, Error in retrieving')
 
 @csrf_exempt
 def settle_transaction(request):
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    user_id = info['user_id']
+    role_id = data['role_id']
+    
     if request.method == "POST":
         #authenticate role_id from jwt
         data = json.loads(request.body)

@@ -59,8 +59,10 @@ export default function ViewLabs() {
   useEffect(() => {
     if(refresh){
       fetch(
-              "http://127.0.0.1:8000/lab/all/"+1
-            ).then(response=>response.json())
+              "http://127.0.0.1:8000/lab/all/"+1,{
+                headers:{'Authorization':sessionStorage.getItem('token')}
+              })
+            .then(response=>response.json())
             .then(body=>  {
               setRes(body);
               console.log(body);
@@ -82,7 +84,9 @@ export default function ViewLabs() {
 const handlePage = (e,p) =>{
   if(institute === "" && date === undefined && search === undefined){
     setcurrentPage(p);
-    fetch("http://127.0.0.1:8000/lab/all/"+p)
+    fetch("http://127.0.0.1:8000/lab/all/"+p,{
+      headers:{'Authorization':sessionStorage.getItem('token')}
+    })
   .then(response=>response.json())
             .then(body=>  {
               setRes(body);
@@ -115,7 +119,7 @@ const handlePage = (e,p) =>{
     console.log(filterdata)
     fetch('http://127.0.0.1:8000/lab/all/'+p, {
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",'Authorization':sessionStorage.getItem('token')},
       body: JSON.stringify(filterdata)
     }).then(response=>response.json())
             .then(body=>  {
