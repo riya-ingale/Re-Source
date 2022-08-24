@@ -445,6 +445,7 @@ def getdetails(request,r_id):
 
     # After sending date and units required this POST will show the slots along with resource data  
     elif request.method == "POST":
+        print("HERE I am")
         resourceobj = Resources.objects.filter(id  = r_id)[0]
         serializer = ResourcesSerializer(resourceobj)
 
@@ -690,7 +691,7 @@ def cart(request):
         role_id = info['role_id']
         user_id = info['user_id']
         ######################################333
-        cart_items = Cart.objects.filter(workforce_id = user_id).all()
+        cart_items = Cart.objects.filter(workforce_id = user_id, is_approved__in = [-1,0,1]).all()
         if cart_items:
             cart_items = CartSerializer(cart_items, many=True)
             items = []
