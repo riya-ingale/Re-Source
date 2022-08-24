@@ -52,6 +52,9 @@ const Info = styled.div`
 const Product = styled.div`
   display: flex;
   justify-content: space-between;
+  border: 1px solid #f2f8f9;
+  margin: 10px;
+  box-shadow: 0 5px 7px -1px rgba(51, 51, 51, 0.23);
   ${mobile({ flexDirection: "column" })}
 `;
 
@@ -62,6 +65,7 @@ const ProductDetail = styled.div`
 
 const Image = styled.img`
   width: 200px;
+  ${mobile({ flexDirection: "" })}
 `;
 
 const Details = styled.div`
@@ -69,6 +73,7 @@ const Details = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  ${mobile({ flexDirection: "row" })}
 `;
 
 const ProductName = styled.span``;
@@ -122,6 +127,10 @@ const Summary = styled.div`
   border-radius: 10px;
   padding: 20px;
   height: 80%;
+  border: 1px solid #f2f8f9;
+  margin: 10px;
+  box-shadow: 0 5px 7px -1px rgba(51, 51, 51, 0.23);
+  
 `;
 
 const SummaryTitle = styled.h1`
@@ -146,6 +155,7 @@ const Button = styled.button`
   background-color: #1ca9c9;
   color: white;
   font-weight: 600;
+  border-radius: 20px;
 `;
 
 const Cart = () => {
