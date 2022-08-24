@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'; 
 
+
 export default function UniversityProfile() {
   const [loader,setLoader] = useState(false);
   const[res,setRes] = useState();
@@ -69,9 +70,11 @@ export default function UniversityProfile() {
         <div className="card profilecards workforce-list">
             <div className="card__details">
               { res.institute_data.map((item,index)=>(
+              <a href={'/viewInstituteProfile/'+item.id}>
             <article class="leaderboard__profile">
               <span class="leaderboard__name">{item.name}</span>
             </article>
+            </a>
               ))}
             </div>
             </div>
