@@ -191,7 +191,7 @@ def profile(request, id , role_id):
 
 
 @csrf_exempt      
-def institute_proflie(request, id, r_num , l_num):
+def institute_proflie(request, r_num , l_num):
     if request.method == 'GET':
         token = request.headers['Token']
         info = Check.check_auth(token)
@@ -707,15 +707,16 @@ def resource_addrequest(request , id):
 
 @csrf_exempt
 def resource_rentapproval(request , id):
+    token = request.headers['Token']
+    info = Check.check_auth(token)
+
+    if info['status'] == 0:
+        return JsonResponse('Unauthorized access please login')
+
+    role_id = info['role_id']
+    id = info['user_id']
+    
     if request.method == 'POST':
-        token = request.headers['Token']
-        info = Check.check_auth(token)
-
-        if info['status'] == 0:
-            return JsonResponse('Unauthorized access please login')
-
-        role_id = info['role_id']
-        id = info['user_id']
         
         if role_id == 3:
             data = json.loads(request.body)
@@ -777,7 +778,7 @@ def workforce_requests(request , user_id):
     if request.method == "GET":
         if role == 3:
             workforce_data = []
-            workforces  = WorkForce.objects.filter(status = 0, institute = user).all()
+            workforces  = WorkForce.objects.filter(status = 0, institute = user_id)
             if workforces:
                 serializer = WorkForceSerializer(workforces,many = True)
                 for item in serializer.data:
@@ -801,14 +802,14 @@ def workforce_requests(request , user_id):
         })
     # POST route to approve/ disapprove the workforce
     elif request.method == "POST":
-        try:
-            user = Institutes.objects.filter(id = int(user_id))[0]
-        except:
-            return JsonResponse(data = {
-                'status': 401,
-                'message' : 'Unauthorized for you role'
-            })
-        role = user.role_id
+        # try:
+        #     user = Institutes.objects.filter(id = int(user_id))[0]
+        # except:
+        #     return JsonResponse(data = {
+        #         'status': 401,
+        #         'message' : 'Unauthorized for you role'
+        #     })
+        # role = rol
         if role == 3:
             data = json.loads(request.body)
             status = data['status']                # 1 for approved, -1 for rejected

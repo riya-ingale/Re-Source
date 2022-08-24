@@ -7,7 +7,7 @@ urlpatterns = [
     path('pendingrequests/<id>/<role_id>' , views.allrequests),
 
     path('institute_request/<id>' , views.institution_requests),
-    path('workforce_profile/<id>/<r_num>/<l_num>' , views.workforce_profile),
+    path('workforce_profile/<r_num>/<l_num>' , views.workforce_profile),
     path('institute_profile/<id>/<r_num>/<l_num>' , views.institute_proflie),
 
     path('resource_addrequest/<id>', views.resource_addrequest),
