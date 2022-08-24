@@ -24,6 +24,9 @@ export default function UGCProfile() {
   const pendingreq = (e) =>{
     window.location.href = "/univrequest"
   }
+  const addstaff = (e) =>{
+    window.location.href = "/ugcstaffform"
+  }
   return (
     <>
     {loader&&res.status===200?
@@ -48,7 +51,7 @@ export default function UGCProfile() {
    </div>
    <div className='container details-container'>
    <div className='row'>
-     <div className='col-md-6'>
+     <div className='col-md-3'>
      <div className="card profilecards">
          <div className="card__details">
          <h3>Profile details <Link to="/"><EditIcon></EditIcon></Link></h3>
@@ -56,17 +59,30 @@ export default function UGCProfile() {
          {res.data.city?<li className="mb-2"><strong className='strlist'>City: </strong> {res.data.city}</li>:<div></div>}
          {res.data.state?<li className="mb-2"><strong className='strlist'>State: </strong>{res.data.state}</li>:<div></div>}
          {res.data.pincode?<li className="mb-2"><strong className='strlist'>Pincode: </strong>{res.data.pincode}</li>:<div></div>}
-           <li className="mb-2"><strong className='strlist'>Email: </strong>421202</li>
+           <li className="mb-2"><strong className='strlist'>Email: </strong>{res.data.email}</li>
            {res.data.phone_no?<li className="mb-2"><strong className='strlist'>Phone Number: </strong>{res.data.phone_no}</li>:<div></div>}
            {/* <li className="mb-2"><strong className='strlist'>Ammount of Institutes: </strong>{res.institute_data.length}</li> */}
          </ul>
          </div>
          </div>
      </div>
+     <div className='col-md-4'>
+     {/* button className='btn btn-primary addstaffbtn' onClick={pendingreq}>Add new Staff<AddCircleRoundedIcon></AddCircleRoundedIcon></button> */}
+     <h3>Approved Universities</h3>
+     <div className="card profilecards workforce-list">
+         <div className="card__details">
+           { res.universities.map((item,index)=>(
+         <article class="leaderboard__profile">
+           <span class="leaderboard__name">{item.name}</span>
+         </article>
+           ))}
+         </div>
+         </div>
+     </div>
      
-     <div className='col-md-6'>
+     <div className='col-md-5'>
      <button className='btn btn-primary' onClick={pendingreq}>Pending Universities<AddCircleRoundedIcon></AddCircleRoundedIcon></button>
-     <button className='btn btn-primary addstaffbtn' onClick={pendingreq}>Add new Staff<AddCircleRoundedIcon></AddCircleRoundedIcon></button>
+     <button className='btn btn-primary addstaffbtn' onClick={addstaff}>Add new Staff<AddCircleRoundedIcon></AddCircleRoundedIcon></button>
      <br/>
      <br/>
      <h3>Approved UGC Staffs</h3>
