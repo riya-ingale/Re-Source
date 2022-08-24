@@ -1,4 +1,3 @@
-
 from Institutes.serializers import *
 from ResourceApp.serializers import *
 from django.http.response import JsonResponse
@@ -9,6 +8,17 @@ import json
 import datetime
 from django.core.paginator import Paginator
 import cv2
+import shutil
+
+def paster(imgs):
+    leng = 0
+    for img in imgs:
+        # print(img[0])
+        temp = cv2.imread(img[0])
+        cv2.imwrite("./ReSource-FE/src/temp_images/temp"+str(leng+1)+".jpeg", temp)
+        # file_name.append("../temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]))
+        leng+=1
+    return
 
 # Create your views here.
 @csrf_exempt
@@ -149,15 +159,7 @@ def profile(request, id , role_id):
             'message' : 'Nahi jaga hai, role badal'
         })              
 
-def paster(imgs):
-    leng = 0
-    for img in imgs:
-        # print(img[0])
-        temp = cv2.imread(img[0])
-        cv2.imwrite("./ReSource-FE/src/temp_images/temp"+str(leng+1)+".jpeg", temp)
-        # file_name.append("../temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]))
-        leng+=1
-    return
+
 
 @csrf_exempt      
 def institute_proflie(request, id, r_num , l_num):
@@ -414,6 +416,9 @@ def allrequests(request,id, role_id):
             'status': 404,
             'message' : 'page not found'
         })
+
+
+
 
 # post route for request acceptance 
 @csrf_exempt
@@ -878,10 +883,22 @@ def add_ugcstaff(request):
             return JsonResponse('Data Invalid')
 
 
+def sop_paster(files):
+    for f in files:
+        print(f)
+        shutil.copy(f[1:], './ReSource-FE/src/temp_sop/')
+    return
+
+def accredition_paster(files):
+    for f in files:
+        print(f)
+        shutil.copy(f[1:], './ReSource-FE/src/temp_accredition/')
+    return
+
 #Institute Requests Get and Post route
 @csrf_exempt
 def institute_requests(request , user_id):
-    # GET route to show all the workforce requests to the institute role
+    # GET route to show all the institute requests to the university role
     if request.method == "GET":
         try:
             university = Institutes.objects.filter(id = int(user_id))[0]
@@ -892,17 +909,32 @@ def institute_requests(request , user_id):
             })
         role = university.role_id
         if role == 2:
+            sop = []
+            accredition = []
             institute_data = []
             institutes  = Institutes.objects.filter(status = 0, university = university.name, role_id = 3).all()
             if institutes:
                 serializer = InstituteSerializer(institutes,many = True)
                 for item in serializer.data:
                     item = dict(item)
+                    if item['sop']:
+                        sop.append(item['sop'])
+                    if item['accredition']:
+                        accredition.append(item['accredition'])
                     institute_data.append(item)
+                print("SOP - ",sop)
+                print("accredition - ",accredition)
+                if sop:
+                    sop_paster(sop)
+                if accredition:    
+                    accredition_paster(accredition)
+
                 return JsonResponse(data = {
                 'status': 200,
                 'message' : 'Institute Requests Fetched',
-                "data" : institute_data
+                "data" : institute_data,
+                'sop' : sop,
+                'accredition':accredition
                 })
             else:
                 return JsonResponse(data = {
@@ -957,6 +989,95 @@ def institute_requests(request , user_id):
         })
 
 
+@csrf_exempt
+def university_requests(request , user_id):
+    # GET route to show all the institute requests to the university role
+    if request.method == "GET":
+        try:
+            ugc = Institutes.objects.filter(id = int(user_id))[0]
+        except:
+            return JsonResponse(data = {
+                'status': 401,
+                'message' : 'Not authorised for your role'
+            })
+        role = ugc.role_id
+        if role == 1:
+            university_data = []
+            sop = []
+            accredition = []
+            universities  = Institutes.objects.filter(status = 0, role_id = 2).all()
+            if universities:
+                serializer = InstituteSerializer(universities,many = True)
+                for item in serializer.data:
+                    item = dict(item)
+                    if item['sop']:
+                        sop.append(item['sop'])
+                    if item['accredition']:
+                        accredition.append(item['accredition'])
+                    university_data.append(item)
+                    
+                print("SOP - ",sop)
+                print("accredition - ",accredition)
+                if sop:
+                    sop_paster(sop)
+                if accredition:    
+                    accredition_paster(accredition)
+                    university_data.append(item)
+                return JsonResponse(data = {
+                'status': 200,
+                'message' : 'University Requests Fetched',
+                "data" : university_data
+                })
+            else:
+                return JsonResponse(data = {
+                'status': 404,
+                'message' : 'No Pending University Requests'
+                })
+        else:
+            return JsonResponse(data = {
+            'status': 401,
+            'message' : 'Unauthorized for you role'
+        })
+        
+    # POST route to approve/ disapprove the workforce
+    elif request.method == "POST":
+        try:
+            ugc = Institutes.objects.filter(id = int(user_id))[0]
+        except:
+            return JsonResponse(data = {
+                'status': 401,
+                'message' : 'Unauthorized for you role'
+            })
+        role = ugc.role_id
+        if role == 1:
+            data = json.loads(request.body)
+            status = data['status']                # 1 for approved, -1 for rejected
+            university_id = data["university_id"]    # the one who is approved or rejected
+            try:
+                university = Institutes.objects.filter(id = int(university_id))[0]
+            except:
+                return JsonResponse(data = {
+                'status': 400,
+                'message' : 'University id doesnt exist'
+            })
+            action = ["",'approved', 'rejected']
+            university.status = status
+            university.save()
+            serializer  = InstituteSerializer(university)
+            return JsonResponse(data = {
+            'status': 200,
+            'message' : f'University {university.name} is {action[status]}',
+            "data" : serializer.data
+            })
+        else:
+            return JsonResponse(data = {
+            'status': 401,
+            'message' : 'Unauthorized for you role'
+        })
+
+
+
+# View all list of universities
 @csrf_exempt
 def get_university(request,page_num):
     if request.method == 'GET':
@@ -1120,6 +1241,7 @@ def resource_editrequests(request, user_id):
             'message' : 'Unauthorized for you role'
         })
 
+
 @csrf_exempt
 def view_institute(request, user_id):
     if request.method == "GET":
@@ -1177,3 +1299,35 @@ def view_institute(request, user_id):
                 "message":"No such Institute",
                 "status":404
             })
+
+@csrf_exempt
+def view_university(request, user_id):
+    if request.method == "GET":
+        try:
+            university = Institutes.objects.filter(id = user_id)[0]
+        except:
+            return JsonResponse(data={
+                "message":"No such University",
+                "status":404
+            })
+        if university.role_id == 2:
+            university_serializer = InstituteSerializer(university)
+            institutes = Institutes.objects.filter(university = university.name, status = 1, role_id  =3).all()
+            institute_serializer = InstituteSerializer(institutes, many = True)
+            institute_data = []
+            for ins in institute_serializer.data:
+                ins = dict(ins)
+                institute_data.append(ins)
+
+            return JsonResponse(data = {
+                "status":200,
+                "message":"University data fetched",
+                "university_data":university_serializer.data,
+                "institute_data":institute_data
+            })
+        else:
+            return JsonResponse(data  ={
+                "message":"No such University",
+                "status":404
+            })
+
