@@ -154,12 +154,11 @@ const Cart = () => {
   const [isloaded,setIsloaded] = useState(false);
   useEffect(() => {
  
-      fetch(
-              "http://127.0.0.1:8000/resource/cart/"+sessionStorage.getItem('user_id')
-            ).then(response=>response.json())
-            .then(body=>  {
-              setRes(body);
-              setIsloaded(true);
+      fetch("http://127.0.0.1:8000/resource/cart/",
+      {headers:{'Authorization':sessionStorage.getItem('token')}
+      }).then(response=>response.json())
+      .then(body=>  {setRes(body);
+      setIsloaded(true);
     })
 
             // setPageCount(resource.total_pages); 
@@ -171,9 +170,9 @@ const Cart = () => {
   }
 
   const handleremove = (e,cart_id) =>{
-    fetch("http://127.0.0.1:8000/resource/removeitem/"+sessionStorage.getItem('user_id')
+    fetch("http://127.0.0.1:8000/resource/removeitem/"
     ,{method: 'POST',
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json",'Authorization':sessionStorage.getItem('token') },
     body: JSON.stringify({"c_id":cart_id})
   }
     ).then(async response=>{
@@ -182,13 +181,12 @@ const Cart = () => {
       if(data['status'] == 200){
         console.log("Success removed a resource")
       }})
-      navigate('/cart');
+      window.location.href = '/cart';
   } 
   const handlepayment = () =>{
     fetch("http://127.0.0.1:8000/placeorder/requesttopay/"
     ,{method: 'POST',
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({"user_id":sessionStorage.getItem('user_id')})
+    headers: { "Content-Type": "application/json",'Authorization':sessionStorage.getItem('token')}
   }
     ).then(async response=>{
       const data = await response.json();

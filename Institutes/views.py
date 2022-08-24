@@ -12,6 +12,31 @@ import cv2
 import shutil
 from ReSource.utils import Check
 
+from django.core.files import File
+from django.http import HttpResponse
+from rest_framework.decorators import api_view
+from ReSource.settings import BASE_DIR, MEDIA_ROOT
+@api_view(['GET'])
+def DownloadPDF(self,type,filename):
+    print(filename,type)
+    if type == 'acc':
+        path_to_file = MEDIA_ROOT +"/accredition"+ "/"+filename
+        
+        f = open(path_to_file, 'rb')
+        pdfFile = File(f)
+        response = HttpResponse(pdfFile.read())
+        response['Content-Disposition'] = 'attachment'
+        return response
+    else:
+        path_to_file = MEDIA_ROOT +"/sop"+ "/"+filename
+        
+        f = open(path_to_file, 'rb')
+        pdfFile = File(f)
+        response = HttpResponse(pdfFile.read())
+        response['Content-Disposition'] = 'attachment'
+        return response
+
+
 def paster(imgs):
     leng = 0
     for img in imgs:
@@ -24,8 +49,8 @@ def paster(imgs):
 
 # Create your views here.
 @csrf_exempt
-def profile(request, id , role_id):
-    token = request.headers['Token']
+def profile(request):
+    token = request.headers['Authorization']
     info = Check.check_auth(token)
     if info['status'] == 0:
         return JsonResponse('Unauthorized access please login')
@@ -986,6 +1011,20 @@ def accredition_paster(files):
 #Institute Requests Get and Post route
 @csrf_exempt
 def institute_requests(request):
+<<<<<<< HEAD
+=======
+    try:
+        token = request.headers['Authorization']
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse('Unauthorized access please login')
+        user_id = info['user_id']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+>>>>>>> 7c2ae050c992a3650a35f70c7d69cc7bb493985f
     # GET route to show all the institute requests to the university role
     try:
         token = request.headers['Authorization']
@@ -1090,7 +1129,18 @@ def institute_requests(request):
 
 # View all newly registerd universities for approval
 @csrf_exempt
-def university_requests(request , user_id):
+def university_requests(request):
+    try:
+        token = request.headers['Authorization']
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse('Unauthorized access please login')
+        user_id = info['user_id']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
     # GET route to show all the institute requests to the university role
     token = request.headers['Token']
     info = Check.check_auth(token)

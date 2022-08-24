@@ -60,8 +60,10 @@ export default function ViewResources() {
   useEffect(() => {
     if(refresh){
       fetch(
-              "http://127.0.0.1:8000/resource/allres/"+1
-            ).then(response=>response.json())
+              "http://127.0.0.1:8000/resource/allres/"+1,{
+                headers:{'Authorization':sessionStorage.getItem('token')}
+              })
+            .then(response=>response.json())
             .then(body=>  {
               setRes(body);
               console.log(body);
@@ -83,7 +85,9 @@ export default function ViewResources() {
 const handlePage = (e,p) =>{
   if(institute === "" && date === undefined && search === undefined){
     setcurrentPage(p);
-    fetch("http://127.0.0.1:8000/resource/allres/"+p)
+    fetch("http://127.0.0.1:8000/resource/allres/"+p,{
+      headers:{'Authorization':sessionStorage.getItem('token')}
+    })
   .then(response=>response.json())
             .then(body=>  {
               setRes(body);
@@ -116,7 +120,7 @@ const handlePage = (e,p) =>{
     console.log(filterdata)
     fetch('http://127.0.0.1:8000/resource/allres/'+p, {
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",'Authorization':sessionStorage.getItem('token')},
       body: JSON.stringify(filterdata)
     }).then(response=>response.json())
             .then(body=>  {
