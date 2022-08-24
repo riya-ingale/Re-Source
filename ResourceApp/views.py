@@ -13,6 +13,8 @@ import base64
 import cv2
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_http_methods
+from ReSource import settings
+import jwt
 
 @csrf_exempt
 def addresources(request,user_id,role_id,lab_id):
@@ -594,6 +596,17 @@ def addslots(request):
 @require_http_methods(["GET"])
 def cart(request,user_id):
     if request.method == "GET":
+        ########### authentication ###########
+        token = request.headers['Token']
+        
+        info = jwt.decode(token , settings.SECRET_KEY , 'HS256')
+        if info['exp'] < datetime.now().timestamp():
+            return JsonResponse(data = {
+                'status': 401,
+                'message' : 'Unauthorized access please login'
+            })
+        user_id = info["user_id"]
+        ######################################333
         cart_items = Cart.objects.filter(workforce_id = user_id).all()
         if cart_items:
             cart_items = CartSerializer(cart_items, many=True)

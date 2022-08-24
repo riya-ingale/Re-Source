@@ -13,7 +13,10 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
 import uuid
 from django.conf import settings
+from datetime import datetime, timedelta
 import json
+import jwt
+from ReSource import settings
 # Create your views here.
 # @csrf_exempt
 # def send_mail_after_registration(request):
@@ -70,21 +73,30 @@ def register(request,id=0):
             return HttpResponse("Registration FAILED")
 
 @csrf_exempt
-def signup(request,id = 0):
+def signup(request,id):
      if request.method == "POST":
+        print('HI')
+        print(id)
         try:
             logindata = json.loads(request.body)
             username = logindata['username']
             password = logindata['password']
             if id in [1,2,3]:
+                print('HII')
                 try:
                     t = Institutes.objects.get(email = username)
                     if t.status != 1:
                         return JsonResponse({'status':403,"message":"Verify Email First"})
                     # if check_password(password, t.password):
                     if password == t.password:
-                        request.session['username'] = username   
-                        return JsonResponse({'status':200,'username':username,'Role':id,'user_id':t.id})
+                        dt = datetime.now() + timedelta(days = 10)
+                        token_data = {'user_id':t.id , 'role_id':id, 'exp': dt.timestamp()}
+                        key = settings.SECRET_KEY
+                        token = jwt.encode(token_data, key, 'HS256')
+                        request.session['username'] = username
+         
+                          
+                        return JsonResponse({'status':200,'username':username,'Role':id,'user_id':t.id , 'token':token})
                     else:
                         return JsonResponse({'status':403,"message":"Password Incorrect"}) 
                 except:
@@ -95,8 +107,12 @@ def signup(request,id = 0):
                     if t.status != 1:
                         return JsonResponse({'status':403,"message":"Verify Email First"})
                     if password == t.password:
+                        dt = datetime.now() + timedelta(days = 10)
+                        token_data = {'user_id':t.id , 'role_id':id, 'exp': dt.timestamp()}
+                        key = settings.SECRET_KEY
+                        token = jwt.encode(token_data, key, 'HS256')
                         request.session['username'] = username   
-                        return JsonResponse({'status':200,'username':username,'Role':id,'user_id':t.id})
+                        return JsonResponse({'status':200,'username':username,'Role':id,'user_id':t.id , 'token':token})
                     else:
                         return JsonResponse({'status':403,"message":"Password Incorrect"}) 
                 except:
@@ -106,9 +122,14 @@ def signup(request,id = 0):
                     t = Students.objects.get(email = username)
                     if t.status != 1:
                         return JsonResponse({'status':403,"message":"Verify Email First"})
+                        
                     if password == t.password:
+                        dt = datetime.now() + timedelta(days = 10)
+                        token_data = {'user_id':t.id , 'role_id':id ,'exp': dt.timestamp()}
+                        key = settings.SECRET_KEY
+                        token = jwt.encode(token_data, key, 'HS256')
                         request.session['username'] = username   
-                        return JsonResponse({'status':200,'username':username,'Role':id,'user_id':t.id})
+                        return JsonResponse({'status':200,'username':username,'Role':id,'user_id':t.id , 'token':token})
                     else:
                         return JsonResponse({'status':403,"message":"Password Incorrect"}) 
                 except:
