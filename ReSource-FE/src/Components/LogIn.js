@@ -75,6 +75,9 @@ export default class LogIn extends Component {
         else if(data['Role']===2){
           window.location.href = '/universityProfile'
         }
+        else if (data['Role']===1){
+          window.location.href = '/ugcProfile'
+        }
         // const cookies = new Cookies();
         // cookies.set('username', data['username'], { path: '/' });
         // window.location.href = '/'
