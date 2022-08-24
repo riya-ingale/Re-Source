@@ -56,10 +56,10 @@ export default function Cost() {
         </div>
       </div>
       <div className="w-full mx-2 flex-1">
-      <div className="font-bold h-6 mt-3 text-gray-500 text-xs leading-8 uppercase">
-            
+      <div className="font-bold h-6 mt-3 text-gray-500 text-xs leading-8 uppercase"> 
         </div>
       </div>
+
       <div className="w-full mx-2 flex-1">
         <div className="font-bold h-6 mt-3 text-gray-500 text-xs leading-8 uppercase">
           Resource Quantity
@@ -75,6 +75,7 @@ export default function Cost() {
           />
         </div>
       </div>
+
       <div className="w-full mx-2 flex-1">
         <div className="font-bold h-6 mt-3 text-gray-500 text-xs leading-8 uppercase">
           Required Approval
@@ -84,6 +85,7 @@ export default function Cost() {
           <input  className="p-1 px-2 appearance-none outline-none text-gray-800 form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"   onChange={handleChange}></input>
         </div>
       </div>
+
     </div>
   );
 }
