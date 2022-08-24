@@ -2,6 +2,7 @@ import React from "react";
 import "../Css/header.css";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Link } from 'react-router-dom';
+import logo from "../Images/logo.png"
 
 export default function Header() {
   return (
@@ -9,8 +10,11 @@ export default function Header() {
       {/* <!-- Navigation --> */}
       <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div className="container">
-          <Link className="navbar-brand portalname" to="#">
-            RE-SOURCE
+          <Link className="navbar-brand" to="/">
+            <img className="logo" src={logo}/>
+          </Link>
+          <Link className="navbar-brand portalname" to="/">
+            Re-Source
           </Link>
           <button
             className="navbar-toggler"
@@ -25,7 +29,7 @@ export default function Header() {
           </button>
           <div className="collapse navbar-collapse" id="navbarResponsive">
             <ul className="navbar-nav ms-auto">
-              <li className="nav-item active">
+              <li className="nav-item">
                 <Link className="nav-link" to="#">
                   Home
                 </Link>

@@ -193,7 +193,7 @@ def profile(request, id , role_id):
 @csrf_exempt      
 def institute_proflie(request, r_num , l_num):
     if request.method == 'GET':
-        token = request.headers['Token']
+        token = request.headers['Authorization']
         info = Check.check_auth(token)
 
         if info['status'] == 0:

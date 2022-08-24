@@ -12,7 +12,7 @@ export default function InstituteProfile() {
   const[res,setRes] = useState();
   useEffect(() =>{
     fetch("http://127.0.0.1:8000/institute/institute_profile/"+r_id+"/"+l_id,{
-      headers:{'token':sessionStorage.getItem('token')}
+      headers:{'Authorization':sessionStorage.getItem('token')}
     })
     .then(response=>response.json())
     .then(body=>

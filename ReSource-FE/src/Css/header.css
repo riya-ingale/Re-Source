@@ -33,6 +33,18 @@
 }
 .servicebtn {
     border: none !important;
+    padding-left: 0% !important;
+}
+.social-Links {
+    color: #caced1;
+    text-decoration: none;
+}
+.social-Links:hover {
+    color: #caced1;
+    text-decoration: none;
+}
+.logo {
+    /* height: 32px; */
 }
 /* RESPONSIVE DESIGNS */
 /* // Small devices (landscape phones, 576px and up) */
@@ -42,6 +54,11 @@
         width: 100vw;
         overflow-x: hidden !important;
         overflow-y: auto;
+    }
+    .portalname {
+        font-family: 'Bree Serif', serif;
+        font-size: 1.7em;
+        font-weight: bolder;
     }
 }
 
@@ -53,6 +70,7 @@
         overflow-x: hidden !important;
         overflow-y: auto;
     }
+    
  }
 
 /* // Large devices (desktops, 992px and up)

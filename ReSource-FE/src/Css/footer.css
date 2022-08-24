@@ -12,15 +12,18 @@
 .card{
     background-color: #F8F9FB ;
 }
+.link-explore {
+    color: #caced1;
+}
 
-p{
+/* p{
     font-size: calc(12px + (14 - 12) * ((100vw - 360px) / (1600 - 360))) !important; 
-    display: fkex;
-}
+    display: flex;
+} */
 
-h3{
+/* h3{
     font-size: calc(24px + (30 - 24) * ((100vw - 360px) / (1600 - 360))) !important; 
-}
+} */
 
 .social{
     font-size: 21px !important; 
