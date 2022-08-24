@@ -4,6 +4,7 @@
 
 .resource-card{
   background-color: #ffffff !important;
+  margin-top: 130px;
 }
 .wrapper {
   display: flex;

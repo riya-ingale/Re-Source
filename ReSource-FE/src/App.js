@@ -45,7 +45,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Indexbody/>}/>{/* Pending */}
           <Route exact path="/login" element={<><LogIn/></>}/>
-          <Route exact path="/addres" element={<AddResources/>}/>
+          <Route exact path="/addres" element={<><Header/><AddResources/><Footer/></>}/>
           <Route exact path="/header" element={<Header/>}/>
           <Route exact path="/footer" element={<Footer/>}/>
           <Route exact path="/viewres" element={<><Header/><ViewResources/><Footer/></>}/>
