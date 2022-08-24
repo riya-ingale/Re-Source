@@ -845,15 +845,25 @@ def workforce_requests(request , user_id):
 @csrf_exempt
 def lab_requests(request , user_id):
     # GET route to show all the workforce requests to the institute role
+    token = request.headers['Token']
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse('Unauthorized access please login')
+    role = info['role_id']
+    user_id = info['user_id']
+    
+    user = Institutes.objects.get(id = user_id)
+    role = user.role_id
+
     if request.method == "GET":
-        try:
-            user = Institutes.objects.get(id = user_id)
-        except:
-            return JsonResponse(data = {
-                'status': 401,
-                'message' : 'No such Institute'
-            })
-        role = user.role_id
+        # try:
+        #     user = Institutes.objects.get(id = user_id)
+        # except:
+        #     return JsonResponse(data = {
+        #         'status': 401,
+        #         'message' : 'No such Institute'
+        #     })
+        # role = user.role_id
         if role == 3:
             lab_data = []
             labs  = Labs.objects.filter(status = 0, institute_id = user.id)
@@ -923,6 +933,16 @@ def lab_requests(request , user_id):
 
 @csrf_exempt
 def add_ugcstaff(request):
+    token = request.headers['Token']
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse('Unauthorized access please login')
+    role = info['role_id']
+    if role !=1 : 
+        return JsonResponse(data = {
+            'status':401,
+            'message': 'Role has no access',
+        })
     if request.method == "POST":
         data = json.loads(request.body)
         serializer = WorkForceSerializer(data = data)
@@ -952,17 +972,25 @@ def accredition_paster(files):
 
 #Institute Requests Get and Post route
 @csrf_exempt
-def institute_requests(request , user_id):
+def institute_requests(request):
     # GET route to show all the institute requests to the university role
+    token = request.headers['Token']
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse('Unauthorized access please login')
+    role = info['role_id']
+    user_id = info['user_id']
+    
+    university = Institutes.objects.get(id = user_id)
     if request.method == "GET":
-        try:
-            university = Institutes.objects.filter(id = int(user_id))[0]
-        except:
-            return JsonResponse(data = {
-                'status': 401,
-                'message' : 'No such University'
-            })
-        role = university.role_id
+        # try:
+        #     university = Institutes.objects.filter(id = int(user_id))[0]
+        # except:
+        #     return JsonResponse(data = {
+        #         'status': 401,
+        #         'message' : 'No such University'
+        #     })
+        # role = university.role_id
         if role == 2:
             sop = []
             accredition = []
@@ -1004,14 +1032,14 @@ def institute_requests(request , user_id):
         
     # POST route to approve/ disapprove the workforce
     elif request.method == "POST":
-        try:
-            university = Institutes.objects.filter(id = int(user_id))[0]
-        except:
-            return JsonResponse(data = {
-                'status': 401,
-                'message' : 'Unauthorized for you role'
-            })
-        role = university.role_id
+        # try:
+        #     university = Institutes.objects.filter(id = int(user_id))[0]
+        # except:
+        #     return JsonResponse(data = {
+        #         'status': 401,
+        #         'message' : 'Unauthorized for you role'
+        #     })
+        # role = university.role_id
         if role == 2:
             data = json.loads(request.body)
             status = data['status']                # 1 for approved, -1 for rejected
@@ -1048,15 +1076,25 @@ def institute_requests(request , user_id):
 @csrf_exempt
 def university_requests(request , user_id):
     # GET route to show all the institute requests to the university role
+    token = request.headers['Token']
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse('Unauthorized access please login')
+    role = info['role_id']
+    user_id = info['user_id']
+    
+    ugc = Institutes.objects.get(id = user_id)
+    role = ugc.role_id
+
     if request.method == "GET":
-        try:
-            ugc = Institutes.objects.filter(id = int(user_id))[0]
-        except:
-            return JsonResponse(data = {
-                'status': 401,
-                'message' : 'Not authorised for your role'
-            })
-        role = ugc.role_id
+        # try:
+        #     ugc = Institutes.objects.filter(id = int(user_id))[0]
+        # except:
+        #     return JsonResponse(data = {
+        #         'status': 401,
+        #         'message' : 'Not authorised for your role'
+        #     })
+        # role = ugc.role_id
         if role == 1:
             university_data = []
             sop = []
@@ -1135,6 +1173,10 @@ def university_requests(request , user_id):
 # View all list of universities
 @csrf_exempt
 def get_university(request,page_num):
+    token = request.headers['Token']
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse('Unauthorized access please login')
     if request.method == 'GET':
         # List of institutes,city to populate in the drop down along with their ids in asceding order of their name
 
@@ -1213,15 +1255,25 @@ def get_university(request,page_num):
 # View all edit requests of resources
 @csrf_exempt
 def resource_editrequests(request, user_id):
+    token = request.headers['Token']
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse('Unauthorized access please login')
+    role = info['role_id']
+    user_id = info['user_id']
+    
+    institute = Institutes.objects.get(id = user_id)
+
+    
     if request.method == "GET":
-        try:
-            institute = Institutes.objects.filter(id = int(user_id))[0]
-        except:
-            return JsonResponse(data = {
-                'status': 401,
-                'message' : 'No such Institute'
-            })
-        role = institute.role_id
+        # try:
+        #     institute = Institutes.objects.filter(id = int(user_id))[0]
+        # except:
+        #     return JsonResponse(data = {
+        #         'status': 401,
+        #         'message' : 'No such Institute'
+        #     })
+        # role = institute.role_id
         if role == 3:
             labs = Labs.objects.filter(institute = institute).all()
             resources = Resources.objects.filter(lab__in = labs, edit_approval = 0, is_approved = 1).all()
@@ -1257,14 +1309,14 @@ def resource_editrequests(request, user_id):
             'message' : 'Unauthorized for you role'
         })
     elif request.method == "POST":
-        try:
-            institute = Institutes.objects.filter(id = int(user_id))[0]
-        except:
-            return JsonResponse(data = {
-                'status': 401,
-                'message' : 'Unauthorized for you role'
-            })
-        role = institute.role_id
+        # try:
+        #     institute = Institutes.objects.filter(id = int(user_id))[0]
+        # except:
+        #     return JsonResponse(data = {
+        #         'status': 401,
+        #         'message' : 'Unauthorized for you role'
+        #     })
+        # role = institute.role_id
         if role == 3:
             data = json.loads(request.body)
             print("Data - ",data)
@@ -1299,6 +1351,11 @@ def resource_editrequests(request, user_id):
 
 @csrf_exempt
 def view_allinstitutes(request, page_num):
+    token = request.headers['Token']
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse('Unauthorized access please login')
+
     if request.method == 'GET':
 
         instituteobjs = Institutes.objects.filter(role_id = 3, status = 1).all()
@@ -1384,6 +1441,12 @@ def view_allinstitutes(request, page_num):
 # View a Single Institute
 @csrf_exempt
 def view_institute(request, user_id):
+
+    token = request.headers['Token']
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse('Unauthorized access please login')
+    
     if request.method == "GET":
         try:
             institute = Institutes.objects.filter(id = user_id)[0]
@@ -1443,6 +1506,11 @@ def view_institute(request, user_id):
 # View a single University
 @csrf_exempt
 def view_university(request, user_id):
+    token = request.headers['Token']
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse('Unauthorized access please login')
+    
     if request.method == "GET":
         try:
             university = Institutes.objects.filter(id = user_id)[0]
