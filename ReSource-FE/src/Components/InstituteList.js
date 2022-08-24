@@ -3,6 +3,8 @@ import cardsvg from "../Images/Card.svg";
 import "../Css/universityList.css";
 import TextField from '@material-ui/core/TextField';
 import Button from '@mui/material/Button';
+import Pagination from '@mui/material/Pagination';
+
 export default function InstituteList() {
   return (
     <>
@@ -166,6 +168,10 @@ export default function InstituteList() {
                 </div>
             </div>
             </div>
+        </div>
+        <div className="d-flex justify-content-center">
+        {/* <Button variant="text">Show More</Button> */}
+        <Pagination count="10" variant="outlined"  color="primary"/>
         </div>
         </div>
     </>

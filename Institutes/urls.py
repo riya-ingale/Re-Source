@@ -23,6 +23,7 @@ urlpatterns = [
 
     path('get_university/<page_num>', views.get_university, name  ="get_university"), # All University Page
 
+    path("view_allinstitutes/<page_num>",views.view_allinstitutes, name= "view_allinstitutes"),
     path("view_institute/<user_id>", views.view_institute, name = "view_institute"),
     path('view_university/<user_id>', views.view_university, name = "view_university")
 

@@ -283,7 +283,7 @@ def getlabs(request,page_num):
                 return_data['next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
             else:
                 return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
-                return_data['next_page']=request.build_absolute_uri()[:-1]+str(resoulabsrces.number+1)
+                return_data['next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
             if bodyflag:
                 return_data['body_data'] = data
             return JsonResponse(return_data)
