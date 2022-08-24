@@ -2,7 +2,7 @@ from django.urls import path
 from Institutes import views
 
 urlpatterns = [
-    path('profile/<id>/<role_id>' , views.profile),
+    path('profile/' , views.profile),
     path('profile/edit/<id>/<role_id>' , views.editprofile),
     path('pendingrequests/<id>/<role_id>' , views.allrequests),
 
@@ -16,7 +16,7 @@ urlpatterns = [
 
     path('workforce_requests/<user_id>', views.workforce_requests, name = "workforceRequests"),
     path('lab_requests/<user_id>', views.lab_requests, name = "LabRequests"),
-    path('institute_requests/<user_id>', views.institute_requests, name = "institute_requests"),
+    path('institute_requests/', views.institute_requests, name = "institute_requests"),
     path('university_requests/<user_id>', views.university_requests, name = "university_requests"),
 
     path('addstaff/' , views.add_ugcstaff),
@@ -26,5 +26,6 @@ urlpatterns = [
     path("view_allinstitutes/<page_num>",views.view_allinstitutes, name= "view_allinstitutes"),
     path("view_institute/<user_id>", views.view_institute, name = "view_institute"),
     path('view_university/<user_id>', views.view_university, name = "view_university"),
-    path('view_labAssitant/<user_id>', views.view_labAssitant, name = "view_labAssitant")
+    path('view_labAssitant/<user_id>', views.view_labAssitant, name = "view_labAssitant"),
+    path('download/<type>/<filename>', views.DownloadPDF, name='download_pdf'),
 ]
