@@ -7,8 +7,24 @@ import chem from "../Images/chem-quip.jpg";
 import bio from "../Images/images.jpg";
 import phy from "../Images/microscope.jpg";
 import EditIcon from '@mui/icons-material/Edit';
+import { useParams } from 'react-router';
 
 export default function ViewProfileInstitute() {
+  const [res,setRes] = useState();
+  const [load,setLoad] = useState(false);
+  const { id } = useParams();
+  useEffect(() =>{
+    fetch("http://127.0.0.1:8000/institute/view_institute/"+id,{
+      headers:{'Authorization':sessionStorage.getItem('token')}
+    })
+    .then(response=>response.json())
+    .then(body=>
+      {
+        setRes(body);
+        setLoad(true);
+        console.log(body);
+      })
+  },[])
   return (
     <>
     <div className='container profile-container'>

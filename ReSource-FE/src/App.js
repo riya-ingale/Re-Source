@@ -64,8 +64,8 @@ function App() {
           <Route exact path="/wfprofile" element={<><Header/><WorkforceProfile/><Footer/></>}/>
           <Route exact path="/universityProfile" element={<><Header/><UniversityProfile/><Footer/></>}/>
           <Route exact path="/ugcProfile" element={<><Header/><UGCProfile/><Footer/></>}/>
-          <Route exact path="/ugcStaffProfile" element={<><Header/><UGCStaffProfile/><Footer/></>}/>
-          <Route exact path="/accountsProfile" element={<><Header/><AccountsProfile/><Footer/></>}/>
+          <Route exact path="/ugcStaffProfile/:id" element={<><Header/><UGCStaffProfile/><Footer/></>}/>
+          <Route exact path="/accountsProfile/:id" element={<><Header/><AccountsProfile/><Footer/></>}/>
           <Route exact path="/resource_addrequest" element = {<><Header/><Resourceaddreq/><Footer/></>}/>
           <Route exact path="/resource_request" element={<><Header/><Resourcereq/><Footer/></>}/>
           <Route exact path="/edit_req" element={<><Header/><Resourcereq/><Footer/></>}/>
@@ -74,8 +74,8 @@ function App() {
           <Route exact path="/universityList" element={<><Header/><UniversityList/><Footer/></>}/>
           <Route exact path="/instituteList" element={<><Header/><InstituteList/><Footer/></>}/>
           <Route exact path="/viewInstituteProfile/:id" element={<><Header/><ViewProfileInstitute/><Footer/></>}/>
-          <Route exact path="/viewUniversityProfile" element={<><Header/><ViewUniversityProfile/><Footer/></>}/>
-          <Route exact path="/viewAccountsProfile" element={<><Header/><ViewAccountsProfile/><Footer/></>}/>
+          <Route exact path="/viewUniversityProfile/:id" element={<><Header/><ViewUniversityProfile/><Footer/></>}/>
+          <Route exact path="/viewAccountsProfile/:id" element={<><Header/><ViewAccountsProfile/><Footer/></>}/>
           <Route exact path="/viewlabassistantprofile" element={<><Header/><ViewLabAssistantProfile/><Footer/></>}/>
           {/* Extra Lab Detail Routes */}
           <Route exact path="/labdetail" element = {<><Header/><LabDetail/><Footer/></>}/>

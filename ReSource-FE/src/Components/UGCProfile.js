@@ -72,9 +72,11 @@ export default function UGCProfile() {
      <div className="card profilecards workforce-list">
          <div className="card__details">
            { res.universities.map((item,index)=>(
+             <a href={'/viewUniversityProfile/'+item.id}>
          <article class="leaderboard__profile">
            <span class="leaderboard__name">{item.name}</span>
          </article>
+         </a>
            ))}
          </div>
          </div>
@@ -89,10 +91,12 @@ export default function UGCProfile() {
      <div className="card profilecards workforce-list">
          <div className="card__details">
            { res.ugc_staff.map((item,index)=>(
+            <a href={'/ugcStaffProfile/'+item.id}>
          <article class="leaderboard__profile">
            <span class="leaderboard__name">{item.name}</span>
            <span  class="leaderboard__name">{item.position}</span>
          </article>
+         </a>
            ))}
          </div>
          </div>
