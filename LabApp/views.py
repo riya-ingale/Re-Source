@@ -348,7 +348,7 @@ def paster(imgs):
 
 
 @csrf_exempt
-def getdetails(request,lab_id):
+def getdetails(request,lab_id , num):
     try:
         token = request.headers['Authorization']
     except:
@@ -379,8 +379,10 @@ def getdetails(request,lab_id):
         d['start_time'] = str(d['start_time'])+":00:00"
         d['end_time'] = str(d['end_time'])+":00:00"
         lab_data = d
-
-        resources = Resources.objects.filter(lab = labobj).all()
+        size = 3
+        resourceobjs = Resources.objects.filter(lab = labobj)
+        paginator = Paginator(resourceobjs , size)
+        resources = paginator.get_page(num)
         rserializer = ResourcesSerializer(resources, many = True)
 
         imgs = []
@@ -401,6 +403,9 @@ def getdetails(request,lab_id):
             'status':200,
             'message':"Lab Details fetched",
             'lab_data':lab_data,
+            'total_resource_count':paginator.count,
+            'total_resource_pages':paginator.num_pages,
+            'images':len(imgs),
             "resources_data": resources_data,
             'resource_images':imgs
         })
