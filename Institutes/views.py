@@ -1570,7 +1570,7 @@ def view_allinstitutes(request, page_num):
 
 # View a Single Institute
 @csrf_exempt
-def view_institute(request, user_id):
+def view_institute(request, user_id, l_num, r_num):
     try:
         token = request.headers['Authorization']
         info = Check.check_auth(token)
@@ -1592,9 +1592,17 @@ def view_institute(request, user_id):
                 "message":"No such Institute",
                 "status":404
             })
+        size = 3
         if institute.role_id == 3:
+            workforce = WorkForce.objects.filter(institute = user_id , status = 1)
+            wfserializer = WorkForceSerializer(workforce , many = True)
+
             institute_serializer = InstituteSerializer(institute)
-            labs = Labs.objects.filter(institute = institute, status = 1).all()
+            labsobjs = Labs.objects.filter(institute = institute.id, status = 1)
+            lab_ids = [lab.id for lab in labsobjs]
+            paginator2 = Paginator(labsobjs,size)
+            
+            labs = paginator2.get_page(l_num)
             labs_serializer = LabSerializer(labs, many = True)
             lab_data = []
             for lab in labs_serializer.data:
@@ -1609,7 +1617,9 @@ def view_institute(request, user_id):
 
             imgs = []
             resource_data = []
-            resources = Resources.objects.filter(lab__in = labs, is_approved = 1).all()
+            resourceobjs = Resources.objects.filter(lab__in = lab_ids, is_approved = 1)
+            paginator1 = Paginator(resourceobjs, size)
+            resources = paginator1.get_page(r_num)
             resource_serializer = ResourcesSerializer(resources, many  =True)
             for resource in resource_serializer.data:
                 resource = dict(resource)
@@ -1626,14 +1636,37 @@ def view_institute(request, user_id):
                 resource_data.append(resource)
             paster(imgs)
             
-            return JsonResponse(data = {
-                "status":200,
-                "message":"Institute data fetched",
-                "institute_data":institute_serializer.data,
-                "resource_data":resource_data,
-                "lab_data":lab_data,
-                "images":imgs
-            })
+            return_data = {
+            'status':200,
+            'message': 'All resource and labs fetched',
+            'total_resource_count' : paginator1.count,
+            'total_resource_pages': paginator1.num_pages,
+            'resource_data': resource_data,
+            'images':len(imgs),
+            'total_lab_count':paginator2.count,
+            'total_lab_pages':paginator2.num_pages,
+            'lab_data':lab_data,
+            'institute_data':institute_serializer.data,
+            'workforce_data':wfserializer.data
+            }
+            if resources.number == paginator1.num_pages:
+                return_data['resource_previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+            elif resources.number == 1:
+                return_data['resource_next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+            else:
+                return_data['resource_previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+                return_data['resource_next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+
+            if labs.number == paginator2.num_pages:
+                return_data['lab_previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+            elif resources.number == 1:
+                return_data['lab_next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
+            else:
+                return_data['lab_previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+                return_data['lab_next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
+
+            return JsonResponse(return_data)
+
         else:
             return JsonResponse(data  ={
                 "message":"No such Institute",
