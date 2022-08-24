@@ -18,7 +18,23 @@ from ReSource.utils import Check
 import jwt
 
 @csrf_exempt
-def addresources(request,user_id,role_id,lab_id):
+def addresources(request,lab_id):
+    try:
+        token = request.headers['Token']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    role_id = info['role_id']
+    user_id = info['user_id']
+
     if request.method == "POST":
 
         data = json.loads(request.body)
@@ -70,20 +86,28 @@ def converted(image):
 
 @csrf_exempt
 def getresources(request,page_num):
+
+    try:
+        token = request.headers['Token']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+
     if request.method == 'GET':
         # List of institutes,city to populate in the drop down along with their ids in asceding order of their name
         institutes = Institutes.objects.filter(role_id = 3).values_list('id','name','city').order_by('name').all()
 
         flag = 0
-        try:
-            data = json.loads(request.body)
-            flag= 1
-            # agar specific lab ke resources chahiye
-            if 'lab_id' in data:
-                resourcesobjs = Resources.objects.filter(lab = int(data['lab_id']))
         # lab_id nai dia hai toh, all resources chahiye
-        except:
-            resourcesobjs = Resources.objects.all()
+        resourcesobjs = Resources.objects.all()
 
         size = 3
         page = page_num
@@ -384,6 +408,21 @@ def paster(imgs):
 
 @csrf_exempt
 def getdetails(request,r_id):
+
+    try:
+        token = request.headers['Token']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+
     if request.method == "GET":
         r_id = r_id
         resourceobj = Resources.objects.filter(id  =r_id)[0]
@@ -461,7 +500,24 @@ def getdetails(request,r_id):
         })
 
 @csrf_exempt
-def resource_edit(request, uid, role_id, rid):
+def resource_edit(request,rid):
+
+    try:
+        token = request.headers['Token']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    role_id = info['role_id']
+    uid = info['user_id']
+
     if request.method == 'GET':
         uid , role_id , rid = int(uid) , int(role_id) , int(rid)
         if role_id == 4:
@@ -553,6 +609,20 @@ def resource_edit(request, uid, role_id, rid):
 @csrf_exempt
 @require_http_methods(["POST"])
 def addslots(request):
+    try:
+        token = request.headers['Token']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+
     if request.method == "POST":
         data = json.loads(request.body)
         # Eg. of request.body 
@@ -596,18 +666,24 @@ def addslots(request):
             })
         
 @require_http_methods(["GET"])
-def cart(request,user_id):
+def cart(request):
     if request.method == "GET":
-        ########### authentication ###########
-        token = request.headers['Token']
+
+        try:
+            token = request.headers['Token']
+        except:
+            return JsonResponse(data= {
+                "message":"Unauthorized Access, Please Login",
+                "status":401
+            })
         info = Check.check_auth(token)
         if info['status'] == 0:
-            return JsonResponse(data = {
-                'status': 401,
-                'message' : 'Unauthorized access please login'
+            return JsonResponse(data= {
+                "message":"Unauthorized Access, Please Login",
+                "status":401
             })
-        print(info)
-        user_id = info["user_id"]
+        role_id = info['role_id']
+        user_id = info['user_id']
         ######################################333
         cart_items = Cart.objects.filter(workforce_id = user_id).all()
         if cart_items:

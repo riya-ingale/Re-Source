@@ -3,12 +3,12 @@ from ResourceApp import views
 
 urlpatterns = [
     path('allres/<page_num>',views.getresources,name= "getResources"),
-    path('add/<user_id>/<lab_id>',views.addresources, name = 'addResources'),
+    path('add/<lab_id>',views.addresources, name = 'addResources'),
     path('getdetails/<r_id>',views.getdetails,name = "getDetails"),
-    path('edit/<uid>/<role_id>/<rid>' , views.resource_edit, name = "editResource"),
+    path('edit/<rid>' , views.resource_edit, name = "editResource"),
     # path('edit_resource/<id>' , views.resource_edit)
     path('addslots/', views.addslots),
-    path('cart/<user_id>', views.cart, name = "viewCart"),
+    path('cart/', views.cart, name = "viewCart"),
     path('removeitem/<user_id>', views.remove_item, name = "removeItem")
     # path('add/<lab_id>',views.addresources, name = 'addResources')
     # path('getsearchedresources',views.getsearchedresources,name='getSearchedResources')
