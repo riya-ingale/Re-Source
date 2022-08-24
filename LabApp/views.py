@@ -348,7 +348,7 @@ def paster(imgs):
 
 
 @csrf_exempt
-def getdetails(request,lab_id , num):
+def getdetails(request,lab_id,num):
     try:
         token = request.headers['Authorization']
     except:

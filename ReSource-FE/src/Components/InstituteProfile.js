@@ -74,24 +74,24 @@ export default function InstituteProfile() {
         <div className='col-md-4'>
         <div className="card profilecards">
             <div className="card__details">
-            <article class="leaderboard__profile">
-              <Link to={"/labrequest"}><span class="leaderboard__name">Lab Requests</span></Link>
+            <article className="leaderboard__profile">
+              <Link to={"/labrequest"}><span className="leaderboard__name">Lab Requests</span></Link>
             </article>
     
-            <article class="leaderboard__profile">
-            <Link to={"/wfrequest"}><span class="leaderboard__name">Workforce Requests</span></Link>
+            <article className="leaderboard__profile">
+            <Link to={"/wfrequest"}><span className="leaderboard__name">Workforce Requests</span></Link>
             </article>
     
-            <article class="leaderboard__profile">
-            <Link to={"/resource_addrequest"}><span class="leaderboard__name">Resource Approval</span></Link>
+            <article className="leaderboard__profile">
+            <Link to={"/resource_addrequest"}><span className="leaderboard__name">Resource Approval</span></Link>
             </article>
 
-            <article class="leaderboard__profile">
-            <Link to={"/edit_req"}><span class="leaderboard__name">Edit Request</span></Link>
+            <article className="leaderboard__profile">
+            <Link to={"/edit_req"}><span className="leaderboard__name">Edit Request</span></Link>
             </article>
 
-            <article class="leaderboard__profile">
-            <Link to={"/resource_request"}><span class="leaderboard__name">Resource Request</span></Link>
+            <article className="leaderboard__profile">
+            <Link to={"/resource_request"}><span className="leaderboard__name">Resource Request</span></Link>
             </article>
 
             </div>
@@ -119,28 +119,28 @@ export default function InstituteProfile() {
             <div className="card__details">
             {res.workforce_data.map((item) =>(
               item.status === 1?
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">{item.name}</span>
+            <article className="leaderboard__profile">
+              <span className="leaderboard__name">{item.name}</span>
             </article>
             :<div></div>
             ))}
-            {/* <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 2</span>
+            {/* <article className="leaderboard__profile">
+              <span className="leaderboard__name">Workforce 2</span>
             </article>
     
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 3</span>
+            <article className="leaderboard__profile">
+              <span className="leaderboard__name">Workforce 3</span>
             </article>
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 4</span>
-            </article>
-    
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 5</span>
+            <article className="leaderboard__profile">
+              <span className="leaderboard__name">Workforce 4</span>
             </article>
     
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 6</span>
+            <article className="leaderboard__profile">
+              <span className="leaderboard__name">Workforce 5</span>
+            </article>
+    
+            <article className="leaderboard__profile">
+              <span className="leaderboard__name">Workforce 6</span>
             </article> */}
             </div>
             </div>
@@ -148,7 +148,7 @@ export default function InstituteProfile() {
       </div>
       </div>
       {/* Resources */}
-      <p className='heading res-cards'><h3 class="heading_name">Resources</h3></p>
+      <p className='heading res-cards'><h3 className="heading_name">Resources</h3></p>
       <div className="row">
         {res.resource_data.map((item,index)=>(
           <div className="col-md-4 colvr">
@@ -164,7 +164,7 @@ export default function InstituteProfile() {
 
                 {/* <!-- A div with name class for the name of the card --> */}
                 <div className="name">Equipment Name: {item.name}</div>
-                {/* <span class="discount">Partially Available</span> */}
+                {/* <span className="discount">Partially Available</span> */}
                 <div className="">
                   <ul>
                     {/* <li className="lires boldline">Availability: Partially Available</li> */}
@@ -185,7 +185,7 @@ export default function InstituteProfile() {
         <Pagination count={res.total_resource_pages} variant="outlined" onChange={handleRes} color="primary" />
         </div>
         {/* Labs  */}
-        <p className='heading'><h3 class="heading_name">Labs</h3></p>
+        <p className='heading'><h3 className="heading_name">Labs</h3></p>
         <div className="row">
          {res.lab_data.map((item)=>(
           <div className="col-md-4 colvr">
@@ -201,7 +201,7 @@ export default function InstituteProfile() {
 
                 {/* <!-- A div with name class for the name of the card --> */}
                 <div className="name">Lab Name: {item.name}</div>
-                {/* <span class="discount">Partially Available</span> */}
+                {/* <span className="discount">Partially Available</span> */}
                 <div className="">
                   <ul>
                     {/* <li className="lires boldline">Availability: Partially Available</li> */}
@@ -210,8 +210,10 @@ export default function InstituteProfile() {
                     {/* <li className="lires">Capacity: 100</li> */}
                   </ul>
                 </div>
-
+                <a href={'/labdetail/'+item.id}>
                 <button className="btn-vr">More Details</button>
+
+                </a>
               </div>
             </div>
           </div>

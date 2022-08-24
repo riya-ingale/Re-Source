@@ -1007,7 +1007,7 @@ def lab_requests(request):
 
 @csrf_exempt
 def add_ugcstaff(request):
-    token = request.headers['Token']
+    token = request.headers['Authorization']
     info = Check.check_auth(token)
     if info['status'] == 0:
         return JsonResponse('Unauthorized access please login')
@@ -1019,6 +1019,11 @@ def add_ugcstaff(request):
         })
     if request.method == "POST":
         data = json.loads(request.body)
+        data['institute'] = 2
+        data['role_id'] = 9
+        data['position'] = 'UGC Accounts'
+        data['status'] = 1
+        print(data)
         serializer = WorkForceSerializer(data = data)
 
         if serializer.is_valid():
@@ -1174,12 +1179,6 @@ def university_requests(request):
             "status":401
         })
     # GET route to show all the institute requests to the university role
-    token = request.headers['Token']
-    info = Check.check_auth(token)
-    if info['status'] == 0:
-        return JsonResponse('Unauthorized access please login')
-    role = info['role_id']
-    user_id = info['user_id']
     
     ugc = Institutes.objects.get(id = user_id)
     role = ugc.role_id
