@@ -51,7 +51,7 @@ export default function InstituteProfile() {
     <>
     {loader?
     <div className='container profile-container'>
-      <div className='bg-box'>
+      <div className='institute-bg-box'>
       </div>
       <div className='blur-bg'>
         <div className='inner-blur MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 css-b5x8ma'>
@@ -100,7 +100,7 @@ export default function InstituteProfile() {
         <div className='col-md-4'>
         <div className="card profilecards">
             <div className="card__details">
-            <h3>Profile details <Link to="/"><EditIcon></EditIcon></Link></h3>
+            <h3 className='heading'>Profile details <Link to="/"><EditIcon></EditIcon></Link></h3>
             <ul className="list-bullets detail-list">
             {res.institute_data.city?<li className="mb-2"><strong className='strlist'>City: </strong> {res.institute_data.city}</li>:<div></div>}
             {res.institute_data.state?<li className="mb-2"><strong className='strlist'>State: </strong>{res.institute_data.state}</li>:<div></div>}
@@ -117,6 +117,7 @@ export default function InstituteProfile() {
         <div className='col-md-4'>
         <div className="card profilecards workforce-list">
             <div className="card__details">
+            <h3 className='heading'>Workforce</h3>
             {res.workforce_data.map((item) =>(
               item.status === 1?
             <article className="leaderboard__profile">
@@ -180,7 +181,7 @@ export default function InstituteProfile() {
           </div>
           ))}
         </div>
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center pagination-container">
         {/* <Button variant="text">Show More</Button> */}
         <Pagination count={res.total_resource_pages} variant="outlined" onChange={handleRes} color="primary" />
         </div>
@@ -219,7 +220,7 @@ export default function InstituteProfile() {
           </div>
           ))}
         </div>
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center pagination-container">
         {/* <Button variant="text">Show More</Button> */}
         <Pagination count={res.total_lab_pages} variant="outlined" onChange={handleLab}  color="primary" />
         </div>
