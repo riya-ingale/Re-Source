@@ -103,7 +103,7 @@ def signup(request,id):
                 except Exception as e:
                     print(e)
                     return JsonResponse({'status':403,"message":"Email Does not exists"})
-            elif id in [4,5,7,8]:
+            elif id in [4,5,7,8,9]:
                 try:
                     t = WorkForce.objects.get(email_id = username)
                     if t.status != 1:
