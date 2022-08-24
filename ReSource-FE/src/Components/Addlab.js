@@ -79,13 +79,13 @@ export default function Addlab() {
   return (
     <>
     <div className="container form-container">
-    <div className="title">Add Labs Here</div>
+    <div className="title title-add-lab">Add Labs Here</div>
     <div className="content">
       <form action="#">
         <div className="user-details">
           <div className="input-box">
             <span className="details">Lab Name</span>
-            <input type="text" placeholder="Enter Room Number" value={labd} onChange={handle_name} required/>
+            <input type="text" placeholder="Lab Name" value={labd} onChange={handle_name} required/>
           </div>
           
           <div className="input-box">
@@ -101,7 +101,7 @@ export default function Addlab() {
         {/* <div className="button">
           <input type="submit" value="Register" onClick={add_lab}/>
         </div> */}
-        <div className="button">
+        <div className="btn btn-primary">
           {update?
           <button type='button' onClick={updt_lab}>Update</button>
         :

@@ -2,27 +2,14 @@
 
 .form-container{
   max-width: 700px;
+  margin-top: 130px;
+  margin-bottom: 30px;
   width: 100%;
   background-color: #fff;
   padding: 25px 30px;
   border-radius: 5px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
-}
-.form-container .title{
-  font-size: 25px;
-  font-weight: 500;
-  position: relative;
-}
-.form-container .title::before{
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 3px;
-  width: 30px;
-  border-radius: 5px;
-  background: rgb(7,7,255);
-  background: linear-gradient(209deg, rgba(7,7,255,1) 0%, rgba(255,255,255,1) 100%);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.35);
+  border: #d9d9d9;
 }
 .content form .user-details{
   display: flex;
@@ -31,28 +18,27 @@
   margin: 20px 0 12px 0;
 }
 form .user-details .input-box{
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   width: calc(100% / 2 - 20px);
 }
 form .input-box span.details{
-  display: block;
+  display: column;
   font-weight: 500;
-  margin-bottom: 5px;
+  margin-bottom:5px;
 }
 .user-details .input-box input{
-  height: 35px;
+  height: 45px;
   width: 100%;
   outline: none;
   font-size: 16px;
   border-radius: 5px;
   padding-left: 15px;
-  border: 1px solid ;
-  border-bottom-width: 2px;
   transition: all 0.3s ease;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.35);
 }
 .user-details .input-box input:focus,
 .user-details .input-box input:valid{
-  border-color: blue;
+  border-color: none;
 }
  form .gender-details .gender-title{
   font-size: 20px;
@@ -69,7 +55,7 @@ form .input-box span.details{
    align-items: center;
    cursor: pointer;
  }
- form .category label .dot{
+ /* form .category label .dot{
   height: 18px;
   width: 18px;
   border-radius: 50%;
@@ -77,39 +63,8 @@ form .input-box span.details{
   background: #d9d9d9;
   border: 5px solid transparent;
   transition: all 0.3s ease;
-}
- #dot-1:checked ~ .category label .one,
- #dot-2:checked ~ .category label .two,
- #dot-3:checked ~ .category label .three{
-   background: blue;
-   border-color: blue;
- }
- form input[type="radio"]{
-   display: none;
- }
- form .button{
-   height: 45px;
-   margin: 35px 0
- }
- form .button input{
-   height: 100%;
-   width: 100%;
-   border-radius: 5px;
-   border: none;
-   color: #fff;
-   font-size: 18px;
-   font-weight: 500;
-   letter-spacing: 1px;
-   cursor: pointer;
-   transition: all 0.3s ease;
-   background: rgb(7,7,255);
-   background: linear-gradient(209deg, rgba(7,7,255,1) 0%, rgba(255,255,255,1) 100%);
- }
- form .button input:hover{
-  /* transform: scale(0.99); */
-  background: rgb(7,7,255);
-  background: linear-gradient(-209deg, rgba(7,7,255,1) 0%, rgba(255,255,255,1) 100%);
-  }
+} */
+
  @media(max-width: 584px){
  .form-container{
   max-width: 100%;
