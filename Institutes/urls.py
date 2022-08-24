@@ -14,17 +14,11 @@ urlpatterns = [
     path('resource_rentapproval/' , views.resource_rentapproval),
     path('resource_editrequests/', views.resource_editrequests, name = "resource_editrequests"),
 
-<<<<<<< HEAD
+
     path('workforce_requests/', views.workforce_requests, name = "workforceRequests"),
     path('lab_requests/', views.lab_requests, name = "LabRequests"),
     path('institute_requests/', views.institute_requests, name = "institute_requests"),
-    path('university_requests/<user_id>', views.university_requests, name = "university_requests"),
-=======
-    path('workforce_requests/<user_id>', views.workforce_requests, name = "workforceRequests"),
-    path('lab_requests/<user_id>', views.lab_requests, name = "LabRequests"),
-    path('institute_requests/', views.institute_requests, name = "institute_requests"),
     path('university_requests/', views.university_requests, name = "university_requests"),
->>>>>>> 7c2ae050c992a3650a35f70c7d69cc7bb493985f
 
     path('addstaff/' , views.add_ugcstaff),
 
