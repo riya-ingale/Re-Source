@@ -399,7 +399,7 @@ def getdetails(request,lab_id,num):
             resources_data.append(d)
         paster(imgs)
 
-        return JsonResponse({
+        return_data = {
             'status':200,
             'message':"Lab Details fetched",
             'lab_data':lab_data,
@@ -408,4 +408,14 @@ def getdetails(request,lab_id,num):
             'images':len(imgs),
             "resources_data": resources_data,
             'resource_images':imgs
-        })
+        }
+
+        if resources.number == paginator.num_pages:
+            return_data['resource_previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+        elif resources.number == 1:
+            return_data['resource_next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+        else:
+            return_data['resource_previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+            return_data['resource_next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+
+        return JsonResponse(return_data)
