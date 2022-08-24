@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 import json
 import jwt
 from ReSource import settings
+from ReSource.utils import Check
 # Create your views here.
 # @csrf_exempt
 # def send_mail_after_registration(request):
@@ -140,4 +141,24 @@ def signup(request,id):
             # redirect to success page
         except:    
             return JsonResponse({'status':403,"message":"LOGIN FAILED"})
+    
+@csrf_exempt
+def logout(request):
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data = {
+            'status':401,
+            'message': "Unauthorized Access"
+        })
+    if Check.verify_token(token):
+        return JsonResponse(data = {
+            'status':401,
+            'message': "Redirect to home"
+        })
+    else:
+        return JsonResponse(data = {
+            'status':401,
+            'message':'Donot logout tempered token'
+        })
     

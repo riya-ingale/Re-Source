@@ -17,3 +17,11 @@ class Check():
         except:
             info = {"status":0}
             return info
+    
+    def verify_token(token):
+        try:
+            info = jwt.decode(token , settings.SECRET_KEY , 'HS256', {'verify_signature': True})
+        except:
+            return False
+        return True
+        
