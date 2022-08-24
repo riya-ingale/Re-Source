@@ -272,7 +272,7 @@ def institute_proflie(request, r_num , l_num):
         return JsonResponse(return_data)
 
 @csrf_exempt
-def workforce_profile(request, id , r_num , l_num):
+def workforce_profile(request , r_num , l_num):
     if request.method == "GET":
         token = request.headers['Token']
         info = Check.check_auth(token)
@@ -634,14 +634,16 @@ def workforce_request(request , id):
 #         })
 
 @csrf_exempt
-def resource_addrequest(request , id):
-
-    token = request.headers['Token']
-    info = Check.check_auth(token)
-    if info['status'] == 0:
-        return JsonResponse('Unauthorized access please login')
-    role_id = info['role_id']
-    id = info['user_id']
+def resource_addrequest(request):
+    try:
+        token = request.headers['Authorization']
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse('Unauthorized access please login')
+        role_id = info['role_id']
+        id = info['user_id']
+    except:
+        return JsonResponse('Unauthorized access', safe = False)
 
     if request.method == "POST":
         if role_id == 3:
@@ -706,16 +708,20 @@ def resource_addrequest(request , id):
             })
 
 @csrf_exempt
-def resource_rentapproval(request , id):
-    token = request.headers['Token']
-    info = Check.check_auth(token)
+def resource_rentapproval(request):
+    try:
+        token = request.headers['Authorization']
+        
+        info = Check.check_auth(token)
 
-    if info['status'] == 0:
-        return JsonResponse('Unauthorized access please login')
+        if info['status'] == 0:
+            return JsonResponse('Unauthorized access please login')
 
-    role_id = info['role_id']
-    id = info['user_id']
-    
+        role_id = info['role_id']
+        id = info['role_id']
+    except:
+        return JsonResponse('Unauthorized access' , safe = False)
+
     if request.method == 'POST':
         
         if role_id == 3:
@@ -766,15 +772,19 @@ def resource_rentapproval(request , id):
 
 
 @csrf_exempt
-def workforce_requests(request , user_id):
+def workforce_requests(request):
     # GET route to show all the workforce requests to the institute role
-    token = request.headers['Token']
-    info = Check.check_auth(token)
-    if info['status'] == 0:
-        return JsonResponse('Unauthorized access please login')
-    role = info['role_id']
-    user_id = info['user_id']
-    user = Institutes.objects.get(id = user_id)
+    try:
+        token = request.headers['Authorization']
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse('Unauthorized access please login')
+        role = info['role_id']
+        user_id = info['user_id']
+        user = Institutes.objects.get(id = user_id)
+    except:
+        return JsonResponse('Unauthorized access', safe = False)
+
     if request.method == "GET":
         if role == 3:
             workforce_data = []
@@ -843,17 +853,20 @@ def workforce_requests(request , user_id):
         
 
 @csrf_exempt
-def lab_requests(request , user_id):
+def lab_requests(request):
     # GET route to show all the workforce requests to the institute role
-    token = request.headers['Token']
-    info = Check.check_auth(token)
-    if info['status'] == 0:
-        return JsonResponse('Unauthorized access please login')
-    role = info['role_id']
-    user_id = info['user_id']
-    
-    user = Institutes.objects.get(id = user_id)
-    role = user.role_id
+    try:
+        token = request.headers['Authorization']
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse('Unauthorized access please login')
+        role = info['role_id']
+        user_id = info['user_id']
+        
+        user = Institutes.objects.get(id = user_id)
+        role = user.role_id
+    except:
+        return JsonResponse('Unauthorized access' , safe = False)
 
     if request.method == "GET":
         # try:
@@ -974,14 +987,17 @@ def accredition_paster(files):
 @csrf_exempt
 def institute_requests(request):
     # GET route to show all the institute requests to the university role
-    token = request.headers['Token']
-    info = Check.check_auth(token)
-    if info['status'] == 0:
-        return JsonResponse('Unauthorized access please login')
-    role = info['role_id']
-    user_id = info['user_id']
-    
-    university = Institutes.objects.get(id = user_id)
+    try:
+        token = request.headers['Authorization']
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse('Unauthorized access please login' , safe = False)
+        role = info['role_id']
+        user_id = info['user_id']
+        
+        university = Institutes.objects.get(id = user_id)
+    except:
+        return JsonResponse('Unauthorized', safe = False)
     if request.method == "GET":
         # try:
         #     university = Institutes.objects.filter(id = int(user_id))[0]
@@ -1254,15 +1270,18 @@ def get_university(request,page_num):
 
 # View all edit requests of resources
 @csrf_exempt
-def resource_editrequests(request, user_id):
-    token = request.headers['Token']
-    info = Check.check_auth(token)
-    if info['status'] == 0:
-        return JsonResponse('Unauthorized access please login')
-    role = info['role_id']
-    user_id = info['user_id']
+def resource_editrequests(request):
+    try:
+        token = request.headers['Authorization']
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse('Unauthorized access please login')
+        role = info['role_id']
+        user_id = info['user_id']
     
-    institute = Institutes.objects.get(id = user_id)
+        institute = Institutes.objects.get(id = user_id)
+    except:
+        return JsonResponse('Unauthorized access' , safe = False)
 
     
     if request.method == "GET":

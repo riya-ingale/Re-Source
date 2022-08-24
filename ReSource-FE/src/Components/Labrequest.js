@@ -9,7 +9,9 @@ export default function Labrequest() {
     const [load,setLoad] = useState(false);
     const navigate = useNavigate();
     useEffect(()=>{
-        fetch("http://127.0.0.1:8000/institute/lab_requests/"+sessionStorage.getItem('user_id'))
+        fetch("http://127.0.0.1:8000/institute/lab_requests/",{
+            headers:{'Authorization':sessionStorage.getItem('token')}
+          })
         .then(response => response.json())
         .then(body =>{
             setRes(body);
@@ -20,25 +22,25 @@ export default function Labrequest() {
 
     const handleAccept = (e,id) =>{
         console.log(id);
-        fetch("http://127.0.0.1:8000/institute/lab_requests/"+sessionStorage.getItem('user_id'), {
+        fetch("http://127.0.0.1:8000/institute/lab_requests/", {
         method: 'POST',
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": sessionStorage.getItem('token') },
         body: JSON.stringify({"id":id,'status':1})
         })
         window.location.href ="/labrequest";
     }
     const handleReject = (e,id) =>{
         console.log(id);
-        fetch("http://127.0.0.1:8000/institute/lab_requests/"+sessionStorage.getItem('user_id'), {
+        fetch("http://127.0.0.1:8000/institute/lab_requests/", {
         method: 'POST',
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization":sessionStorage.getItem('token') },
         body: JSON.stringify({"id":id,'status':-1})
         })
         window.location.href ="/labrequest";
     }
   return (
     <>
-    { load?
+    { load&&res.status === 200?
     <div className='container lab-request'>
     <div className="row">
         {res.data.map((item)=>(

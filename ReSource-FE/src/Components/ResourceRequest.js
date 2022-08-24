@@ -13,7 +13,9 @@ export default function ResourceRequest() {
   console.log(type)
   useEffect(()=>{
     if(type === 'resource_request'){
-      fetch("http://127.0.0.1:8000/institute/resource_rentapproval/"+sessionStorage.getItem('user_id'))
+      fetch("http://127.0.0.1:8000/institute/resource_rentapproval/",{
+        headers:{'Authorization':sessionStorage.getItem('token')}
+      })
       .then(response => response.json())
       .then(body =>{
           setRes(body);
@@ -22,7 +24,9 @@ export default function ResourceRequest() {
       })
     }
       else if(type === 'edit_req'){
-        fetch("http://127.0.0.1:8000/institute/resource_editrequests/"+sessionStorage.getItem('user_id'))
+        fetch("http://127.0.0.1:8000/institute/resource_editrequests/",{
+          headers:{'Authorization':sessionStorage.getItem('token')}
+        })
       .then(response => response.json())
       .then(body =>{
           setRes(body);
@@ -35,18 +39,18 @@ export default function ResourceRequest() {
   const handleAccept = (e,id) =>{
     if(type === 'resource_request'){
       console.log(id);
-      fetch("http://127.0.0.1:8000/institute/resource_rentapproval/"+sessionStorage.getItem('user_id'), {
+      fetch("http://127.0.0.1:8000/institute/resource_rentapproval/", {
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": sessionStorage.getItem('token') },
       body: JSON.stringify({"id":id,'status':1})
       })
       window.location.href ="/resource_request";
     }
     else if(type === 'edit_req'){
       console.log(id);
-      fetch("http://127.0.0.1:8000/institute/resource_editrequests/"+sessionStorage.getItem('user_id'), {
+      fetch("http://127.0.0.1:8000/institute/resource_editrequests/", {
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": sessionStorage.getItem('token') },
       body: JSON.stringify({"resource_id":id,'status':1})
       })
       window.location.href ="/edit_req";
@@ -55,18 +59,18 @@ export default function ResourceRequest() {
   const handleReject = (e,id) =>{
     if(type === 'resource_request'){
       console.log(id);
-      fetch("http://127.0.0.1:8000/institute/resource_rentapproval/"+sessionStorage.getItem('user_id'), {
+      fetch("http://127.0.0.1:8000/institute/resource_rentapproval/", {
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization":sessionStorage.getItem('token') },
       body: JSON.stringify({"id":id,'status':-1})
       })
       window.location.href ="/resource_request";
     } 
     else if(type === 'edit_req'){
       console.log(id);
-      fetch("http://127.0.0.1:8000/institute/resource_editrequests/"+sessionStorage.getItem('user_id'), {
+      fetch("http://127.0.0.1:8000/institute/resource_editrequests/", {
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization":sessionStorage.getItem('token') },
       body: JSON.stringify({'resource_id':id,'status':-1})
       })
       window.location.href ="/edit_req";
@@ -75,7 +79,7 @@ export default function ResourceRequest() {
 
   return (
     <>
-    {load && type === 'resource_request'?
+    {load && type === 'resource_request'&& res.status === 200?
     <div className="containner c-view-res">
       <div className="row">
         {res.resource_data.map((item,index) =>(
@@ -117,7 +121,7 @@ export default function ResourceRequest() {
       </div>
     </div>
     :<div></div>}
-    {load && type === 'edit_req'?
+    {load && type === 'edit_req'&& res.status === 200?
     <div className="containner c-view-res">
     <div className="row">
       {res.data.map((item,index) =>(

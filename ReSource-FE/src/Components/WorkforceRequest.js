@@ -10,7 +10,9 @@ export default function WorkforceRequest() {
     const [load,setLoad] = useState(false);
     const navigate = useNavigate();
     useEffect(()=>{
-        fetch("http://127.0.0.1:8000/institute/workforce_requests/"+sessionStorage.getItem('user_id'))
+        fetch("http://127.0.0.1:8000/institute/workforce_requests/",{
+            headers:{'Authorization':sessionStorage.getItem('token')}
+          })
         .then(response => response.json())
         .then(body =>{
             setRes(body);
@@ -20,17 +22,17 @@ export default function WorkforceRequest() {
     },[])
 
     const handleAccept = (e,id) =>{
-        fetch("http://127.0.0.1:8000/institute/workforce_requests/"+sessionStorage.getItem('user_id'), {
+        fetch("http://127.0.0.1:8000/institute/workforce_requests/", {
         method: 'POST',
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization":sessionStorage.getItem('token') },
         body: JSON.stringify({"workforce_id":id,'status':1})
         })
         window.location.href ="/wfrequest";
     }
     const handleReject = (e,id) =>{
-        fetch("http://127.0.0.1:8000/institute/workforce_requests/"+sessionStorage.getItem('user_id'), {
+        fetch("http://127.0.0.1:8000/institute/workforce_requests/", {
             method: 'POST',
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json" , "Authorization":sessionStorage.getItem('token') },
             body: JSON.stringify({"workforce_id":id,'status':-1})
             })
             window.location.href ="/wfrequest";
@@ -38,7 +40,7 @@ export default function WorkforceRequest() {
     }
   return (
     <>
-    {load?
+    {load && res.status===200?
     <div className='row wfreq-container'>
         {res.data.map((item)=>(
         <div className='col-md-6 sec'>

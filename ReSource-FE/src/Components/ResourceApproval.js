@@ -8,7 +8,9 @@ export default function ResourceApproval() {
   const [res,setRes] = useState();
     const [load,setLoad] = useState(false);
     useEffect(()=>{
-        fetch("http://127.0.0.1:8000/institute/resource_addrequest/"+sessionStorage.getItem('user_id'))
+        fetch("http://127.0.0.1:8000/institute/resource_addrequest/",{
+          headers:{'Authorization':sessionStorage.getItem('token')}
+        })
         .then(response => response.json())
         .then(body =>{
             setRes(body);
@@ -19,18 +21,18 @@ export default function ResourceApproval() {
 
     const handleAccept = (e,id) =>{
         console.log(id);
-        fetch("http://127.0.0.1:8000/institute/resource_addrequest/"+sessionStorage.getItem('user_id'), {
+        fetch("http://127.0.0.1:8000/institute/resource_addrequest/", {
         method: 'POST',
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", 'Authorization': sessionStorage.getItem('token')},
         body: JSON.stringify({"id":id,'status':1})
         })
         window.location.href ="/resource_addrequest";
     }
     const handleReject = (e,id) =>{
         console.log(id);
-        fetch("http://127.0.0.1:8000/institute/resource_addrequest/"+sessionStorage.getItem('user_id'), {
+        fetch("http://127.0.0.1:8000/institute/resource_addrequest/", {
         method: 'POST',
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization":sessionStorage.getItem('token') },
         body: JSON.stringify({"id":id,'status':-1})
         })
         window.location.href ="/resource_addrequest";
