@@ -3,10 +3,10 @@ from Institutes import views
 
 urlpatterns = [
     path('profile/' , views.profile),
-    path('profile/edit/<id>/<role_id>' , views.editprofile),
+    path('profile/edit/' , views.editprofile),
     path('pendingrequests/<id>/<role_id>' , views.allrequests),
 
-    path('institute_request/<id>' , views.institution_requests),
+    # path('institute_request/<id>' , views.institution_requests),
     path('workforce_profile/<r_num>/<l_num>' , views.workforce_profile),
     path('institute_profile/<r_num>/<l_num>' , views.institute_proflie),
 

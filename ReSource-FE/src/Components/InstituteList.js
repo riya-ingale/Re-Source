@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import cardsvg from "../Images/Card.svg";
 import "../Css/universityList.css";
 import TextField from '@material-ui/core/TextField';
@@ -6,8 +6,70 @@ import Button from '@mui/material/Button';
 import Pagination from '@mui/material/Pagination';
 
 export default function InstituteList() {
+    // view_allinstitutes
+    const [res,setRes] = useState();
+    const [ load,setLoad] = useState(false);
+    const[page,setPage] = useState(1);
+    const [search,setSearch] = useState("");
+
+    useEffect(() =>{
+        fetch("http://127.0.0.1:8000/institute/view_allinstitutes/"+1,{
+          headers:{'Authorization':sessionStorage.getItem('token')}
+        })
+        .then(response=>response.json())
+        .then(body=>
+          {
+            setRes(body);
+            setLoad(true);
+            console.log(body);
+          })
+      },[])
+      const handlepagechange = (e,p) =>{
+        if(search === ""){
+            setPage(p);
+        fetch("http://127.0.0.1:8000/institute/view_allinstitutes/"+p,{
+            headers:{'Authorization':sessionStorage.getItem('token')}
+        })
+        .then(response=>response.json())
+        .then(body=>
+        {
+            setRes(body);
+            setLoad(true);
+            console.log(body);
+        })
+    }
+    else{
+        if(p===undefined){
+            p = 1;
+            setPage(p)
+            console.log(p);
+        }
+        console.log(search,p)
+        fetch("http://127.0.0.1:8000/institute/view_allinstitutes/"+p,{
+            method: 'POST',
+            headers: { "Content-Type": "application/json",'Authorization':sessionStorage.getItem('token')},
+            body: JSON.stringify({"searchtext":search})
+          }).then(response=>response.json())
+                  .then(body=>  {
+                    setRes(body);
+                    setPage(p);
+                    setLoad(true);
+                    console.log(body);
+          })
+    }
+      }
+     const handlesearch = (e) =>{
+        setSearch(e.target.value);
+     }
+     const searching = (e) =>{
+        console.log("1")
+        handlepagechange(1);
+    
+     }
   return (
     <>
+    {load && res.status === 200?
+    <div>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
 
         <div class="container University-List-Container">
@@ -20,14 +82,16 @@ export default function InstituteList() {
                 label="Search"
                 variant="standard"
                 className='Search-bar'
+                onChange={handlesearch}
               />
             </div>
             <div className="col-md-6 d-flex justify-content-center">
-              <Button className="Searchbtn" variant="outlined">Search</Button>
+              <Button className="Searchbtn" variant="outlined" onClick={searching}>Search</Button>
             </div>
           </div>
         </form>
         <div class="row">
+            {res.institutes_data.map((item,index)=>(
             <div class="col-md-4">
             <div class="our_solution_category">
                 <div class="solution_cards_box">
@@ -37,143 +101,38 @@ export default function InstituteList() {
                     <img src={cardsvg} />
                     </div>
                     <div class="solu_title">
-                    <h3>Institute Name</h3>
+                    <h3>Institute Name :{item.name}</h3>
                     </div>
                     <div class="solu_description">
                     <div className="">
                         <ul>
-                            <li className="lires boldline">University: Mumbai University</li>
-                            <li className="lires">City, State: Mumbai,Maharashtra</li>
-                            <li className="lires">Registration Number: 3245</li>
-                            <li className="lires">Contact: 9821255160</li>
-                            <li className="lires">  Email: MumbaiUniversity@gmail.com</li>
+                        {item.university?<li className="lires boldline">University: {item.university}</li>:<li></li>}
+                        {item.city?<li className="lires">City: {item.city}</li>:<li></li>}
+                        {item.state?<li className="lires">State: {item.state}</li>:<li></li>}
+                        {item.registeration_no?<li className="lires">Registration Number: {item.registeration_no}</li>:<li></li>}
+                        {item.phone_no?<li className="lires">Contact: {item.phone_no}</li>:<li></li>}
+                            <li className="lires">  Email: {item.email}</li>
                         </ul>
                     </div>
-                    <button type="button" class="read_more_btn">View</button>
+                    <a href={'/viewInstituteProfile/'+item.id}>
+                    <button type="button" class="read_more_btn">More Details</button>
+                    </a>
                     </div>
                 </div>
             
                 </div>
             </div>
             </div>
-            <div class="col-md-4">
-            <div class="our_solution_category">
-                <div class="solution_cards_box">
-                <div class="solution_card">
-                    <div class="hover_color_bubble"></div>
-                    <div class="so_top_icon">
-                    <img src={cardsvg} />
-                    </div>
-                    <div class="solu_title">
-                    <h3>Demo 1</h3>
-                    </div>
-                    <div class="solu_description">
-                    <p>
-                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-                    </p>
-                    <button type="button" class="read_more_btn">Read More</button>
-                    </div>
-                </div>
             
-                </div>
-            </div>
-            </div>
-            <div class="col-md-4">
-            <div class="our_solution_category">
-                <div class="solution_cards_box">
-                <div class="solution_card">
-                    <div class="hover_color_bubble"></div>
-                    <div class="so_top_icon">
-                    <img src={cardsvg} />
-                    </div>
-                    <div class="solu_title">
-                    <h3>Demo 1</h3>
-                    </div>
-                    <div class="solu_description">
-                    <p>
-                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-                    </p>
-                    <button type="button" class="read_more_btn">Read More</button>
-                    </div>
-                </div>
-            
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-            <div class="our_solution_category">
-                <div class="solution_cards_box">
-                <div class="solution_card">
-                    <div class="hover_color_bubble"></div>
-                    <div class="so_top_icon">
-                    <img src={cardsvg} />
-                    </div>
-                    <div class="solu_title">
-                    <h3>Demo 1</h3>
-                    </div>
-                    <div class="solu_description">
-                    <p>
-                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-                    </p>
-                    <button type="button" class="read_more_btn">Read More</button>
-                    </div>
-                </div>
-            
-                </div>
-            </div>
-            </div>
-            <div class="col-md-4">
-            <div class="our_solution_category">
-                <div class="solution_cards_box">
-                <div class="solution_card">
-                    <div class="hover_color_bubble"></div>
-                    <div class="so_top_icon">
-                    <img src={cardsvg} />
-                    </div>
-                    <div class="solu_title">
-                    <h3>Demo 1</h3>
-                    </div>
-                    <div class="solu_description">
-                    <p>
-                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-                    </p>
-                    <button type="button" class="read_more_btn">Read More</button>
-                    </div>
-                </div>
-            
-                </div>
-            </div>
-            </div>
-            <div class="col-md-4">
-            <div class="our_solution_category">
-                <div class="solution_cards_box">
-                <div class="solution_card">
-                    <div class="hover_color_bubble"></div>
-                    <div class="so_top_icon">
-                    <img src={cardsvg} />
-                    </div>
-                    <div class="solu_title">
-                    <h3>Demo 1</h3>
-                    </div>
-                    <div class="solu_description">
-                    <p>
-                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-                    </p>
-                    <button type="button" class="read_more_btn">Read More</button>
-                    </div>
-                </div>
-            
-                </div>
-            </div>
-            </div>
+            ))}
         </div>
         <div className="d-flex justify-content-center">
         {/* <Button variant="text">Show More</Button> */}
-        <Pagination count="10" variant="outlined"  color="primary"/>
+        <Pagination count={res.total_pages} variant="outlined" onChange={handlepagechange}  color="primary"/>
         </div>
         </div>
+        </div>
+        :<div></div>}
     </>
   )
 }
