@@ -5,8 +5,26 @@ import { Link } from 'react-router-dom';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'; 
 
 export default function UGCProfile() {
+  const [loader,setLoader] = useState(false);
+  const[res,setRes] = useState();
+  useEffect(() =>{
+    fetch("http://127.0.0.1:8000/institute/profile/",{
+      headers:{'Authorization':sessionStorage.getItem('token')}
+    })
+    .then(response=>response.json())
+    .then(body=>
+      {
+        setRes(body);
+        setLoader(true);
+        console.log(body);
+      })
+  },[])
+  const pendingreq = (e) =>{
+    window.location.href = "/univrequest"
+  }
   return (
     <>
+    {loader&&res.status===200?
     <div className='container profile-container'>
       <div className='bg-box'>
       </div>
@@ -31,58 +49,24 @@ export default function UGCProfile() {
       <div className='col-md-4'>
         <div className="card profilecards workforce-list">
             <div className="card__details">
-            <h3>Institute Requests</h3>
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name"><Link to={"/"}>Institute 1</Link></span>
+            <h3>University Requests</h3>
+            {res.pending_universities.map((item,index)=>(
+              <article class="leaderboard__profile">
+              <span class="leaderboard__name"><Link to={"/"}>item.name</Link></span>
             </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Institute 2</Link></span>
-            </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Institute 3</Link></span>
-            </article>
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Institute 4</Link></span>
-            </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Institute 5</Link></span>
-            </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Institute 6</Link></span>
-            </article>
+            ))}
             </div>
             </div>
         </div>
       <div className='col-md-4'>
         <div className="card profilecards workforce-list">
             <div className="card__details">
-            <h3>Already Existing Institutes</h3>
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name"><Link to={"/"}>Institute 1</Link></span>
+            <h3>Accepted Universities</h3>
+            {res.universities.map((item,index)=>(
+              <article class="leaderboard__profile">
+              <span class="leaderboard__name"><Link to={"/"}>item.name</Link></span>
             </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Institute 2</Link></span>
-            </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Institute 3</Link></span>
-            </article>
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Institute 4</Link></span>
-            </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Institute 5</Link></span>
-            </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Institute 6</Link></span>
-            </article>
+            ))}
             </div>
             </div>
         </div>
@@ -90,35 +74,18 @@ export default function UGCProfile() {
         <div className="card profilecards workforce-list">
             <div className="card__details">
             <h3>UGC Staff<button className='btn btn-primary addstaffbtn'>New<AddCircleRoundedIcon></AddCircleRoundedIcon></button></h3>
-            <article class="leaderboard__profile">
+            {res.ugc_staff.map((item , index)=>(
+              <article class="leaderboard__profile">
               <span class="leaderboard__name"><Link to={"/"}>Staff 1</Link></span>
             </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Staff 2</Link></span>
-            </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Staff 3</Link></span>
-            </article>
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Staff 4</Link></span>
-            </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Staff 5</Link></span>
-            </article>
-    
-            <article class="leaderboard__profile">
-            <span class="leaderboard__name"><Link to={"/"}>Staff 6</Link></span>
-            </article>
+            ))}
             </div>
             </div>
         </div>
       </div>
       </div>
       
-    </div>   
+    </div> :<div></div>}  
     </>
   )
 }

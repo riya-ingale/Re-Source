@@ -50,12 +50,15 @@ def paster(imgs):
 # Create your views here.
 @csrf_exempt
 def profile(request):
-    token = request.headers['Authorization']
-    info = Check.check_auth(token)
-    if info['status'] == 0:
-        return JsonResponse('Unauthorized access please login')
-    role_id = info['role_id']
-    id = info['user_id']
+    try:
+        token = request.headers['Authorization']
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse('Unauthorized access please login')
+        role_id = info['role_id']
+        id = info['user_id']
+    except:
+        return JsonResponse('Unauthorized access' , safe = False)
 
     if request.method == 'GET':
         if role_id == 1:
