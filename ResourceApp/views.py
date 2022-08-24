@@ -20,7 +20,7 @@ import jwt
 @csrf_exempt
 def addresources(request,lab_id):
     try:
-        token = request.headers['Token']
+        token = request.headers['Authorization']
     except:
         return JsonResponse(data= {
             "message":"Unauthorized Access, Please Login",
@@ -88,7 +88,7 @@ def converted(image):
 def getresources(request,page_num):
 
     try:
-        token = request.headers['Token']
+        token = request.headers['Authorization']
     except:
         return JsonResponse(data= {
             "message":"Unauthorized Access, Please Login",
@@ -410,7 +410,7 @@ def paster(imgs):
 def getdetails(request,r_id):
 
     try:
-        token = request.headers['Token']
+        token = request.headers['Authorization']
     except:
         return JsonResponse(data= {
             "message":"Unauthorized Access, Please Login",
@@ -429,6 +429,11 @@ def getdetails(request,r_id):
         serializer = ResourcesSerializer(resourceobj)
 
         imgs = Image.objects.filter(resource = resourceobj).values_list('image').all()
+        imgs = list(imgs)
+        if not imgs:
+            print("INSIDE")
+            imgs = [["media/resource_images/default_image.jpeg"]]
+        print("IMAGES _ ", imgs)
         paster(imgs)
         # print(p_img)
         return JsonResponse({
@@ -503,7 +508,7 @@ def getdetails(request,r_id):
 def resource_edit(request,rid):
 
     try:
-        token = request.headers['Token']
+        token = request.headers['Authorization']
     except:
         return JsonResponse(data= {
             "message":"Unauthorized Access, Please Login",
@@ -610,7 +615,7 @@ def resource_edit(request,rid):
 @require_http_methods(["POST"])
 def addslots(request):
     try:
-        token = request.headers['Token']
+        token = request.headers['Authorization']
     except:
         return JsonResponse(data= {
             "message":"Unauthorized Access, Please Login",
@@ -670,7 +675,7 @@ def cart(request):
     if request.method == "GET":
 
         try:
-            token = request.headers['Token']
+            token = request.headers['Authorization']
         except:
             return JsonResponse(data= {
                 "message":"Unauthorized Access, Please Login",
@@ -739,7 +744,23 @@ def cart(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def remove_item(request,user_id):
+def remove_item(request):
+    try:
+            token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    role_id = info['role_id']
+    user_id = info['user_id']
+
     data = json.loads(request.body)
     if "c_id" in data:
         c_id = int(data['c_id'])

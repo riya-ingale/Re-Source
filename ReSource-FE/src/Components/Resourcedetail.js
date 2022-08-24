@@ -56,8 +56,9 @@ const [date, setDate] = useState('');
 const [quant, setQuant] = useState('');
 useEffect(() => {
   fetch(
-          "http://127.0.0.1:8000/resource/getdetails/"+id
-        ).then(async response=>{
+          "http://127.0.0.1:8000/resource/getdetails/"+id,{
+            headers:{'Authorization':sessionStorage.getItem('token')}
+          }).then(async response=>{
           setUsers(await response.json());})
           // image_fetcher(users.images)
           // console.log(image)
@@ -96,7 +97,7 @@ const slot_fetch = () => {
   console.log(slot)
   fetch("http://127.0.0.1:8000/resource/getdetails/"+id, { //role id update require wait for landing page
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",'Authorization':sessionStorage.getItem('token')},
       body: JSON.stringify(slot)
     }).then(async response=>{
       data = await response.json();
@@ -144,7 +145,7 @@ const book_slot = (e) =>{
   console.log(slot_data);
       fetch('http://127.0.0.1:8000/resource/addslots/', { //role id update require wait for landing page
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",'Authorization':sessionStorage.getItem('token')},
       body: JSON.stringify(slot_data)
     }).then(async response=>{
       const msg = await response.json();
@@ -300,7 +301,7 @@ if(slots !== '' && slots!== undefined){
                 id="date"
                 label="Date"
                 type="date"
-                defaultValue="2017-05-24"
+                // defaultValue="2017-05-24"
                 InputLabelProps={{
                   shrink: true,
                 }}
