@@ -1465,17 +1465,18 @@ def resource_editrequests(request):
 def view_allinstitutes(request, page_num):
     try:
         token = request.headers['Authorization']
-        info = Check.check_auth(token)
-        if info['status'] == 0:
-            return JsonResponse(data = {
-                    'status':401,
-                    'message':"Unauthorized Access"
-                })
     except:
-        return JsonResponse(data = {
-                    'status':401,
-                    'message':"Unauthorized Access"
-                })
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+
 
     if request.method == 'GET':
 
