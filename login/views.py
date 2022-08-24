@@ -99,7 +99,8 @@ def signup(request,id):
                         return JsonResponse({'status':200,'username':username,'Role':id,'user_id':t.id , 'token':token})
                     else:
                         return JsonResponse({'status':403,"message":"Password Incorrect"}) 
-                except:
+                except Exception as e:
+                    print(e)
                     return JsonResponse({'status':403,"message":"Email Does not exists"})
             elif id in [4,5,7,8]:
                 try:
