@@ -14,6 +14,7 @@ import qrcode
 from PIL import Image, ImageDraw
 from io import BytesIO
 from django.core.files import File
+from ReSource.utils import Check
 
 
 razorpay_client = razorpay.Client(auth=(settings.razorpay_id , settings.razorpay_account_id))
@@ -91,10 +92,22 @@ def add_students(request , id):
 
 @csrf_exempt
 def requesttopay(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        user_id = data['user_id']
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    user_id = info['user_id']
 
+    if request.method == "POST":
         user = WorkForce.objects.get(id = user_id)
         items = Cart.objects.filter(workforce = user_id, is_approved = 1).all()
         final_price = 0
