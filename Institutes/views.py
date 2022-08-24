@@ -1,3 +1,4 @@
+from email import message
 from Institutes.serializers import *
 from ResourceApp.serializers import *
 from django.http.response import JsonResponse
@@ -762,6 +763,7 @@ def resource_rentapproval(request , id):
                 'names_images':d
             })
 
+
 @csrf_exempt
 def workforce_requests(request , user_id):
     # GET route to show all the workforce requests to the institute role
@@ -946,6 +948,7 @@ def accredition_paster(files):
         shutil.copy(f[1:], './ReSource-FE/src/temp_accredition/')
     return
 
+
 #Institute Requests Get and Post route
 @csrf_exempt
 def institute_requests(request , user_id):
@@ -1040,6 +1043,7 @@ def institute_requests(request , user_id):
         })
 
 
+# View all newly registerd universities for approval
 @csrf_exempt
 def university_requests(request , user_id):
     # GET route to show all the institute requests to the university role
@@ -1127,7 +1131,6 @@ def university_requests(request , user_id):
         })
 
 
-
 # View all list of universities
 @csrf_exempt
 def get_university(request,page_num):
@@ -1206,6 +1209,7 @@ def get_university(request,page_num):
             return JsonResponse(return_data)
 
 
+# View all edit requests of resources
 @csrf_exempt
 def resource_editrequests(request, user_id):
     if request.method == "GET":
@@ -1292,7 +1296,91 @@ def resource_editrequests(request, user_id):
             'message' : 'Unauthorized for you role'
         })
 
+@csrf_exempt
+def view_allinstitutes(request, page_num):
+    if request.method == 'GET':
 
+        instituteobjs = Institutes.objects.filter(role_id = 3, status = 1).all()
+        if instituteobjs:
+
+            size = 3
+            page = page_num
+            paginator = Paginator(instituteobjs, size)
+            institutes = paginator.get_page(page)
+            serializer = InstituteSerializer(institutes, many=True)
+
+
+            return_data = {
+                'status':200,
+                'message':"All Institutes fetched",
+                'total_count':paginator.count,      # total number of labs
+                'total_pages':paginator.num_pages,  # total number of pages
+                'institutes_data':serializer.data,    # labs data on that page
+            }
+            if institutes.number == paginator.num_pages and institutes.number ==1:
+                pass
+            elif institutes.number == paginator.num_pages:
+                return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(institutes.number-1)
+            elif institutes.number == 1:
+                return_data['next_page']=request.build_absolute_uri()[:-1]+str(institutes.number+1)
+            else:
+                return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(institutes.number-1)
+                return_data['next_page']=request.build_absolute_uri()[:-1]+str(institutes.number+1)
+            return JsonResponse(return_data)
+        else:
+            return JsonResponse(data= {
+                "message":"No Institutes to Show"
+            })
+
+    # POST REQUEST FOR SEARCH 
+    elif request.method == 'POST':
+        bodyflag = 0
+        # If searchtext is given then return searchtext
+        bodyflag = 1
+        data = json.loads(request.body)
+
+        if ('searchtext' in data):
+            search = data['searchtext']
+            instituteobjs = Institutes.objects.filter(name__icontains=search).all()
+        else:
+            instituteobjs = Institutes.objects.filter(role_id = 3, status = 1).all()
+
+        if len(instituteobjs) == 0:
+            return JsonResponse({
+            'status':404,
+            'message':"No such Institute Found",
+        })
+        else: 
+            size = 3
+            page = page_num
+            paginator = Paginator(instituteobjs, size)
+            institutes = paginator.get_page(page)
+            serializer = InstituteSerializer(institutes, many=True)
+
+            return_data = {
+            'status':200,
+            'message':"Resources Found",
+            'total_count':paginator.count,
+            'total_pages':paginator.num_pages,
+            'institutes_data':serializer.data
+            }
+
+            if institutes.number == paginator.num_pages and institutes.number ==1:
+                pass
+            elif institutes.number == paginator.num_pages:
+                return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(institutes.number-1)
+            elif institutes.number == 1:
+                return_data['next_page']=request.build_absolute_uri()[:-1]+str(institutes.number+1)
+            else:
+                return_data['previous_page'] = request.build_absolute_uri()[:-1]+str(institutes.number-1)
+                return_data['next_page']=request.build_absolute_uri()[:-1]+str(institutes.number+1)
+            if bodyflag:
+                return_data['body_data'] = data
+            return JsonResponse(return_data)
+        
+
+
+# View a Single Institute
 @csrf_exempt
 def view_institute(request, user_id):
     if request.method == "GET":
@@ -1351,6 +1439,7 @@ def view_institute(request, user_id):
                 "status":404
             })
 
+# View a single University
 @csrf_exempt
 def view_university(request, user_id):
     if request.method == "GET":
