@@ -132,6 +132,7 @@
                     <MenuItem value={8}>Accountant </MenuItem>
                     <MenuItem value={4}>Lab Assistant</MenuItem>
                     <MenuItem value={5}>Teacher</MenuItem>
+                    <MenuItem value={9}>UGC Staff</MenuItem>
                   </Select>
                 </FormControl>
               </li>
