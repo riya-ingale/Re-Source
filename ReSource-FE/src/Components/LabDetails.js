@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import "../Css/resourcedetail.css";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -6,10 +6,30 @@ import Pagination from '@mui/material/Pagination';
 import chem from "../Images/chem-quip.jpg";
 import bio from "../Images/images.jpg";
 import phy from "../Images/microscope.jpg";
+import { useParams } from 'react-router';
 
 export default function LabDetails() {
+  const [res,setRes] = useState();
+  const [load,setLoad] = useState(false);
+const { id } = useParams();
+useEffect(() => {
+  fetch(
+          "http://127.0.0.1:8000/lab/view/"+id,{
+            headers:{'Authorization':sessionStorage.getItem('token')}
+          }).then(response=>response.json())
+          .then(body=>
+            {
+              setRes(body);
+              setLoad(true);
+              console.log(body);
+            })
+          // image_fetcher(users.images)
+          // console.log(image)
+}, [id])
+console.log(res);
   return (
     <>
+    {load && res.status === 200?
     <div className="pd-wrap">
       <div className="container">
         <div className="heading-section">
@@ -21,24 +41,26 @@ export default function LabDetails() {
           </div> */}
           <div className="col-md-12">
             <div className="product-dtl">
-              <div className="product-info">
-                <div className="product-name">Lab Name</div>
-              </div>
+              {/* <div className="product-info">
+                <div className="product-name">Lab Name: {res.lab_data.name}</div>
+              </div> */}
               
               <Card sx={{ minWidth: 275 }}>
                 <CardContent>
                   <div className='row'>
                       <div className='col-md-6'>
                           <ul className="list-bullets">
-                              <li className="mb-2"><strong className='strlist'>Lab ID: </strong> 32</li>
-                              <li className="mb-2"><strong className='strlist'>Lab Assistant: </strong> John Depp</li>
+                          <li className="mb-2"><strong className='strlist'>Lab Name: </strong>{res.lab_data.name}</li>
+                          <li className="mb-2"><strong className='strlist'>Institute Name: </strong>{res.lab_data.institute_name}</li>
                               {/* <li className="mb-2"><strong>Specification: </strong>High Bandwidth</li> */}
                           </ul>
                       </div>
                       <div className='col-md-6'>
                           <ul className="list-bullets">
-                              <li className="mb-2"><strong className='strlist'>Institute Name: </strong>VESIT</li>
-                              <li className="mb-2"><strong className='strlist'>Support Staff: </strong>Some detail</li>
+                            
+                              <li className="mb-2"><strong className='strlist'>Lab Timings: </strong>{res.lab_data.start_time}-{res.lab_data.end_time} Hrs.</li>
+                              <li className="mb-2"><strong className='strlist'>Lab Assistant: </strong> {res.lab_data.workforce_name}</li>
+                              {/* <li className="mb-2"><strong className='strlist'>Support Staff: </strong>Some detail</li> */}
                               {/* <li className="mb-2"><strong></strong></li> */}
                           </ul>
                       </div>
@@ -140,6 +162,7 @@ export default function LabDetails() {
         <Pagination count={10} variant="outlined"  color="primary" />
         </div>
     </div>
+    :<div></div>}
   </>
   )
 }
