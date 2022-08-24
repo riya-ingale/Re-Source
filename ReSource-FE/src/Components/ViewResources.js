@@ -9,6 +9,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import Pagination from '@mui/material/Pagination';
 import { PaginationItem } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 
 const ResourceCard = (item) => {
@@ -55,6 +57,7 @@ export default function ViewResources() {
   const[institute,setInstitute] = useState("");
   const[date,setDate] = useState();
   const[search,setSearch] = useState();
+  const [open, setOpen] = React.useState(false);
 
   // var page = 1;
   useEffect(() => {
@@ -110,7 +113,7 @@ const handlePage = (e,p) =>{
       filterdata['required_date'] = date;
     }
     if(search !== undefined){
-      filterdata['searchtext'] = search
+      filterdata['searchtext'] = search;
     }
     if(p===undefined){
     p = 1;
@@ -129,6 +132,11 @@ const handlePage = (e,p) =>{
               setisLoaded(true);
     })
       setPageCount(res.total_pages); 
+      if (res.total_count == 0)
+      {
+        setOpen(true);
+        console.log(open);
+      }
       setisLoaded(true);
 
   }
@@ -157,7 +165,25 @@ const handledate = (e) => {
 
 const handlesearch = (e) => {
   setSearch(e.target.value);
-}
+};
+
+const disableDates = () => {
+  var today,dd,mm,yyyy;
+  today = new Date;
+  dd = today.getDate() + 1;
+  mm = today.getMonth() + 1;
+  yyyy = today.getFullYear();
+  console.log(typeof(yyyy+"-"+mm+"-"+dd));
+  return yyyy+"-"+mm+"-"+dd;
+};
+
+const handleClose = (event, reason) => {
+  if (reason === 'clickaway') {
+    return;
+  }
+
+  setOpen(false);
+};
 
   return (
     <>
@@ -169,11 +195,11 @@ const handlesearch = (e) => {
                 id="date"
                 label="Date"
                 type="date"
-                defaultValue="2017-05-24"
+                onChange={handledate}
+                InputProps={{ inputProps: { min: "2022-08-25" } }}
                 InputLabelProps={{
                   shrink: true,
                 }}
-                onChange={handledate}
               />
             </div>
             <div className="col-md-3 d-flex justify-content-center">
@@ -185,7 +211,7 @@ const handlesearch = (e) => {
               />
             </div>
             <div className="col-md-3 d-flex justify-content-center">
-              <FormControl variant="standard" >
+              <FormControl variant="standard">
                 <InputLabel id="demo-simple-select-standard-label">
                   Institute
                 </InputLabel>
@@ -197,41 +223,65 @@ const handlesearch = (e) => {
                   onChange={handleinsti}
                 >
                   {isLoaded ? (
-                  res.institutes.map((item) =>(
-                  <MenuItem value={item[0]}>{item[1]},{item[2]}</MenuItem>
-                  ))
-                  ):<MenuItem value="">None</MenuItem>
-                }
+                    res.institutes.map((item) => (
+                      <MenuItem value={item[0]}>
+                        {item[1]},{item[2]}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value="">None</MenuItem>
+                  )}
                 </Select>
+                <Snackbar
+                  open={open}
+                  autoHideDuration={6000}
+                  onClose={handleClose}
+                >
+                  <Alert
+                    onClose={handleClose}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                  >
+                    This is a success message!
+                  </Alert>
+                </Snackbar>
               </FormControl>
             </div>
             <div className="col-md-3 d-flex justify-content-center">
-              <Button className="Searchbtn" variant="outlined" onClick={filter}>Search</Button>
+              <Button className="Searchbtn" variant="outlined" onClick={filter}>
+                Search
+              </Button>
             </div>
           </div>
         </form>
         <div className="row">
-        {isLoaded ? (
-        res.resources_data.map((item,index) =>(
-          <ResourceCard
-            name = {item.name}
-            id = {item.id}
-            cost = {item.cost}
-            quantity = {item.quantity}
-            institute_name = {item.institute_name}
-            image = {index+1}
-            />
-         
-          ))):<div></div>
-        
-        }
+          {isLoaded ? (
+            res.resources_data.map((item, index) => (
+              <ResourceCard
+                name={item.name}
+                id={item.id}
+                cost={item.cost}
+                quantity={item.quantity}
+                institute_name={item.institute_name}
+                image={index + 1}
+              />
+            ))
+          ) : (
+            <div></div>
+          )}
         </div>
         <div className="d-flex justify-content-center">
-        {/* <Button variant="text">Show More</Button> */}
-        {isLoaded ? (
-        <Pagination count={res.total_pages} variant="outlined"  color="primary" onChange={handlePage}/>):
-        <div></div>
-      }
+          {/* <Button variant="text">Show More</Button> */}
+          {isLoaded ? (
+            <Pagination
+              count={res.total_pages}
+              variant="outlined"
+              color="primary"
+              onChange={handlePage}
+            />
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
     </>
