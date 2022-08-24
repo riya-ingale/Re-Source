@@ -978,11 +978,17 @@ def accredition_paster(files):
 #Institute Requests Get and Post route
 @csrf_exempt
 def institute_requests(request):
-    token = request.headers['Authorization']
-    info = Check.check_auth(token)
-    if info['status'] == 0:
-        return JsonResponse('Unauthorized access please login')
-    user_id = info['user_id']
+    try:
+        token = request.headers['Authorization']
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse('Unauthorized access please login')
+        user_id = info['user_id']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
     # GET route to show all the institute requests to the university role
     if request.method == "GET":
         try:
@@ -1076,7 +1082,18 @@ def institute_requests(request):
 
 # View all newly registerd universities for approval
 @csrf_exempt
-def university_requests(request , user_id):
+def university_requests(request):
+    try:
+        token = request.headers['Authorization']
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse('Unauthorized access please login')
+        user_id = info['user_id']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
     # GET route to show all the institute requests to the university role
     if request.method == "GET":
         try:

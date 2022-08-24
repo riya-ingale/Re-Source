@@ -17,7 +17,7 @@ urlpatterns = [
     path('workforce_requests/<user_id>', views.workforce_requests, name = "workforceRequests"),
     path('lab_requests/<user_id>', views.lab_requests, name = "LabRequests"),
     path('institute_requests/', views.institute_requests, name = "institute_requests"),
-    path('university_requests/<user_id>', views.university_requests, name = "university_requests"),
+    path('university_requests/', views.university_requests, name = "university_requests"),
 
     path('addstaff/' , views.add_ugcstaff),
 
