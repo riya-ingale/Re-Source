@@ -48,7 +48,7 @@ export default function Addlab() {
       if(data['status'] == 200){
         console.log("Successfully added a lab")
       }})
-    navigate('/viewres');
+    navigate('/viewlab');
   }
   const handle_start = (e) =>{
     setStart(e.target.value);
@@ -65,7 +65,7 @@ export default function Addlab() {
       if(data['status'] == 200){
         console.log("Successfully updated a lab")
       }})
-      navigate('/viewres');
+      navigate('/viewlab');
   }
 
   const handle_end = (e) =>{

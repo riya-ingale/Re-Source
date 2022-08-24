@@ -208,11 +208,27 @@ def edit_lab(request,lab_id):
 
 @csrf_exempt
 def getlabs(request,page_num):
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    role_id = info['role_id']
+    user_id = info['user_id']
+
     if request.method == 'GET':
         # List of institutes,city to populate in the drop down along with their ids in asceding order of their name
         institutes = Institutes.objects.filter(role_id = 3).values_list('id','name','city').order_by('name').all()
 
-        labsobjs = Labs.objects.all()
+        labsobjs = Labs.objects.filter(status = 1).all()
 
         size = 3
         page = page_num
@@ -333,6 +349,22 @@ def paster(imgs):
 
 @csrf_exempt
 def getdetails(request,lab_id):
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    role_id = info['role_id']
+    user_id = info['user_id']
+
     if request.method == "GET":
 
         labobj = Labs.objects.get(id = lab_id)
