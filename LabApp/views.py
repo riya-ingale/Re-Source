@@ -9,11 +9,27 @@ from django.http.response import JsonResponse
 from datetime import datetime
 from django.core.paginator import Paginator
 import cv2
+from ReSource.utils import Check
 
 # Create your views here.
-
 @csrf_exempt
 def addlab(request):
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    role_id = info['role_id']
+    user_id = info['user_id']
+
     if request.method == "POST":
         # After filling all the details and submitting the form, Workforceid(one who is creating the lab) will be sent from frontend along with form details
 
@@ -26,13 +42,13 @@ def addlab(request):
 
         data = json.loads(request.body)
         print(data)
-        workforce_id = data['user_id']
-        data["workforce"] = workforce_id
+        # workforce_id = data['user_id']
+        data["workforce"] = user_id
 
         # considering start_time and end_time were taken from time input field, 24hr clock
         data['start_time'] = data['start_time'][:2]
         data['end_time'] = data['end_time'][:2]
-        workforce = WorkForce.objects.filter(id = workforce_id)[0]
+        workforce = WorkForce.objects.filter(id = user_id)[0]
         data['institute'] = workforce.institute.id
         
         if workforce.role_id == 4: # only Lab Assistant can add labs
@@ -43,7 +59,7 @@ def addlab(request):
                 'status':200,
                 'message':'SUCCESS',
                 'data': serializer.data,
-                'current_user':workforce_id,
+                'current_user':user_id,
                 'role_id':workforce.role_id
             })
             else:
@@ -61,7 +77,23 @@ def addlab(request):
 
 ## for post route of csrf send role and userid as well for authentication           
 @csrf_exempt
-def edit_lab(request ,user_id, lab_id):
+def edit_lab(request,lab_id):
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    role_id = info['role_id']
+    user_id = info['user_id']
+
     if request.method == 'GET':
         user = WorkForce.objects.filter(id = user_id)[0]
         if user.role_id == 4:
@@ -126,11 +158,11 @@ def edit_lab(request ,user_id, lab_id):
                     'status': 401,
                     'message': 'Only lab owner has access'
                 })
-            data['edit_approval'] = 0
-            data["institute"] = lab.workforce.institute.id
-            data['start_time'] = data['start_time'][:2]
-            data['end_time'] = data['end_time'][:2]
-
+            lab.edit_approval = 0
+            lab.start_time= data['start_time'][:2]
+            lab.end_time= data['end_time'][:2]
+            lab.name = data['name']
+            lab.save()
             serializer = LabSerializer(lab , data = data)
             if serializer.is_valid():
                 serializer.save()

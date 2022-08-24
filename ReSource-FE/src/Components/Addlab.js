@@ -14,8 +14,10 @@ export default function Addlab() {
       setUpdate(true);
     
     fetch(
-            "http://127.0.0.1:8000/lab/edit/"+sessionStorage.getItem('user_id')+"/"+lab_id
-          ).then(response=>response.json())
+            "http://127.0.0.1:8000/lab/edit/"+lab_id,{
+              headers:{'Authorization':sessionStorage.getItem('token')}
+            })
+          .then(response=>response.json())
           .then(body=>  {
 
             setStart(body['data']['start_time']);
@@ -38,13 +40,13 @@ export default function Addlab() {
     console.log(start,end,labd);
     fetch('http://127.0.0.1:8000/lab/add/', { //role id update require wait for landing page
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({"user_id":sessionStorage.getItem("user_id"),'name':labd,"start_time":start,"end_time":end})
+      headers: { "Content-Type": "application/json" ,'Authorization':sessionStorage.getItem('token')},
+      body: JSON.stringify({'name':labd,"start_time":start,"end_time":end})
     }).then(async response=>{
       const data = await response.json();
       console.log(data)
       if(data['status'] == 200){
-        console.log("Success fully added a lab")
+        console.log("Successfully added a lab")
       }})
     navigate('/viewres');
   }
@@ -53,15 +55,15 @@ export default function Addlab() {
   }
 
   const updt_lab = (e) =>{
-    fetch('http://127.0.0.1:8000/lab/edit/'+sessionStorage.getItem('user_id')+"/"+lab_id, { //role id update require wait for landing page
+    fetch('http://127.0.0.1:8000/lab/edit/'+lab_id, { //role id update require wait for landing page
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({"user_id":sessionStorage.getItem("user_id"),'name':labd,"start_time":start,"end_time":end})
+      headers: { "Content-Type": "application/json",'Authorization':sessionStorage.getItem('token') },
+      body: JSON.stringify({'name':labd,"start_time":start,"end_time":end})
     }).then(async response=>{
       const data = await response.json();
       console.log(data)
       if(data['status'] == 200){
-        console.log("Success fully updated a lab")
+        console.log("Successfully updated a lab")
       }})
       navigate('/viewres');
   }
