@@ -79,11 +79,11 @@ const handlesopDownload = (e,filename) => {
                 <div className='row data-wf'>
                         <div className='col-md-12'>
                             <ul className="list-bullets wflist">
-                                <li className="mb-2"><strong className='strlist'>Registration: </strong>{item.registeration_no}</li>
-                                <li className="mb-2"><strong className='strlist'>University: </strong> {item.university}</li>
-                                <li className="mb-2"><strong className='strlist'>Phone: </strong> {item.phone_no}</li>
-                                <li className="mb-2"><strong className='strlist'>Email: </strong>{item.email}</li>
-                                <li className="mb-2"><strong className='strlist'>City: </strong>{item.city}</li>
+                            {item.registeration_no?<li className="mb-2"><strong className='strlist'>Registration: </strong>{item.registeration_no}</li>:<li></li>}
+                            {item.university?<li className="mb-2"><strong className='strlist'>University: </strong> {item.university}</li>:<li></li>}
+                            {item.phone_no?<li className="mb-2"><strong className='strlist'>Phone: </strong> {item.phone_no}</li>:<li></li>}
+                            <li className="mb-2"><strong className='strlist'>Email: </strong>{item.email}</li>
+                            {item.city?<li className="mb-2"><strong className='strlist'>City: </strong>{item.city}</li>:<li></li>}
                                 <li className="mb-2"><strong className='strlist'>Accrediation :</strong><button
           onClick={(event) => handlePDFDownload(event,res.accredition[index])}>Download File!
        </button></li>
