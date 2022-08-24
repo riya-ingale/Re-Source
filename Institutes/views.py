@@ -1019,11 +1019,19 @@ def add_ugcstaff(request):
         })
     if request.method == "POST":
         data = json.loads(request.body)
-        data['institute'] = 2
-        data['role_id'] = 9
-        data['position'] = 'UGC Accounts'
-        data['status'] = 1
-        print(data)
+        email = data['email_id']
+        try:
+            user = WorkForce.objects.get(email_id = email)
+            return JsonResponse(data = {
+                'status':409,
+                'message':'Email already exists'
+            })
+        except:
+            data['institute'] = 2
+            data['role_id'] = 9
+            data['position'] = 'UGC Accounts'
+            data['status'] = 1
+        # print(data)
         serializer = WorkForceSerializer(data = data)
 
         if serializer.is_valid():
