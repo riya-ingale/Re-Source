@@ -27,7 +27,7 @@ export default function UniversityProfile() {
     <>
     {loader?
     <div className='container profile-container'>
-      <div className='bg-box'>
+      <div className='university-bg-box'>
       </div>
       <div className='blur-bg'>
         <div className='inner-blur MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 css-b5x8ma'>
@@ -50,7 +50,7 @@ export default function UniversityProfile() {
         <div className='col-md-6'>
         <div className="card profilecards">
             <div className="card__details">
-            <h3>Profile details <Link to="/"><EditIcon></EditIcon></Link></h3>
+            <h3 className='heading'>Profile details <Link to="/"><EditIcon></EditIcon></Link></h3>
             <ul className="list-bullets detail-list">
             {res.data.city?<li className="mb-2"><strong className='strlist'>City: </strong> {res.data.city}</li>:<div></div>}
             {res.data.state?<li className="mb-2"><strong className='strlist'>State: </strong>{res.data.state}</li>:<div></div>}
@@ -64,10 +64,12 @@ export default function UniversityProfile() {
         </div>
         
         <div className='col-md-6'>
-        <button className='btn btn-primary addstaffbtn' onClick={pendingreq}>Pending Institutes<AddCircleRoundedIcon></AddCircleRoundedIcon></button>
-        <h3>Approved Institutes</h3>
+        
         <div className="card profilecards workforce-list">
             <div className="card__details">
+            <button className='btn addstaffbtn' onClick={pendingreq}>Pending Institutes <AddCircleRoundedIcon></AddCircleRoundedIcon></button>
+            <h3 className='heading'>Approved Institutes</h3>
+            <p></p>
               { res.institute_data.map((item,index)=>(
             <article class="leaderboard__profile">
               <span class="leaderboard__name">{item.name}</span>
