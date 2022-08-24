@@ -9,7 +9,9 @@ export default function UniversityProfile() {
   const [loader,setLoader] = useState(false);
   const[res,setRes] = useState();
   useEffect(() =>{
-    fetch("http://127.0.0.1:8000/institute/profile/"+sessionStorage.getItem('user_id')+"/"+sessionStorage.getItem('role_id'))
+    fetch("http://127.0.0.1:8000/institute/profile/",{
+      headers:{'Authorization':sessionStorage.getItem('token')}
+    })
     .then(response=>response.json())
     .then(body=>
       {
