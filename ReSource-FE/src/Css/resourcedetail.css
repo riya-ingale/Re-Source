@@ -3,7 +3,9 @@
     font-family: 'Poppins', sans-serif;
     margin-top: 50px;
     padding-bottom: 0%;
-    margin-bottom: 0%;
+    margin-bottom: 50px;
+    max-width: 100 vw;
+    overflow: hidden !important;
   }
   .heading-section {
     text-align: center;
@@ -291,6 +293,9 @@
 .slot-booking{
     margin-top: 30px;
 }
+.slot-booking-input{
+  width: 250px;
+}
 .card-booking {
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
     margin-top: 30px;
@@ -304,10 +309,11 @@
   /* Slots */
   .cat{
     margin: 4px;
-    background-color: #8f8e8e;
+    background-color: rgb(207, 207, 207,0.3);
     border-radius: 4px;
     border: 1px solid #fff;
     float: left;
+    color: #000;
   }
   
   .cat label {
@@ -319,15 +325,16 @@
     text-align: center;
     padding: 3px 0;
     display: block;
+    color: #000;
   }
   
   .cat label input {
     position: absolute;
     display: none;
-    color: #fff !important;
+    color: #000;
   }
   /* selects all of the text within the input element and changes the color of the text */
-  .cat label input + span{color: #fff;}
+  .cat label input + span{color: #000;}
   
   
   /* This will declare how a selected input will look giving generic properties */
@@ -342,7 +349,7 @@
   */
   
   /* .action input:checked + span{background-color: #F75A1B;} */
-  .cat input:checked + span{background-color: #1BB8F7;}
+  .cat input:checked + span{background-color:  rgb(36, 160, 237,0.3) ;color: #000;text-shadow: none; }
   /* .crime input:checked + span{background-color: #D9D65D;} */
   /* .history input:checked + span{background-color: #82D44E;}
   .reality input:checked + span{background-color: #F3A4CF;}
@@ -427,6 +434,16 @@
   .pagination-div{
     margin-bottom: 30px;
   }
+  .reco-heading {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 30px;
+    font-size: 2rem;
+  }
+  .car-img {
+    max-height: 400px !important;
+    object-fit: cover;
+    }
   /* RESPONSIVE DESIGNS */
 /* // Small devices (landscape phones, 576px and up) */
 @media (max-width: 576px) 
