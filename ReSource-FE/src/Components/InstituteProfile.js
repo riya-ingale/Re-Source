@@ -25,7 +25,9 @@ export default function InstituteProfile() {
 
   const handleLab = (e,p) =>{
     setL_id(p);
-    fetch("http://127.0.0.1:8000/institute/institute_profile/"+r_id+"/"+p)
+    fetch("http://127.0.0.1:8000/institute/institute_profile/"+r_id+"/"+p,{
+      headers:{'Authorization':sessionStorage.getItem('token')}
+    })
     .then(response=>response.json())
     .then(body=>
       {
@@ -37,7 +39,9 @@ export default function InstituteProfile() {
 
   const handleRes = (e,p) =>{
     setR_id(p);
-    fetch("http://127.0.0.1:8000/institute/institute_profile/"+p+"/"+l_id)
+    fetch("http://127.0.0.1:8000/institute/institute_profile/"+p+"/"+l_id,{
+      headers:{'Authorization':sessionStorage.getItem('token')}
+    })
     .then(response=>response.json())
     .then(body=>
       {

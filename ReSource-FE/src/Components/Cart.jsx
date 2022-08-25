@@ -61,11 +61,13 @@ const Product = styled.div`
 const ProductDetail = styled.div`
   flex: 2;
   display: flex;
+  ${mobile({ flexDirection: "column" })}
 `;
 
 const Image = styled.img`
   width: 200px;
-  ${mobile({ flexDirection: "" })}
+  padding-bottom : 10px;
+  ${mobile({ flexDirection: "coloumn" })}
 `;
 
 const Details = styled.div`
@@ -76,9 +78,20 @@ const Details = styled.div`
   ${mobile({ flexDirection: "row" })}
 `;
 
-const ProductName = styled.span``;
+const ProductName = styled.span`
+  display:flex;
+  flex-direction: column;
+  justify-content: space-around;
 
-const ProductId = styled.span``;
+  ${mobile({ flexDirection: "row" })}
+`;
+
+const ProductId = styled.span`
+  display:flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  ${mobile({ flexDirection: "row" })}`;
 
 // const ProductColor = styled.div`
 //   width: 20px;

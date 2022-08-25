@@ -19,6 +19,44 @@ from ReSource.utils import Check
 
 razorpay_client = razorpay.Client(auth=(settings.razorpay_id , settings.razorpay_account_id))
 
+from importlib.resources import Resource
+from datetime import datetime
+# from ResourceApp.models import *
+import numpy as np
+import pandas as pd
+from apyori import apriori
+
+def resource_recommend():
+    resource = {}
+    resources  = Resources.objects.all()
+    n = len(resources)
+    for i in range(n):
+        resource[resources[i].id] = i
+    print(resource)
+    orders = Order.objects.all()
+
+    bucket = []
+    for order in orders:
+        print("order_id :", order.id)
+        products = ProductInOrder.objects.filter(order_id = order.id)
+        ele = [0]*n
+        print("products length :", len(products))
+        for j in range(len(products)):
+            try:
+                idx = resource[products[j].resource.id]
+                ele[idx] = products[j].resource.id
+                print("Resource_id :" , products[j].resource.id)
+                #print("Ele added : ", ele)
+            except:
+                continue
+        bucket.append(ele)
+        print(bucket)
+    
+    association_rules = apriori(bucket , min_support = 0.50, min_confidence = 0.7, min_lift = 1.2 , min_length = 2)
+    association_results = list(association_rules)
+    print(association_results)
+
+resource_recommend()
 
 @csrf_exempt
 def add_students(request , id):

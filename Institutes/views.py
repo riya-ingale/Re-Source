@@ -129,10 +129,16 @@ def profile(request):
             for po in pserializer.data:
                 dict(po)   
                 order_id = po['id']
-                products = ProductInOrder.objects.filter(order_id = order_id).all()
+                products = ProductInOrder.objects.filter(order_id = order_id)
+                # resource_name , institute_name = [] , []
+                # for i in range(len(products)):
+                #     resource_name.append(products[i].resource.name)
+                #     institute_name.append(products[i].resource.lab.institute.name)
                 productserializer = PIOSerializer(products, many = True)
                 print(productserializer.data)
                 po['products'] = productserializer.data
+                # po['products'] = resource_name
+                # po['institutes'] = institute_name
                 pen_or.append(po)
 
             bserializer = OrderSerializer(buytransactions , many = True)
