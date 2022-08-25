@@ -16,6 +16,10 @@ export default function ResourceApproval() {
             setRes(body);
             console.log(body);
             setLoad(true);
+            if(body.status == 200 && body.data.length == 0)
+            {
+              console.log("No New Data")
+            }
         })
     },[])
 

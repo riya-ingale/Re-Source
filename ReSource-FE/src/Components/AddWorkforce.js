@@ -18,7 +18,7 @@ export default function AddWorkforce() {
           
           <div className="input-box">
             <span className="details">Institute</span>
-            <Dropdown class="dropdown">
+            <Dropdown className="dropdown dropdown-wf">
               <Dropdown.Toggle variant="light" id="dropdown-basic" ClassName="dropdownbtn">
                 Select Institute
               </Dropdown.Toggle>
@@ -38,7 +38,7 @@ export default function AddWorkforce() {
           </div>
           <div className="input-box">
              <span className="details">Position</span>
-             <Dropdown class="dropdown">
+             <Dropdown className="dropdown dropdown-wf">
               <Dropdown.Toggle variant="light" id="dropdown-basic" ClassName="dropdownbtn">
                 Select Position
               </Dropdown.Toggle>
@@ -66,7 +66,7 @@ export default function AddWorkforce() {
           
           <div className="input-box">
             <span className="details">ID card</span>
-            <input type="file" class="input-file" placeholder="Registration Number" required/>
+            <input type="file" className="input-file" placeholder="Registration Number" required/>
           </div>
           
         </div>
