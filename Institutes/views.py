@@ -125,7 +125,9 @@ def profile(request):
             pen_or = []
             pending_orders = Order.objects.filter(institute = institute.id , request_status = 0).all()
             pserializer = OrderSerializer(pending_orders, many = True)
-
+            insti_data  = Institutes.objects.filter(id = institute.id)
+            i_serializer = InstituteSerializer(insti_data,many=True)
+            print(insti_data)
             for po in pserializer.data:
                 dict(po)   
                 order_id = po['id']
@@ -144,7 +146,8 @@ def profile(request):
                 'workforce':wfserializer.data,
                 'bdata': bserializer.data,
                 'sdata':sserializer.data,
-                'pending_orders':pen_or
+                'pending_orders':pen_or,
+                "institute_data":i_serializer.data,
             })
         
         elif role_id == 9:

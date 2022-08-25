@@ -65,7 +65,7 @@ function App() {
           <Route exact path="/universityProfile" element={<><Header/><UniversityProfile/><Footer/></>}/>
           <Route exact path="/ugcProfile" element={<><Header/><UGCProfile/><Footer/></>}/>
           <Route exact path="/ugcStaffProfile/:id" element={<><Header/><UGCStaffProfile/><Footer/></>}/>
-          <Route exact path="/accountsProfile/:id" element={<><Header/><AccountsProfile/><Footer/></>}/>
+          <Route exact path="/accountsProfile/" element={<><Header/><AccountsProfile/><Footer/></>}/>
           <Route exact path="/resource_addrequest" element = {<><Header/><Resourceaddreq/><Footer/></>}/>
           <Route exact path="/resource_request" element={<><Header/><Resourcereq/><Footer/></>}/>
           <Route exact path="/edit_req" element={<><Header/><Resourcereq/><Footer/></>}/>

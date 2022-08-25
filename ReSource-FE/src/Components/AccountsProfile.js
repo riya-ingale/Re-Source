@@ -17,16 +17,18 @@ import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutl
 export default function AccountsProfile() {
   const [loader,setLoader] = useState(false);
   const[res,setRes] = useState();
-  // useEffect(() =>{
-  //   fetch("http://127.0.0.1:8000/institute/profile/"+sessionStorage.getItem('user_id')+'/'+sessionStorage.getItem('role_id'))
-  //   .then(response=>response.json())
-  //   .then(body=>
-  //     {
-  //       setRes(body);
-  //       setLoader(true);
-  //       console.log(body);
-  //     })
-  // },[])
+  useEffect(() =>{
+    fetch("http://127.0.0.1:8000/institute/profile/",{
+      headers:{'Authorization':sessionStorage.getItem('token')}
+    })
+    .then(response=>response.json())
+    .then(body=>
+      {
+        setRes(body);
+        setLoader(true);
+        console.log(body);
+      })
+  },[])
 
 
 // async function showRazorpay(e,id) {
@@ -73,6 +75,8 @@ export default function AccountsProfile() {
 
   return (
     <>
+    {loader && res.status === 200?
+    <div>
     <div className='container profile-container'>
       <div className='bg-box'>
       </div>
@@ -86,7 +90,7 @@ export default function AccountsProfile() {
             </div>
             <div className='col-md-10'>
               <p>
-                <h1 className="Profile-name">Accountant Name</h1>
+                <h1 className="Profile-name">{res.workforce.name}</h1>
               </p>
             </div>
           </div>
@@ -127,10 +131,10 @@ export default function AccountsProfile() {
             <h3>Profile details <Link to="/"><EditIcon></EditIcon></Link></h3>
             <ul className="list-bullets detail-list">
               <li className="mb-2"><strong className='strlist'>Department: </strong> Accounts</li>
-              <li className="mb-2"><strong className='strlist'>Position: </strong> Assistant</li>
-              <li className="mb-2"><strong className='strlist'>Institute: </strong>VIT</li>
-              <li className="mb-2"><strong className='strlist'>Email: </strong>421202</li>
-              <li className="mb-2"><strong className='strlist'>Phone Number: </strong>421202324</li>
+              <li className="mb-2"><strong className='strlist'>Position: </strong> {res.workforce.position}</li>
+              <li className="mb-2"><strong className='strlist'>Institute: </strong>{res.institute_data[0].name}</li>
+              <li className="mb-2"><strong className='strlist'>Email: </strong>{res.workforce.email_id}</li>
+              <li className="mb-2"><strong className='strlist'>Phone Number: </strong>{}</li>
               <li className="mb-2"><strong className='strlist'>Ammount of Resources: </strong>421</li>
               <li className="mb-2"><strong className='strlist'>Ammount of labs: </strong>24</li>
             </ul>
@@ -170,9 +174,12 @@ export default function AccountsProfile() {
         </div>
       </div>
       </div>
+      
       <p><br></br></p>
     </div>   
     <div></div>
+    </div>
+    :<div></div>}
     </>
   )
 }
