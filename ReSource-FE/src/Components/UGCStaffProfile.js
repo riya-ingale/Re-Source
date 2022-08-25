@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 import "../Css/intituteprofile.css";
 import img from '../Images/user-account.png';
 import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 
 export default function UGCStaffProfile() {
+  const [res,setRes] = useState();
+  const[load,setLoad] = useState(false);
+  useEffect(() =>{
+    fetch("http://127.0.0.1:8000/institute/profile/",{
+      headers:{'Authorization':sessionStorage.getItem('token')}
+    })
+    .then(response=>response.json())
+    .then(body=>
+      {
+        setRes(body);
+        setLoad(true);
+        console.log(body);
+      })
+  },[])
   return (
     <>
+    {load && res.status===200?
     <div className='container profile-container'>
       <div className='bg-box'>
       </div>
@@ -20,7 +35,7 @@ export default function UGCStaffProfile() {
             </div>
             <div className='col-md-10'>
               <p>
-                <h1 className="Profile-name">Institute Name</h1>
+                <h1 className="Profile-name"></h1>
               </p>
             </div>
           </div>
@@ -96,6 +111,7 @@ export default function UGCStaffProfile() {
       </div>
       
     </div>   
+    :<div></div>}
     </>
   )
 }

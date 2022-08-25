@@ -72,7 +72,7 @@ export default function InstituteList() {
     <div>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
 
-        <div class="container University-List-Container">
+        <div className="container University-List-Container">
         <form>
           <div className="row">
             
@@ -90,20 +90,20 @@ export default function InstituteList() {
             </div>
           </div>
         </form>
-        <div class="row">
+        <div className="row list-row ">
             {res.institutes_data.map((item,index)=>(
-            <div class="col-md-4">
-            <div class="our_solution_category">
-                <div class="solution_cards_box">
-                <div class="solution_card">
-                    <div class="hover_color_bubble"></div>
-                    <div class="so_top_icon">
+            <div className="col-md-4 ">
+            <div className="our_solution_category">
+                <div className="solution_cards_box">
+                <div className="solution_card">
+                    <div className="hover_color_bubble"></div>
+                    <div className="so_top_icon">
                     <img src={cardsvg} />
                     </div>
-                    <div class="solu_title">
+                    <div className="solu_title">
                     <h3>Institute Name :{item.name}</h3>
                     </div>
-                    <div class="solu_description">
+                    <div className="solu_description">
                     <div className="">
                         <ul>
                         {item.university?<li className="lires boldline">University: {item.university}</li>:<li></li>}
@@ -115,7 +115,7 @@ export default function InstituteList() {
                         </ul>
                     </div>
                     <a href={'/viewInstituteProfile/'+item.id}>
-                    <button type="button" class="read_more_btn">More Details</button>
+                    <button type="button" className="read_more_btn">More Details</button>
                     </a>
                     </div>
                 </div>
@@ -128,7 +128,7 @@ export default function InstituteList() {
         </div>
         <div className="d-flex justify-content-center">
         {/* <Button variant="text">Show More</Button> */}
-        <Pagination count={res.total_pages} variant="outlined" onChange={handlepagechange}  color="primary"/>
+        <Pagination className='pagination-class' count={res.total_pages} variant="outlined" onChange={handlepagechange}  color="primary"/>
         </div>
         </div>
         </div>

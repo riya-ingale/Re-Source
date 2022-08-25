@@ -782,7 +782,7 @@ def resource_rentapproval(request):
             return JsonResponse('Unauthorized access please login')
 
         role_id = info['role_id']
-        id = info['role_id']
+        id = info['user_id']
     except:
         return JsonResponse(data = {"status":401, "message":"Unauthorized Access"})
 

@@ -45,7 +45,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Indexbody/>}/>{/* Pending */}
           <Route exact path="/login" element={<><LogIn/></>}/>
-          <Route exact path="/addres" element={<AddResources/>}/>
+          <Route exact path="/addres" element={<><Header/><AddResources/><Footer/></>}/>
           <Route exact path="/header" element={<Header/>}/>
           <Route exact path="/footer" element={<Footer/>}/>
           <Route exact path="/viewres" element={<><Header/><ViewResources/><Footer/></>}/>
@@ -76,7 +76,7 @@ function App() {
           <Route exact path="/viewInstituteProfile/:id" element={<><Header/><ViewProfileInstitute/><Footer/></>}/>
           <Route exact path="/viewUniversityProfile/:id" element={<><Header/><ViewUniversityProfile/><Footer/></>}/>
           <Route exact path="/viewAccountsProfile/:id" element={<><Header/><ViewAccountsProfile/><Footer/></>}/>
-          <Route exact path="/viewlabassistantprofile" element={<><Header/><ViewLabAssistantProfile/><Footer/></>}/>
+          <Route exact path="/viewlabassistantprofile/:id" element={<><Header/><ViewLabAssistantProfile/><Footer/></>}/>
           {/* Extra Lab Detail Routes */}
           <Route exact path="/labdetail" element = {<><Header/><LabDetail/><Footer/></>}/>
           <Route exact path="/ugcstaffform" element = {<><Header/><UGCStaffform/><Footer/></>}/>

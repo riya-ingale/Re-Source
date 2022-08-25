@@ -12,9 +12,11 @@ import { useParams } from 'react-router';
 export default function ViewProfileInstitute() {
   const [res,setRes] = useState();
   const [load,setLoad] = useState(false);
+  const [r_id,setR_id] = useState(1);
+  const [l_id,setL_id] = useState(1);
   const { id } = useParams();
   useEffect(() =>{
-    fetch("http://127.0.0.1:8000/institute/view_institute/"+id,{
+    fetch("http://127.0.0.1:8000/institute/view_institute/"+id+"/"+1+"/"+1,{
       headers:{'Authorization':sessionStorage.getItem('token')}
     })
     .then(response=>response.json())
@@ -25,8 +27,39 @@ export default function ViewProfileInstitute() {
         console.log(body);
       })
   },[])
+
+  const handleLab = (e,p) =>{
+    setL_id(p);
+    fetch("http://127.0.0.1:8000/institute/view_institute/"+id+"/"+p+"/"+r_id
+    ,{
+      headers:{'Authorization':sessionStorage.getItem('token')}
+    })
+    .then(response=>response.json())
+    .then(body=>
+      {
+        setRes(body);
+        setLoad(true);
+        console.log(body);
+      })
+  }
+
+  const handleRes = (e,p) =>{
+    setR_id(p);
+    fetch("http://127.0.0.1:8000/institute/view_institute/"+id+"/"+l_id+"/"+p
+    ,{
+      headers:{'Authorization':sessionStorage.getItem('token')}
+    })
+    .then(response=>response.json())
+    .then(body=>
+      {
+        setRes(body);
+        setLoad(true);
+        console.log(body);
+      })
+  }
   return (
     <>
+    {load &&res.status===200?
     <div className='container profile-container'>
       <div className='bg-box'>
       </div>
@@ -40,7 +73,7 @@ export default function ViewProfileInstitute() {
             </div>
             <div className='col-md-10'>
               <p>
-                <h1 className="Profile-name">Institute Name</h1>
+                <h1 className="Profile-name">Institute Name : {res.institute_data.name}</h1>
               </p>
             </div>
           </div>
@@ -51,16 +84,16 @@ export default function ViewProfileInstitute() {
         <div className='col-md-6'>
         <div className="card profilecards">
             <div className="card__details">
-            <h3>Profile details <Link to="/"><EditIcon></EditIcon></Link></h3>
+            {/* <h3>Profile details <Link to="/"><EditIcon></EditIcon></Link></h3> */}
             <ul className="list-bullets detail-list">
-              <li className="mb-2"><strong className='strlist'>City: </strong> Pune</li>
-              <li className="mb-2"><strong className='strlist'>State: </strong> Mahrashtra</li>
-              <li className="mb-2"><strong className='strlist'>Pincode: </strong>421202</li>
-              <li className="mb-2"><strong className='strlist'>Email: </strong>421202</li>
-              <li className="mb-2"><strong className='strlist'>Phone Number: </strong>421202324</li>
-              <li className="mb-2"><strong className='strlist'>Ammount of Resources: </strong>421</li>
-              <li className="mb-2"><strong className='strlist'>Ammount of labs: </strong>24</li>
-              <li className="mb-2"><strong className='strlist'>Ammount of Workforce: </strong>20</li>
+            {res.institute_data.city?<li className="mb-2"><strong className='strlist'>City: </strong> {res.institute_data.city}</li>:<div></div>}
+            {res.institute_data.state?<li className="mb-2"><strong className='strlist'>State: </strong>{res.institute_data.state}</li>:<div></div>}
+            {res.institute_data.pincode?<li className="mb-2"><strong className='strlist'>Pincode: </strong>{res.institute_data.pincode}</li>:<div></div>}
+              <li className="mb-2"><strong className='strlist'>Email: </strong>{res.institute_data.email}</li>
+            {res.institute_data.phone_no?<li className="mb-2"><strong className='strlist'>Phone Number: </strong>{res.institute_data.phone_no}</li>:<div></div>}
+              <li className="mb-2"><strong className='strlist'>Ammount of Resources: </strong>{res.total_resource_count}</li>
+              <li className="mb-2"><strong className='strlist'>Ammount of labs: </strong>{res.total_lab_count}</li>
+              <li className="mb-2"><strong className='strlist'>Ammount of Workforce: </strong>{res.workforce_data.length}</li>
             </ul>
             </div>
             </div>
@@ -68,28 +101,27 @@ export default function ViewProfileInstitute() {
         <div className='col-md-6'>
         <div className="card profilecards workforce-list">
             <div className="card__details">
+            { res.workforce_data.map((item,index)=>(
+              item.position==='Lab Assistant'?
+              <a href={'/viewlabassistantprofile/'+item.id}>
             <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 1</span>
+              <span class="leaderboard__name">{item.name}</span>
+              <span class="leaderboard__name">{item.position}</span>
             </article>
-    
+            </a>
+            :
+            item.position==='Accounts'?
+              <a href={'/viewAccountsProfile/'+item.id}>
             <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 2</span>
+              <span class="leaderboard__name">{item.name}</span>
+              <span class="leaderboard__name">{item.position}</span>
             </article>
-    
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 3</span>
-            </article>
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 4</span>
-            </article>
-    
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 5</span>
-            </article>
-    
-            <article class="leaderboard__profile">
-              <span class="leaderboard__name">Workforce 6</span>
-            </article>
+            </a>
+            :<article class="leaderboard__profile">
+            <span class="leaderboard__name">{item.name}</span>
+            <span class="leaderboard__name">{item.position}</span>
+          </article>
+              ))}
             </div>
             </div>
         </div>
@@ -98,37 +130,11 @@ export default function ViewProfileInstitute() {
       {/* Resources */}
       <p className='heading res-cards'><h3 class="heading_name">Resources</h3></p>
       <div className="row">
+         
+      {res.resource_data.map((item,index)=>(
           <div className="col-md-4 colvr">
             <div className="card rescard">
-              <img src={chem} className="imgres" alt="Equipment Name" />
-
-              {/* <!-- A div with card__details  to hold the details in the card  --> */}
-              <div className="card__details">
-                {/* <!-- Span with tag class for the tag --> */}
-                {/* <span className="tag">Nature</span>
-
-                <span className="tag">Lake</span> */}
-
-                {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
-                {/* <span class="discount">Partially Available</span> */}
-
-                <div className="">
-                  <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
-                  </ul>
-                </div>
-
-                <button className="btn-vr">Book Now</button>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4 colvr">
-            <div className="card rescard">
-              <img src={bio} className="imgres" alt="Equipment Name" />
+              <img src={require("../temp_images/temp"+String(index+1)+".jpeg")} className="imgres" alt="Equipment Name" />
 
               {/* <!-- A div with card__details class to hold the details in the card  --> */}
               <div className="card__details">
@@ -138,51 +144,26 @@ export default function ViewProfileInstitute() {
                 <span className="tag">Lake</span> */}
 
                 {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
-
+                <div className="name">Equipment Name: {item.name}</div>
+                {/* <span className="discount">Partially Available</span> */}
                 <div className="">
                   <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
+                    {/* <li className="lires boldline">Availability: Partially Available</li> */}
+                    <li className="lires">Cost: {item.cost} Rs/hour</li>
+                    <li className="lires">Subject: {item.subject}</li>
+                    <li className="lires">Quantity: {item.quantity}</li>
                   </ul>
                 </div>
-                <button className="btn-vr">Book Now</button>
+                <a href={'/resdetail/'+item.id}>
+                <button className="btn-vr">Book Now</button></a>
               </div>
             </div>
           </div>
-          <div className="col-md-4 colvr">
-            <div className="card rescard">
-              <img src={phy} className="imgres" alt="Equipment Name" />
-
-              {/* <!-- A div with card__details class to hold the details in the card  --> */}
-              <div className="card__details">
-                {/* <!-- Span with tag class for the tag --> */}
-                {/* <span className="tag">Nature</span>
-
-                <span className="tag">Lake</span> */}
-
-                {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
-                {/* <span class="discount">Partially Available</span> */}
-                <div className="">
-                  <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
-                  </ul>
-                </div>
-
-                <button className="btn-vr">Book Now</button>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
         <div className="d-flex justify-content-center">
         {/* <Button variant="text">Show More</Button> */}
-        <Pagination count={10} variant="outlined"  color="primary" />
+        <Pagination count={res.total_resource_pages} variant="outlined" onChange={handleRes}  color="primary" />
         </div>
         <p>
             <br></br>
@@ -190,37 +171,10 @@ export default function ViewProfileInstitute() {
         {/* Labs  */}
         <p className='heading'><h3 class="heading_name">Labs</h3></p>
         <div className="row">
+        {res.lab_data.map((item)=>(
           <div className="col-md-4 colvr">
             <div className="card rescard">
-              <img src={chem} className="imgres" alt="Equipment Name" />
-
-              {/* <!-- A div with card__details  to hold the details in the card  --> */}
-              <div className="card__details">
-                {/* <!-- Span with tag class for the tag --> */}
-                {/* <span className="tag">Nature</span>
-
-                <span className="tag">Lake</span> */}
-
-                {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
-                {/* <span class="discount">Partially Available</span> */}
-
-                <div className="">
-                  <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
-                  </ul>
-                </div>
-
-                <button className="btn-vr">Book Now</button>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4 colvr">
-            <div className="card rescard">
-              <img src={bio} className="imgres" alt="Equipment Name" />
+              <img src={require("../temp_images/default_image.jpeg")} className="imgres" alt="Equipment Name" />
 
               {/* <!-- A div with card__details class to hold the details in the card  --> */}
               <div className="card__details">
@@ -230,56 +184,34 @@ export default function ViewProfileInstitute() {
                 <span className="tag">Lake</span> */}
 
                 {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
-
+                <div className="name">Lab Name: {item.name}</div>
+                {/* <span className="discount">Partially Available</span> */}
                 <div className="">
                   <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
+                    {/* <li className="lires boldline">Availability: Partially Available</li> */}
+                    <li className="lires">Timings: {item.start_time}:00 - {item.end_time}:00 Hrs</li>
+                    <li className="lires">Institute Name: {res.institute_data.name}</li>
+                    {/* <li className="lires">Capacity: 100</li> */}
                   </ul>
                 </div>
-                <button className="btn-vr">Book Now</button>
+                <a href={'/labdetail/'+item.id}>
+                <button className="btn-vr">More Details</button>
+
+                </a>
               </div>
             </div>
           </div>
-          <div className="col-md-4 colvr">
-            <div className="card rescard">
-              <img src={phy} className="imgres" alt="Equipment Name" />
-
-              {/* <!-- A div with card__details class to hold the details in the card  --> */}
-              <div className="card__details">
-                {/* <!-- Span with tag class for the tag --> */}
-                {/* <span className="tag">Nature</span>
-
-                <span className="tag">Lake</span> */}
-
-                {/* <!-- A div with name class for the name of the card --> */}
-                <div className="name">Equipment Name</div>
-                {/* <span class="discount">Partially Available</span> */}
-                <div className="">
-                  <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
-                  </ul>
-                </div>
-
-                <button className="btn-vr">Book Now</button>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
         <div className="d-flex justify-content-center">
         {/* <Button variant="text">Show More</Button> */}
-        <Pagination count={10} variant="outlined"  color="primary" />
+        <Pagination count={res.total_lab_pages} variant="outlined" onChange={handleLab} color="primary" />
         </div>
         <p>
             <br></br>
         </p>
-    </div>   
+    </div> 
+    :<div></div>}
     </>
   )
 }

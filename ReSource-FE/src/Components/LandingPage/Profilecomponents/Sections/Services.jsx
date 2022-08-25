@@ -9,6 +9,8 @@ import AddImage1 from "../../Profileassets/img/add/1.png";
 import AddImage2 from "../../Profileassets/img/add/2.png";
 import AddImage3 from "../../Profileassets/img/add/3.png";
 import AddImage4 from "../../Profileassets/img/add/4.png";
+import {Link} from "react-router-dom";
+
 export default function Services() {  
   return (
     <Wrapper id="services">
@@ -61,10 +63,7 @@ export default function Services() {
                 </p>
                 <ButtonsRow className="flexNullCenter" style={{ margin: "30px 0"}}>
                   <div style={{ width: "190px" }}>
-                    <FullButton title="Get Started" action={() => alert("clicked")} />
-                  </div>
-                  <div style={{ width: "190px", marginLeft: "15px" }}>
-                    <FullButton title="Contact Us" action={() => alert("clicked")} border />
+                    <Link to = "/login"><FullButton title="Get Started" /></Link>
                   </div>
                 </ButtonsRow>
               </AddLeft>

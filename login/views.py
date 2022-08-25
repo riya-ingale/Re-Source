@@ -103,7 +103,7 @@ def signup(request,id):
                 except Exception as e:
                     print(e)
                     return JsonResponse({'status':403,"message":"Email Does not exists"})
-            elif id in [4,5,7,8]:
+            elif id in [4,5,7,8,9]:
                 try:
                     t = WorkForce.objects.get(email_id = username)
                     if t.status != 1:
@@ -162,3 +162,23 @@ def logout(request):
             'message':'Donot logout tempered token'
         })
     
+@csrf_exempt
+def fetch_role_id(request):
+    print("HERE")
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    print(token)
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    role_id = info['role_id']
+    user_id = info['user_id']
+    return role_id

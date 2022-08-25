@@ -112,7 +112,7 @@
             </UlWrapper>
             <UlWrapperRight className="flexNullCenter nav-login-btn">
               <li className="semiBold font15 pointer">
-              <FormControl sx={{ m: 1, minWidth: 80 }}>
+              <FormControl sx={{ m: 1, minWidth: 150 }}>
                   <InputLabel id="demo-simple-select-autowidth-label" >Login/SignUp</InputLabel>
                   <Select
                     class="btn-profile-login radius8 lightBg"
@@ -124,7 +124,7 @@
                     label="Role"
                   >
                     <MenuItem value="">
-                      <em>None</em>
+                      <em>Select the Role</em>
                     </MenuItem>
                     <MenuItem value={3}>Institute </MenuItem>
                     <MenuItem value={2}>University</MenuItem>
@@ -132,6 +132,7 @@
                     <MenuItem value={8}>Accountant </MenuItem>
                     <MenuItem value={4}>Lab Assistant</MenuItem>
                     <MenuItem value={5}>Teacher</MenuItem>
+                    <MenuItem value={9}>UGC Staff</MenuItem>
                   </Select>
                 </FormControl>
               </li>
