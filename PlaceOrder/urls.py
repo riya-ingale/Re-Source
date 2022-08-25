@@ -6,5 +6,6 @@ urlpatterns = [
     path('handlerequest/' , views.handlerequest),
     path("requesttopay/", views.requesttopay),
     path('sellerpay/' , views.settle_transaction),
-    path('basket/' , views.resource_recommend)
+    path('basket/' , views.resource_recommend),
+    path('invoice/<order_id>', views.invoice)
 ]

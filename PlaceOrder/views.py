@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http.response import JsonResponse
@@ -26,6 +27,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 from apyori import apriori
+
 
 def create_dict(record):
     output = {}
@@ -453,7 +455,8 @@ def handlerequest(request):
                 
                 #========sending invoice via email===============
                 # result = BytesIO()
-                # pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)#, link_callback=fetch_resources)
+                # pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+                #, link_callback=fetch_resources)
                 # pdf = result.getvalue()
                 # filename = 'Invoice_' + data['order_id'] + '.pdf'
 
@@ -509,7 +512,7 @@ def settle_transaction(request):
             "status":401
         })
     user_id = info['user_id']
-    role_id = data['role_id']
+    role_id = info['role_id']
     
     if request.method == "POST":
         #authenticate role_id from jwt
@@ -528,8 +531,56 @@ def settle_transaction(request):
             'message':'Money will be credited',
         })
 
-
+@csrf_exempt
+def invoice(request, order_id):
+    if request.method == "GET":
+        try:
+            token = request.headers['Authorization']
+        except:
+            return JsonResponse(data= {
+                "message":"Unauthorized Access, Please Login",
+                "status":401
+            })
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse(data= {
+                "message":"Unauthorized Access, Please Login",
+                "status":401
+            })
+        user_id = info['user_id']
+        role_id = info['role_id']
     
+        count = 1
+        items = []
+        products = ProductInOrder.objects.filter(order_id = order_id).all()
+        for prod in products:
+            d = dict()
+            d['sno'] = count
+            d['resource'] = prod.resource.name
+            d['institute_name'] = prod.resource.lab.institute.name
+            d['qty'] = prod.units
+            d['rate'] = prod.cost
+            items.append(d)
+        order = Order.objects.get(id = order_id, payment_status = 1)
+        data = {
+            "order_id":order.id,
+            "razorpay_order_id":order.razorpay_order_id,
+            "razorpay_payment_id":order.razorpay_payment_id,
+
+            "final_cost":order.finalcost,
+
+            "buyer_name":order.workforce.name,
+            "buyer_institute": order.workforce.institute.name,
+            "buyer_email":order.workforce.email_id,
+            "buyer_phone_no":order.workforce.phone_no,
+            "buyer_position":order.workforce.position,
+            "items":items
+        }
+        return JsonResponse(data = {
+            "data":data
+        })
+
+
 
 
 
