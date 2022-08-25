@@ -124,6 +124,7 @@ export default function InstituteProfile() {
             <h3 className='heading'>Workforce</h3>
             {res.workforce_data.map((item) =>(
               item.status === 1?
+              // <a href="/wfprofile"+></a>
             <article className="leaderboard__profile">
               <span className="leaderboard__name">{item.name}</span>
             </article>

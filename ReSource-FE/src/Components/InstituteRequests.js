@@ -109,6 +109,7 @@ const handlesopDownload = (e,filename) => {
     {load && res.status === 200 && type==='intituterequest'?
     <div className='container institute-request-container'>
         <div className='row'>
+        <h3 className='heading'>Approval Requests for Institutes</h3>
             {res.data.map((item,index)=>(
             <div className='col-md-4'>
             <div class="institute-request-card" href="#">
@@ -122,10 +123,10 @@ const handlesopDownload = (e,filename) => {
                             {item.phone_no?<li className="mb-2"><strong className='strlist'>Phone: </strong> {item.phone_no}</li>:<div></div>}
                             <li className="mb-2"><strong className='strlist'>Email: </strong>{item.email}</li>
                             {item.city?<li className="mb-2"><strong className='strlist'>City: </strong>{item.city}</li>:<div></div>}
-                            {item.accredition?<li className="mb-2"><strong className='strlist'>Accrediation :</strong><button
+                            {item.accredition?<li className="mb-2"><strong className='strlist'>Accrediation :</strong><button className='btn-download'
           onClick={(event) => handlePDFDownload(event,item.accredition)}>Download File!
        </button></li>:<div></div>}
-       {item.sop?<li className="mb-2"><strong className='strlist'>Sop :</strong><button
+       {item.sop?<li className="mb-2"><strong className='strlist'>Sop :</strong><button className='btn-download'
           onClick={(event) => handlesopDownload(event,item.sop)}>Download File!
        </button></li>:<div></div>}
                             </ul>

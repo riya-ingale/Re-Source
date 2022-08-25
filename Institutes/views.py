@@ -1,4 +1,5 @@
 from email import message
+# from types import NoneType
 from Institutes.serializers import *
 from ResourceApp.serializers import *
 from django.http.response import JsonResponse
@@ -7,6 +8,7 @@ from ResourceApp.models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 import datetime
+import os
 from django.core.paginator import Paginator
 import cv2
 import shutil
@@ -39,9 +41,22 @@ def DownloadPDF(self,type,filename):
 
 def paster(imgs):
     leng = 0
+    # print(imgs)
     for img in imgs:
         # print(img[0])
+        print(img[0])
         temp = cv2.imread(img[0])
+        if not isinstance(temp, type(None)):
+            print(os.listdir("media/media/resource_images/"))
+        # if temp:
+        # # except Exception as e:
+        #     # print(e)
+        #     print("media/"+img[0])
+        #     temp = cv2.imread("/media/"+img[0])
+        #     print(temp +"error idhar hai")
+        else:
+            img_name = "media/media/resource_images/"+img[0].split('/')[-1]
+            temp = cv2.imread(img_name)
         cv2.imwrite("./ReSource-FE/src/temp_images/temp"+str(leng+1)+".jpeg", temp)
         # file_name.append("../temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]))
         leng+=1
@@ -333,7 +348,7 @@ def institute_proflie(request, r_num , l_num):
 def workforce_profile(request , r_num , l_num):
     if request.method == "GET":
         try:
-            token = request.headers['Token']
+            token = request.headers['Authorization']
             info = Check.check_auth(token)
 
             if info['status'] == 0:
@@ -397,6 +412,7 @@ def workforce_profile(request , r_num , l_num):
             record = {}
             record['lab_name'] = tomorrow_slots[i].resource.lab.name
             record['resource_name'] = tomorrow_slots[i].resource.name
+            tomorrow_names.append(record)
         tomserializer = BookslotSeializer(tomorrow_slots, many = True)
 
         return_data = {
@@ -416,6 +432,21 @@ def workforce_profile(request , r_num , l_num):
             'tomrrow_names':tomorrow_names
 
         }
+        if resources.number == paginator1.num_pages:
+            return_data['resource_previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+        elif resources.number == 1:
+            return_data['resource_next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+        else:
+            return_data['resource_previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+            return_data['resource_next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+
+        if labs.number == paginator2.num_pages:
+            return_data['lab_previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+        elif resources.number == 1:
+            return_data['lab_next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
+        else:
+            return_data['lab_previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+            return_data['lab_next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
 
         return JsonResponse(return_data)
 

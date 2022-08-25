@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw
 from io import BytesIO
 from django.core.files import File
 from ReSource.utils import Check
-from semantic_text_similarity.models import WebBertSimilarity
+# from semantic_text_similarity.models import WebBertSimilarity
 import numpy as np
 
 razorpay_client = razorpay.Client(auth=(settings.razorpay_id , settings.razorpay_account_id))
@@ -271,8 +271,10 @@ def requesttopay(request):
             # for key, value in sell_univ.items():
             #     add_cost += value['cost'] * 1.18 * 0.02
       
-            gst_percent = 0.18
-            order.finalcost = ((final_price * (1 + gst_percent))) * (1.02 + 0.02 * count)
+
+            service_charges = 0.18
+            order.finalcost = (final_price * (1 + service_charges)* (1.02 + 0.02*count))
+
 
             print(order.finalcost)
             
@@ -349,7 +351,7 @@ def payment(request):
                 transaction = Transaction.objects.create(order = order,
                 tid = date_time+str(count), buyer = user.institute.id,
                 # seller = Institutes.objects.get(id = key), finalcost = value['cost'] * 1.02 + order.finalcost * 0.02),
-                seller = Institutes.objects.get(id = key), finalcost = value['cost']*1.18)
+                seller = Institutes.objects.get(id = key), finalcost = value['cost'])
                 # transaction.order_items.add(*value['id'])
                 transaction.save()
             

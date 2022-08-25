@@ -9,6 +9,7 @@ export default function EditResourceRequestspage() {
     <>
     <div className="containner c-view-res">
       <div className="row">
+      <h3 className="heading">Approval Requests - Edited Resources</h3>
         <div className="col-md-4 colvr">
           <div className="card rescard">
             <img src={chem} className="imgres" alt="Equipment Name" />
