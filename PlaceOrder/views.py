@@ -170,7 +170,7 @@ def payment(request):
             "status":401
         })
     user_id = info['user_id']
-    role_id = data['role_id']
+    role_id = info['role_id']
 
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -191,7 +191,7 @@ def payment(request):
 
             print(razorpay_order['id'])
             order.razorpay_order_id = razorpay_order['id']
-            order.request_status=  1 
+            
             order.save()
 
             sell_univ = {}
@@ -283,6 +283,7 @@ def paymentold(request):
 
             print(razorpay_order['id'])
             order.razorpay_order_id = razorpay_order['id']
+            order.request_status=  1 
             order.save()
             now = datetime.now()
             date_time = now.strftime('%m%YODR%H%M')
@@ -357,9 +358,9 @@ def handlerequest(request):
         
         items = ProductInOrder.objects.filter(order_id = order.id).all()
         for item in items:
-            start_time = order.start_time
+            start_time = item.start_time
             start_time = start_time.strftime("%H:%M:%S")
-            end_time = order.end_time
+            end_time = item.end_time
             end_time = end_time.strftime("%H:%M:%S")
             db = Book_slots(resource = item.resource, date = item.date, start_time = start_time[0:2] , end_time = end_time[0:2], lab = item.resource.lab.id, units = item.units, approved = 1)
             db.save()
