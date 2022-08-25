@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import {mobile} from "../Css/responsive";
+import {mobileL} from "../Css/responsive";
+import {tabet} from "../Css/responsive";
+import styled from "styled-components";
 
 const Stepper = ({ steps, currentStep }) => {
   const [newStep, setNewStep] = useState([]);
@@ -82,13 +86,13 @@ const Stepper = ({ steps, currentStep }) => {
             }`}
           >
             {step.completed ? (
-              <span className="text-white font-bold text-xl">&#10003;</span>
+              <span className="text-white font-bold text-xl ">&#10003;</span>
             ) : (
               index + 1
             )}
           </div>
           <div
-            className={`absolute top-0 text-center mt-16 w-16 text-xs font-medium uppercase ${
+            className={`absolute top-0 text-center mt-16 w-19 text-xs font-medium uppercase ${
               step.highlighted ? "text-gray-900" : "text-gray-400"
             }`}
           >
@@ -103,9 +107,15 @@ const Stepper = ({ steps, currentStep }) => {
       </div>
     );
   });
+  
+    
+ const AddResourceSteps = styled.div`
+  flex-direction: row;
+  ${mobile({ flexDirection: "column" })}
+ `;
 
   return (
-    <div className="mx-1 p-4 flex justify-between items-center">
+    <div className="mx-1 p-4 flex items-center AddResoureSteps">
       {stepsDisplay}
     </div>
   );
