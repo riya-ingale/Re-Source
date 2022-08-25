@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw
 from io import BytesIO
 from django.core.files import File
 from ReSource.utils import Check
-from semantic_text_similarity.models import WebBertSimilarity
+# from semantic_text_similarity.models import WebBertSimilarity
 import numpy as np
 
 razorpay_client = razorpay.Client(auth=(settings.razorpay_id , settings.razorpay_account_id))
