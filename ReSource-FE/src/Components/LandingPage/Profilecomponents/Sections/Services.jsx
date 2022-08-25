@@ -61,11 +61,11 @@ export default function Services() {
                 <p className="font12">
                   
                 </p>
-                <ButtonsRow className="flexNullCenter" style={{ margin: "30px 0"}}>
+                {/* <ButtonsRow className="flexNullCenter" style={{ margin: "30px 0"}}>
                   <div style={{ width: "190px" }}>
                     <Link to = "/login"><FullButton title="Get Started" /></Link>
                   </div>
-                </ButtonsRow>
+                </ButtonsRow> */}
               </AddLeft>
               <AddRight>
                 <AddRightInner>

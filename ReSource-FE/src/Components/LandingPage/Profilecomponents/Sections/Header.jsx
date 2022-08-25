@@ -64,7 +64,7 @@ export default function Header() {
       </LeftSide>
       <RightSide>
         <ImageWrapper>
-          <Img className="radius8" src={HeaderImage} alt="office" style={{zIndex: 9}} />
+          <Img className="radius8" src={HeaderImage} alt="office" style={{zIndex: "9", marginTop:"50px"}} />
           {/* <QuoteWrapper className="flexCenter darkBg radius8">
             <QuotesWrapper>
               <QuotesIcon />

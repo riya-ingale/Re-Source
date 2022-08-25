@@ -37,7 +37,7 @@ export default function PricingTable({ icon, price, title, text,  offers, action
         <p className="font30 extraBold">{price}</p>
       </div>
       <div style={{ margin: "30px 0" }}>
-        <h4 className="font30 extraBold">{title}</h4>
+        <h4 className="font30 Bold">{title}</h4>
         <p className="font20">{text}</p>
       </div>
       <div>
@@ -53,7 +53,7 @@ export default function PricingTable({ icon, price, title, text,  offers, action
                     <div style={{ minWidth: "20px" }}></div>
                   )}
                 </div>
-                <p className="font20 extraBold">{item.name}</p>
+                <p className="font20 Bold">{item.name}</p>
               </div>
             ))
           : null}

@@ -38,7 +38,7 @@ import ViewLabAssistantProfile from "./Components/ViewLabAssistantProfile";
 import UGCStaffform from "./Components/UGCStaffform";
 import Error404 from "./Components/Error404";
 import Error503 from "./Components/Error503";
-import ReactPDF from "./Components/ReactPDF";
+// import ReactPDF from "./Components/ReactPDF";
 
 function App() {
   return (
@@ -83,7 +83,7 @@ function App() {
           <Route exact path="/ugcstaffform" element = {<><Header/><UGCStaffform/><Footer/></>}/>
           <Route exact path="/error404" element = {<Error404/>}/>    
           <Route exact path="/error503" element = {<Error503/>}/>
-          <Route exact path="/reactpdf" element = {<ReactPDF/>}/>
+          {/* <Route exact path="/reactpdf" element = {<ReactPDF/>}/> */}
         </Routes>
     </Router>
   );
