@@ -16,7 +16,7 @@ import Select from '@mui/material/Select';
 
 
 export default function Header() {
-  const [role, setRole] = React.useState('');
+  const [role, setRole] = React.useState(''); 
 
   const handleChange = (event) => {
     setRole(event.target.value);
@@ -26,7 +26,11 @@ export default function Header() {
     <Wrapper id="home" className="landing-page-container flexSpaceCenter" style={{paddingTop: "0px"}} >
       <LeftSide className="flexCenter">
         <div>
+<<<<<<< HEAD
           <h1 className="extraBold font60">We are Resource Sharing Portal.</h1>
+=======
+          <h1 className="extraBold font60">We are Resource Sharing Platform.</h1>
+>>>>>>> 8cad7a660a0fe7685cdc9cd603ce68cd3fc0a1f1
           <HeaderP className="font20 semiBold">
           We aim to help out the community by sharing, <br></br>You'll find all types of resources here
           </HeaderP>

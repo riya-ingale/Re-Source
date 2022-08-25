@@ -41,13 +41,10 @@
           <NavInner className="landing-page-container flexSpaceCenter">
             <Link className="pointer flexNullCenter" to="home" smooth={true}>
               {/* <LogoIcon /> */}
-<<<<<<< HEAD
+
               <Link className="navbar-brand" to="/">
                 <img className="logo" src={logo}/>
               </Link>
-=======
-              
->>>>>>> 3ec57a045934cc28cb454abfb029a5ab2dd9805e
               <h1 style={{ marginLeft: "15px" }} className="font20 extraBold">
                 Re-Source
               </h1>

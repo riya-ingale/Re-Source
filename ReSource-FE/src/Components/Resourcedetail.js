@@ -58,12 +58,14 @@ const { id } = useParams();
 const [slots,setSlots] = useState('');
 const [date, setDate] = useState('');
 const [quant, setQuant] = useState('');
+const [loader,setLoader] = useState(false);
 useEffect(() => {
   fetch(
           "http://127.0.0.1:8000/resource/getdetails/"+id,{
             headers:{'Authorization':sessionStorage.getItem('token')}
           }).then(async response=>{
-          setUsers(await response.json());})
+          setUsers(await response.json());
+          setLoader(true)})
           // image_fetcher(users.images)
           // console.log(image)
 }, [id])
@@ -201,6 +203,7 @@ if(slots !== '' && slots!== undefined){
 
   return (
     <>
+    {loader?
       <div className="pd-wrap" >
         <div className="container">
           <div className="heading-section">
@@ -340,78 +343,42 @@ if(slots !== '' && slots!== undefined){
 
         {slotting}
         </div>
-        {/* Recommendation Part */}
-        {/* <div className="container">
-          <h1 className='reco-heading' style={{textAlign: "center", fontWeight : "bold"}}>Similar Products</h1>
+        {(data.similar_res.length===0)?<div></div>:
+         <div className="container">
+          <h1 className='reco-heading' style={{textAlign: "center", fontWeight : "bold"}}>People Both this items together</h1>
+          </div>
+        }
         <div className="row">
+          {data.similar_res.map((item,index)=>(
           <div className="col-md-4 colvr">
             <div className="card rescard">
-              <img src={chem} className="imgres" alt="Equipment Name"  />
+              <img src={require("../temp_images/temp"+String(index+1)+"_sim.jpeg")} className="imgres" alt="Equipment Name"  />
 
               
               <div className="card__details">
 
-                <div className="name">Equipment Name</div>
+                <div className="name">{item.name}</div>
 
                 <div className="">
                   <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
+                    {/* <li className="lires boldline">Availability: Partially Available</li> */}
+                    <li className="lires">Cost: {item.cost} Rs/hour</li>
+                    <li className="lires">Institute Name: {item.institute_name}</li>
+                    <li className="lires">Units Available in lab: {item.quantity}</li>
                   </ul>
                 </div>
-
-                <button className="btn-vr">Book Now</button>
+                <a href={'/resdetail/'+item.id}>
+                <button className="btn-vr" >Book Now</button>
+                </a>
               </div>
             </div>
           </div>
-          <div className="col-md-4 colvr">
-            <div className="card rescard">
-              <img src={bio} className="imgres" alt="Equipment Name" />
-
-              <div className="card__details">
-
-                <div className="name">Equipment Name</div>
-
-                <div className="">
-                  <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
-                  </ul>
-                </div>
-                <button className="btn-vr">Book Now</button>
-              </div>
-            </div>
+          ))}
           </div>
-          <div className="col-md-4 colvr">
-            <div className="card rescard">
-              <img src={phy} className="imgres" alt="Equipment Name" />
-
-              <div className="card__details">
-
-                <div className="name">Equipment Name</div>
-                <div className="">
-                  <ul>
-                    <li className="lires boldline">Availability: Partially Available</li>
-                    <li className="lires">Cost: 1000 Rs/hour</li>
-                    <li className="lires">Institute Name: VIT,Mumbai</li>
-                    <li className="lires">Capacity: 100</li>
-                  </ul>
-                </div>
-
-                <button className="btn-vr">Book Now</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="d-flex justify-content-center">
-        <Pagination count={10} variant="outlined"  color="primary" />
-        </div>
-        </div> */}
+ 
+       
       </div>
+      :<div></div>}
     </>
   );
 }
