@@ -208,8 +208,8 @@ def requesttopay(request):
             for key, value in sell_univ.items():
                 add_cost += value['cost'] * 1.18 * 0.02
       
-            gst_percent = 0.18
-            order.finalcost = ((final_price * (1 + gst_percent)) + add_cost) * 1.02041
+            service_charges = 0.18
+            order.finalcost = (final_price * (1 + service_charges)* (1.02 + 0.02*count))
 
             print(order.finalcost)
             
@@ -286,7 +286,7 @@ def payment(request):
                 transaction = Transaction.objects.create(order = order,
                 tid = date_time+str(count), buyer = user.institute.id,
                 # seller = Institutes.objects.get(id = key), finalcost = value['cost'] * 1.02 + order.finalcost * 0.02),
-                seller = Institutes.objects.get(id = key), finalcost = value['cost']*1.18)
+                seller = Institutes.objects.get(id = key), finalcost = value['cost'])
                 # transaction.order_items.add(*value['id'])
                 transaction.save()
             

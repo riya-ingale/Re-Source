@@ -3,7 +3,7 @@
   import { Link } from "react-scroll";
   import InputLabel from '@mui/material/InputLabel';
   import MenuItem from '@mui/material/MenuItem';
-  
+
   // import FormControl from '@mui/material/FormControl';
   // import FormControl from '@mui/material/FormControl';
   // // or
@@ -40,6 +40,7 @@
           <NavInner className="landing-page-container flexSpaceCenter">
             <Link className="pointer flexNullCenter" to="home" smooth={true}>
               {/* <LogoIcon /> */}
+              
               <h1 style={{ marginLeft: "15px" }} className="font20 extraBold">
                 Re-Source
               </h1>
@@ -131,8 +132,8 @@
                     <MenuItem value={1}>UGC</MenuItem>
                     <MenuItem value={8}>Accountant </MenuItem>
                     <MenuItem value={4}>Lab Assistant</MenuItem>
-                    <MenuItem value={5}>Teacher</MenuItem>
-                    <MenuItem value={9}>UGC Staff</MenuItem>
+                    {/* <MenuItem value={5}>Teacher</MenuItem>
+                    <MenuItem value={9}>UGC Staff</MenuItem> */}
                   </Select>
                 </FormControl>
               </li>

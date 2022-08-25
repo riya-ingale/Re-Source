@@ -82,6 +82,7 @@ export default function ResourceRequest() {
     {load && type === 'resource_request'&& res.status === 200?
     <div className="containner c-view-res">
       <div className="row">
+      
         {res.resource_data.map((item,index) =>(
         <div className="col-md-4 colvr">
           <div className="card rescard">
@@ -123,6 +124,7 @@ export default function ResourceRequest() {
     :<div></div>}
     {load && type === 'edit_req'&& res.status === 200?
     <div className="containner c-view-res">
+      <h3 className="heading">Approval Requests - Edited Resources</h3>
     <div className="row">
       {res.data.map((item,index) =>(
       <div className="col-md-4 colvr">
