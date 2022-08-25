@@ -35,7 +35,7 @@ export default function Header() {
           
           <div>
           <>
-          <FormControl sx={{ m: 1, minWidth: 150 }}>
+          {/* <FormControl sx={{ m: 1, minWidth: 150 }}>
             <InputLabel id="demo-simple-select-autowidth-label" >Login/SignUp</InputLabel>
             <Select
               class="btn-profile-login"
@@ -56,7 +56,7 @@ export default function Header() {
               <MenuItem value={21}>Lab Assistant</MenuItem>
               <MenuItem value={22}>Teacher</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
           </>
         </div>
         </div>
