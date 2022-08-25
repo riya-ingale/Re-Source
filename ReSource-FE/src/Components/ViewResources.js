@@ -196,7 +196,7 @@ const handleClose = (event, reason) => {
                 label="Date"
                 type="date"
                 onChange={handledate}
-                InputProps={{ inputProps: { min: "2022-08-25" } }}
+                InputProps={{ inputProps: { min: "2022-08-26" } }}
                 InputLabelProps={{
                   shrink: true,
                 }}
