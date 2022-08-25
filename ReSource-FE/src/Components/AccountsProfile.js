@@ -137,7 +137,7 @@ async function showRazorpay(e,id) {
               <span class="" style={{color: "green",float: "right"}}>Debit</span><br></br>
               <span class="">Payment ID: {item.razorpay_order_id}</span><br></br>
               <span class="">Cost: Rs {item.finalcost}</span><br></br>
-              <span class="">Payment Date: {item.datetime_of_payment}</span>
+              {/* <span class="">Payment Date: {item.datetime_of_payment.split('T')[0]}</span> */}
             </article>
             ))}
 
@@ -146,9 +146,9 @@ async function showRazorpay(e,id) {
             <article class="account__profile">
               <RemoveCircleOutlineRoundedIcon  />
               <span class="" style={{color: "red",float: "right"}}>Credit</span><br></br>
-              <span class="">OrderID: {item.razorpay_order_id}</span><br></br>
+              <span class="">OrderID: {item.tid}</span><br></br>
               <span class="">Cost: Rs {item.finalcost}</span><br></br>
-              <span class="">Payment Date: {item.datetime_of_payment}</span>
+              {/* <span class="">Payment Date: {item.datetime_of_payment}</span> */}
             </article>
              ))}
              
