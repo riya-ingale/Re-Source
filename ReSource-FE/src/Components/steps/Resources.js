@@ -31,7 +31,6 @@ export default function Resources() {
     }
   };
 
-
   return (
     <div className="flex flex-col ">
       <div className="mx-2 w-full flex-1">
