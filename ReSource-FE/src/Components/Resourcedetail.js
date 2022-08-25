@@ -9,6 +9,10 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import TextField from '@material-ui/core/TextField';
 import { useParams } from 'react-router';
+import Pagination from '@mui/material/Pagination';
+import chem from "../Images/chem-quip.jpg";
+import bio from "../Images/images.jpg";
+import phy from "../Images/microscope.jpg";
 
 export default function Resourcedetail() {
   // const images = require.context('../../../', true);
@@ -157,6 +161,16 @@ const book_slot = (e) =>{
     window.location.href = '/cart';
 }
 
+const disableDates = () => {
+  var today,dd,mm,yyyy;
+  today = new Date;
+  dd = today.getDate() + 1;
+  mm = today.getMonth() + 1;
+  yyyy = today.getFullYear();
+  console.log(typeof(yyyy+"-"+mm+"-"+dd));
+  return yyyy+"-"+mm+"-"+dd;
+};
+
 var slotting = <div></div>;
 if(slots !== '' && slots!== undefined){
  slotting = 
@@ -197,7 +211,7 @@ if(slots !== '' && slots!== undefined){
               <Carousel fade>
                 { image_arr.map((item) =>(
                 <Carousel.Item>
-                  <img className="d-block w-100"  src={item} alt="First slide" />
+                  <img className="d-block w-100 car-img"  src={item} alt="First slide" />
                 </Carousel.Item>
 ))}
                 {/* <Carousel.Item>
@@ -283,7 +297,7 @@ if(slots !== '' && slots!== undefined){
                         <div className='col-md-6'>
                             <ul className="list-bullets">
                                 <li className="mb-2"><strong className='strlist'>Quantity: </strong>{data.data.quantity}</li>
-                                <li className="mb-2"><strong className='strlist'>Details: </strong>{data.data.details}</li>
+                                {/* <li className="mb-2"><strong className='strlist'>Details: </strong>{data.data.details}</li> */}
                                 {/* <li className="mb-2"><strong></strong></li> */}
                             </ul>
                         </div>
@@ -305,6 +319,8 @@ if(slots !== '' && slots!== undefined){
                   shrink: true,
                 }}
                 onChange={handleDate}
+                className="slot-booking-input"
+                InputProps={{ inputProps: { min: "2022-08-26" } }}
               />
             </div>
             <div className="col-md-4 d-flex justify-content-center">
@@ -313,6 +329,7 @@ if(slots !== '' && slots!== undefined){
                 label="Capacity"
                 variant="standard"
                 onChange={handleCapacity}
+                className="slot-booking-input"
               />
             </div>
             <div className="col-md-4 d-flex justify-content-center">
@@ -323,6 +340,77 @@ if(slots !== '' && slots!== undefined){
 
         {slotting}
         </div>
+        {/* Recommendation Part */}
+        {/* <div className="container">
+          <h1 className='reco-heading' style={{textAlign: "center", fontWeight : "bold"}}>Similar Products</h1>
+        <div className="row">
+          <div className="col-md-4 colvr">
+            <div className="card rescard">
+              <img src={chem} className="imgres" alt="Equipment Name"  />
+
+              
+              <div className="card__details">
+
+                <div className="name">Equipment Name</div>
+
+                <div className="">
+                  <ul>
+                    <li className="lires boldline">Availability: Partially Available</li>
+                    <li className="lires">Cost: 1000 Rs/hour</li>
+                    <li className="lires">Institute Name: VIT,Mumbai</li>
+                    <li className="lires">Capacity: 100</li>
+                  </ul>
+                </div>
+
+                <button className="btn-vr">Book Now</button>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4 colvr">
+            <div className="card rescard">
+              <img src={bio} className="imgres" alt="Equipment Name" />
+
+              <div className="card__details">
+
+                <div className="name">Equipment Name</div>
+
+                <div className="">
+                  <ul>
+                    <li className="lires boldline">Availability: Partially Available</li>
+                    <li className="lires">Cost: 1000 Rs/hour</li>
+                    <li className="lires">Institute Name: VIT,Mumbai</li>
+                    <li className="lires">Capacity: 100</li>
+                  </ul>
+                </div>
+                <button className="btn-vr">Book Now</button>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4 colvr">
+            <div className="card rescard">
+              <img src={phy} className="imgres" alt="Equipment Name" />
+
+              <div className="card__details">
+
+                <div className="name">Equipment Name</div>
+                <div className="">
+                  <ul>
+                    <li className="lires boldline">Availability: Partially Available</li>
+                    <li className="lires">Cost: 1000 Rs/hour</li>
+                    <li className="lires">Institute Name: VIT,Mumbai</li>
+                    <li className="lires">Capacity: 100</li>
+                  </ul>
+                </div>
+
+                <button className="btn-vr">Book Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="d-flex justify-content-center">
+        <Pagination count={10} variant="outlined"  color="primary" />
+        </div>
+        </div> */}
       </div>
     </>
   );
