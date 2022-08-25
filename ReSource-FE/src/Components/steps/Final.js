@@ -13,18 +13,18 @@ export default function Final() {
     const details = sessionStorage.getItem("Description");
     const quantity = sessionStorage.getItem("Quantity");
     const cost = sessionStorage.getItem("Cost");
-    // const lab_id = sessionStorage.getItem("username");
+    const is_important = sessionStorage.getItem("important");
     const username = sessionStorage.getItem("username")
     const req_approval = 0;
     const role_id = sessionStorage.getItem("role_id")
-    const logindata = {name,specification,subject,dimension,details,quantity,cost,req_approval,img,role_id};
+    const logindata = {name,specification,subject,dimension,details,quantity,cost,req_approval,img,role_id,is_important};
     console.log(logindata);
     const lab_id = sessionStorage.getItem("lab_id")
-    const url = 'http://127.0.0.1:8000/resource/add/'+username+"/"+lab_id;
+    const url = 'http://127.0.0.1:8000/resource/add/'+lab_id;
     
     fetch(url, {//role id update require wait for landing page
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",'Authorization':sessionStorage.getItem('token') },
       body: JSON.stringify(logindata)
     })
     .then(async response=>{
@@ -37,7 +37,7 @@ export default function Final() {
         console.log(data['message'])
       }
     })
-    window.location.href="/user/dashboard";
+    window.location.href="/wfProfile";
   };
   return (
     <div className="container md:mt-10">
