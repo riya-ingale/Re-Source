@@ -119,16 +119,22 @@ def profile(request):
             institute = data.institute
             wfserializer = WorkForceSerializer(data)
 
-            buytransactions = Order.objects.filter(institute = institute.id, payment_status = 1)
-            selltransactions = Transaction.objects.filter(seller = institute)
+            buytransactions = Order.objects.filter(institute = institute.id, payment_status = 1)  # Debit
+            selltransactions = Transaction.objects.filter(seller_id = institute.id, is_paid = 1)  #Credit
 
             pen_or = []
             pending_orders = Order.objects.filter(institute = institute.id , request_status = 0).all()
             pserializer = OrderSerializer(pending_orders, many = True)
-
+            
+            insti_data  = Institutes.objects.filter(id = institute.id)
+            i_serializer = InstituteSerializer(insti_data,many=True)
+            print(insti_data)
             for po in pserializer.data:
                 dict(po)   
                 order_id = po['id']
+                workforce_id = po['workforce']
+                po['workforce_name'] = WorkForce.objects.get(id = workforce_id).name
+                po['seller_institutename'] = Institutes.objects.filter(id = int(po['institute']))[0].name
                 products = ProductInOrder.objects.filter(order_id = order_id).all()
                 productserializer = PIOSerializer(products, many = True)
                 print(productserializer.data)
@@ -137,14 +143,23 @@ def profile(request):
 
             bserializer = OrderSerializer(buytransactions , many = True)
             sserializer = TransactionSerializer(selltransactions , many = True)
+            sell_transactions = []
+            for item in sserializer.data:
+                item = dict(item)
+                item['seller'] = Institutes.objects.get(id = item['seller']).name
+                item['buyer'] = Institutes.objects.get(id = item['buyer']).name
+                sell_transactions.append(item)
+                
+            
 
             return JsonResponse({
                 'status':200,
                 'message':'Fetched',
                 'workforce':wfserializer.data,
                 'bdata': bserializer.data,
-                'sdata':sserializer.data,
-                'pending_orders':pen_or
+                'sdata':sell_transactions,
+                'pending_orders':pen_or,
+                "institute_data":i_serializer.data,
             })
         
         elif role_id == 9:
