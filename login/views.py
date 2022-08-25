@@ -162,3 +162,23 @@ def logout(request):
             'message':'Donot logout tempered token'
         })
     
+@csrf_exempt
+def fetch_role_id(request):
+    print("HERE")
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    print(token)
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    role_id = info['role_id']
+    user_id = info['user_id']
+    return role_id
