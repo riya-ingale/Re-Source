@@ -2,6 +2,9 @@ from importlib.resources import Resource
 import jwt
 from ReSource import settings
 from datetime import datetime
+import numpy as np
+import pandas as pd
+from apyori import apriori
 
 class Check():
     def check_auth(token):
@@ -24,4 +27,4 @@ class Check():
         except:
             return False
         return True
-        
+

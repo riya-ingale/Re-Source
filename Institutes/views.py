@@ -150,9 +150,12 @@ def profile(request):
                 po['workforce_name'] = WorkForce.objects.get(id = workforce_id).name
                 po['seller_institutename'] = Institutes.objects.filter(id = int(po['institute']))[0].name
                 products = ProductInOrder.objects.filter(order_id = order_id).all()
+
                 productserializer = PIOSerializer(products, many = True)
                 print(productserializer.data)
                 po['products'] = productserializer.data
+                # po['products'] = resource_name
+                # po['institutes'] = institute_name
                 pen_or.append(po)
 
             bserializer = OrderSerializer(buytransactions , many = True)

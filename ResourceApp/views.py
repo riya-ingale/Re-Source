@@ -1,3 +1,4 @@
+from importlib.abc import ResourceReader
 from ResourceApp.serializers import ResourcesSerializer, CartSerializer
 from django.http.response import JsonResponse
 from Institutes.models import *
@@ -406,6 +407,16 @@ def paster(imgs):
         leng+=1
     return
 
+def paster2(imgs):
+    leng = 0
+    for img in imgs:
+        # print(img[0])
+        temp = cv2.imread(img[0])
+        cv2.imwrite("./ReSource-FE/src/temp_images/temp"+str(leng+1)+"_sim.jpeg", temp)
+        # file_name.append("../temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]))
+        leng+=1
+    return
+
 @csrf_exempt
 def getdetails(request,r_id):
 
@@ -425,6 +436,42 @@ def getdetails(request,r_id):
 
     if request.method == "GET":
         r_id = r_id
+
+        with open('records.json', 'r') as file:
+            data = json.load(file)
+
+        if r_id in data:
+            sim_res = data[r_id]
+            if len(sim_res)>0:
+                simresobj = Resources.objects.filter(id__in = sim_res).all()
+                simresserializer = ResourcesSerializer(simresobj, many = True)
+                simimgs = []
+                resource_data = []
+                for d in simresserializer.data:
+                    print("D : ", d)
+                    d = dict(d)
+                    try:
+                        img = Image.objects.filter(resource = d['id']).values_list('image')[0]
+                    except:
+                        img = ['media/resource_images/default_image.jpeg']
+                    d['img'] = img[0]
+                    simimgs.append(img)
+                    resource_data.append(d)
+                print(simimgs)
+                paster2(simimgs)
+                return_data = {
+                    'status':200,
+                    'message':'Similar resource fetched',
+                    'similar_res': resource_data,
+                    'similar_images': len(simimgs)
+                }
+        else:
+            return_data = {'status':200,
+                    'message':'Similar not present',
+                    'similar_res': [],
+                    'similar_images': 0}
+
+
         resourceobj = Resources.objects.filter(id  =r_id)[0]
         serializer = ResourcesSerializer(resourceobj)
 
@@ -435,13 +482,10 @@ def getdetails(request,r_id):
             imgs = [["media/resource_images/default_image.jpeg"]]
         print("IMAGES _ ", imgs)
         paster(imgs)
+        return_data['data'] = serializer.data
+        return_data['images'] = len(imgs)
         # print(p_img)
-        return JsonResponse({
-            'status':200,
-            'message':"Resource fetched",
-            'data':serializer.data,
-            'images':len(imgs)
-        })
+        return JsonResponse(return_data)
 
     # After sending date and units required this POST will show the slots along with resource data  
     elif request.method == "POST":
@@ -691,6 +735,8 @@ def cart(request):
         role_id = info['role_id']
         user_id = info['user_id']
         ######################################333
+
+
         cart_items = Cart.objects.filter(workforce_id = user_id, is_approved__in = [-1,0,1]).all()
         if cart_items:
             cart_items = CartSerializer(cart_items, many=True)
