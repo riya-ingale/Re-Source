@@ -92,30 +92,29 @@ def resource_recommend(request):
 
 
 
-@csrf_exempt
-def add_students(request , id):
-    if request.method == 'POST':
-    
-        data = json.loads(request.body)
-        cid = data['id']
-        cart = Cart.objects.get(id = cid)
+# @csrf_exempt
+# def add_students(request , id):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         cid = data['id']
+#         cart = Cart.objects.get(id = cid)
 
-        if id != cart.workforce:
-            return JsonResponse('It is not your cart' , safe = False)
+#         if id != cart.workforce:
+#             return JsonResponse('It is not your cart' , safe = False)
 
-        cart.visitors = data['file']
-        serializer = CartSerializer(cart)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(data = {
-                'status':200,
-                'message': 'Data saved success fully',
-                'data': serializer.data
-            })
-        else:
-            return JsonResponse('Invalid Data' , safe = False)
+#         cart.visitors = data['file']
+#         serializer = CartSerializer(cart)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return JsonResponse(data = {
+#                 'status':200,
+#                 'message': 'Data saved success fully',
+#                 'data': serializer.data
+#             })
+#         else:
+#             return JsonResponse('Invalid Data' , safe = False)
     
-    # else:
+#     # else:
 
         
 
@@ -161,6 +160,70 @@ def add_students(request , id):
 #             # buffer = BytesIO()
 #             # canvas.sasve(buffer , 'PNG')
 
+def generate_card():
+    pass
+def send_email():
+    pass
+
+@csrf_exempt
+def addstudents(request, order_id):
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data = {
+            'status':401,
+            'message':'Unauthorized Acces, Please login'
+        })
+    
+    if request.method == "POST":
+        data = json.loads(request.body)
+        ids = data['ids']
+        info = {}
+        info['resource'] = data['resource']
+        info['lab'] = data['lab']
+        info['start_time'] = data['start_time']
+        info['end_time'] = data['end_time']
+        info['date'] = data['date']
+        for ele in ids:
+            info['email'] = ele['email']
+            info['name'] = ele['name']
+            info['workforce'] = ele['workforce']
+            generate_card()
+            try:
+                send_email()
+            except:
+                return JsonResponse(
+                    data = {
+                        'status':404,
+                        'message':"Email not sent"
+                    }
+                )
+        return JsonResponse(data  = {
+            'status': 200,
+            'message': "ID card generated"
+        })
+    else:
+        order = Order.objects.get(id = order_id)
+        if order.payment_status!=1 :
+            return JsonResponse(data = {
+                'status':200,
+                'message':"Payment pending"
+            })
+        products = ProductInOrder.objects.filter(order_id = order_id)
+        additional_details = {}
+        for prod in products:
+            additional_details['resource_name'] = prod.resource.name
+            additional_details['lab_name'] = prod.resource.lab.name
+            additional_details['workforce_name'] = prod.workforce.name
+            additional_details['institute_name'] = prod.workforce.institute.name
+        return JsonResponse(data = {
+            'status':200,
+            'message': 'Data Fetched',
+            'data': products.data,
+            'additional_data':additional_details
+        })
+                       
+        
 
 @csrf_exempt
 def requesttopay(request):
@@ -205,11 +268,13 @@ def requesttopay(request):
                 # item.is_approved = 2
                 item.delete()
             add_cost = 0
-            for key, value in sell_univ.items():
-                add_cost += value['cost'] * 1.18 * 0.02
+            # for key, value in sell_univ.items():
+            #     add_cost += value['cost'] * 1.18 * 0.02
       
+
             service_charges = 0.18
             order.finalcost = (final_price * (1 + service_charges)* (1.02 + 0.02*count))
+
 
             print(order.finalcost)
             
