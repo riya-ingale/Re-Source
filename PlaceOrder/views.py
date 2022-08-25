@@ -15,48 +15,93 @@ from PIL import Image, ImageDraw
 from io import BytesIO
 from django.core.files import File
 from ReSource.utils import Check
-
+from semantic_text_similarity.models import WebBertSimilarity
 
 razorpay_client = razorpay.Client(auth=(settings.razorpay_id , settings.razorpay_account_id))
 
-from importlib.resources import Resource
-from datetime import datetime
-# from ResourceApp.models import *
-import numpy as np
-import pandas as pd
-from apyori import apriori
+# from importlib.resources import Resource
+# from datetime import datetime
+# # from ResourceApp.models import *
+# import numpy as np
+# import pandas as pd
+# from apyori import apriori
 
-def resource_recommend():
-    resource = {}
-    resources  = Resources.objects.all()
-    n = len(resources)
-    for i in range(n):
-        resource[resources[i].id] = i
-    print(resource)
-    orders = Order.objects.all()
+# def resource_recommend():
+#     resource = {}
+#     resources  = Resources.objects.all()
+#     n = len(resources)
+#     for i in range(n):
+#         resource[resources[i].id] = i
+#     print(resource)
+#     orders = Order.objects.all()
 
-    bucket = []
-    for order in orders:
-        print("order_id :", order.id)
-        products = ProductInOrder.objects.filter(order_id = order.id)
-        ele = [0]*n
-        print("products length :", len(products))
-        for j in range(len(products)):
-            try:
-                idx = resource[products[j].resource.id]
-                ele[idx] = products[j].resource.id
-                print("Resource_id :" , products[j].resource.id)
-                #print("Ele added : ", ele)
-            except:
-                continue
-        bucket.append(ele)
-        print(bucket)
+#     bucket = []
+#     for order in orders:
+#         print("order_id :", order.id)
+#         products = ProductInOrder.objects.filter(order_id = order.id)
+#         ele = [0]*n
+#         print("products length :", len(products))
+#         for j in range(len(products)):
+#             try:
+#                 idx = resource[products[j].resource.id]
+#                 ele[idx] = products[j].resource.id
+#                 print("Resource_id :" , products[j].resource.id)
+#                 #print("Ele added : ", ele)
+#             except:
+#                 continue
+#         bucket.append(ele)
+#         print(bucket)
     
-    association_rules = apriori(bucket , min_support = 0.50, min_confidence = 0.7, min_lift = 1.2 , min_length = 2)
-    association_results = list(association_rules)
-    print(association_results)
+#     association_rules = apriori(bucket , min_support = 0.20, min_confidence = 0.5, min_lift = 1.2 , min_length = 2)
+#     association_results = list(association_rules)
+#     return association_results
 
-resource_recommend()
+# def create_dict(record):
+#     output = {}
+#     # # count = 1
+#     #     for ele in record:
+#     #         val = list(ele.items)
+#     #         output[count] = val
+#     #         count+=1
+        
+#     for ele in record:
+#         ords = list(ele.items)
+#         # for i in range(len(ords)):
+#         #     for j in range(len(ords)):
+#         #         if i!=j:
+#         if ords[0] in output:
+#             output[ords[0]].append(ords[1])
+#         else:
+#             output[ords[0]] = [ords[1]]
+        
+#         if ords[1] in output:
+#             output[ords[1]].append(ords[0])
+#         else:
+#             output[ords[1]] = [ords[0]]
+    
+#     with open('records.json' , 'w') as file:
+#         json.dump(output , file)
+
+# def similarity():
+#     resources = Resources.objects.all()
+#     res = {}
+#     n = len(resources)
+#     sim = np.zeros((n,n))
+#     count = 0
+#     for ele in resources:
+#         res[ele.id] = count
+    
+#     for ele1 in resources:
+#         for ele2 in resources:
+
+        
+
+
+
+# output = resource_recommend()
+# print(output)
+# create_dict(output)
+
 
 @csrf_exempt
 def add_students(request , id):
