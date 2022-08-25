@@ -45,6 +45,7 @@ export default function ResourceApproval() {
     <>
     {load?
     <div className="containner c-view-res">
+      <h3 className="heading">Approval Requests - Resources</h3>
       <div className="row">
       {res.data.map((item,index) =>(
         <div className="col-md-4 colvr">

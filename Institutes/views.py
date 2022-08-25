@@ -1,4 +1,5 @@
 from email import message
+# from types import NoneType
 from Institutes.serializers import *
 from ResourceApp.serializers import *
 from django.http.response import JsonResponse
@@ -7,6 +8,7 @@ from ResourceApp.models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 import datetime
+import os
 from django.core.paginator import Paginator
 import cv2
 import shutil
@@ -39,9 +41,22 @@ def DownloadPDF(self,type,filename):
 
 def paster(imgs):
     leng = 0
+    # print(imgs)
     for img in imgs:
         # print(img[0])
+        print(img[0])
         temp = cv2.imread(img[0])
+        if not isinstance(temp, type(None)):
+            print(os.listdir("media/media/resource_images/"))
+        # if temp:
+        # # except Exception as e:
+        #     # print(e)
+        #     print("media/"+img[0])
+        #     temp = cv2.imread("/media/"+img[0])
+        #     print(temp +"error idhar hai")
+        else:
+            img_name = "media/media/resource_images/"+img[0].split('/')[-1]
+            temp = cv2.imread(img_name)
         cv2.imwrite("./ReSource-FE/src/temp_images/temp"+str(leng+1)+".jpeg", temp)
         # file_name.append("../temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]))
         leng+=1
@@ -119,32 +134,50 @@ def profile(request):
             institute = data.institute
             wfserializer = WorkForceSerializer(data)
 
-            buytransactions = Order.objects.filter(institute = institute.id, payment_status = 1)
-            selltransactions = Transaction.objects.filter(seller = institute)
+            buytransactions = Order.objects.filter(institute = institute.id, payment_status = 1)  # Debit
+            selltransactions = Transaction.objects.filter(seller_id = institute.id, is_paid = 1)  #Credit
 
             pen_or = []
             pending_orders = Order.objects.filter(institute = institute.id , request_status = 0).all()
             pserializer = OrderSerializer(pending_orders, many = True)
-
+            
+            insti_data  = Institutes.objects.filter(id = institute.id)
+            i_serializer = InstituteSerializer(insti_data,many=True)
+            print(insti_data)
             for po in pserializer.data:
                 dict(po)   
                 order_id = po['id']
+                workforce_id = po['workforce']
+                po['workforce_name'] = WorkForce.objects.get(id = workforce_id).name
+                po['seller_institutename'] = Institutes.objects.filter(id = int(po['institute']))[0].name
                 products = ProductInOrder.objects.filter(order_id = order_id).all()
+
                 productserializer = PIOSerializer(products, many = True)
                 print(productserializer.data)
                 po['products'] = productserializer.data
+                # po['products'] = resource_name
+                # po['institutes'] = institute_name
                 pen_or.append(po)
 
             bserializer = OrderSerializer(buytransactions , many = True)
             sserializer = TransactionSerializer(selltransactions , many = True)
+            sell_transactions = []
+            for item in sserializer.data:
+                item = dict(item)
+                item['seller'] = Institutes.objects.get(id = item['seller']).name
+                item['buyer'] = Institutes.objects.get(id = item['buyer']).name
+                sell_transactions.append(item)
+                
+            
 
             return JsonResponse({
                 'status':200,
                 'message':'Fetched',
                 'workforce':wfserializer.data,
                 'bdata': bserializer.data,
-                'sdata':sserializer.data,
-                'pending_orders':pen_or
+                'sdata':sell_transactions,
+                'pending_orders':pen_or,
+                "institute_data":i_serializer.data,
             })
         
         elif role_id == 9:
@@ -315,7 +348,7 @@ def institute_proflie(request, r_num , l_num):
 def workforce_profile(request , r_num , l_num):
     if request.method == "GET":
         try:
-            token = request.headers['Token']
+            token = request.headers['Authorization']
             info = Check.check_auth(token)
 
             if info['status'] == 0:
@@ -379,6 +412,7 @@ def workforce_profile(request , r_num , l_num):
             record = {}
             record['lab_name'] = tomorrow_slots[i].resource.lab.name
             record['resource_name'] = tomorrow_slots[i].resource.name
+            tomorrow_names.append(record)
         tomserializer = BookslotSeializer(tomorrow_slots, many = True)
 
         return_data = {
@@ -398,6 +432,21 @@ def workforce_profile(request , r_num , l_num):
             'tomrrow_names':tomorrow_names
 
         }
+        if resources.number == paginator1.num_pages:
+            return_data['resource_previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+        elif resources.number == 1:
+            return_data['resource_next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+        else:
+            return_data['resource_previous_page'] = request.build_absolute_uri()[:-1]+str(resources.number-1)
+            return_data['resource_next_page']=request.build_absolute_uri()[:-1]+str(resources.number+1)
+
+        if labs.number == paginator2.num_pages:
+            return_data['lab_previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+        elif resources.number == 1:
+            return_data['lab_next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
+        else:
+            return_data['lab_previous_page'] = request.build_absolute_uri()[:-1]+str(labs.number-1)
+            return_data['lab_next_page']=request.build_absolute_uri()[:-1]+str(labs.number+1)
 
         return JsonResponse(return_data)
 

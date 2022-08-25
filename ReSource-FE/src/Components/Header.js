@@ -68,6 +68,11 @@ export default function Header() {
               </Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to="/instituteList">
+                Institutes
+              </Link>
+            </li>
+            <li className="nav-item">
                 <button className="btn logoutbtn">
                   {" "}
                   <i class="fa fa-sign-out" aria-hidden="true"></i>  LogOut
@@ -159,6 +164,27 @@ export default function Header() {
             <li className="nav-item">
               <Link className="nav-link" to="/cart">
                 Cart
+              </Link>
+            </li>
+            <li className="nav-item">
+                <button className="btn logoutbtn">
+                  {" "}
+                  <i class="fa fa-sign-out" aria-hidden="true"></i>  LogOut
+                </button>
+              </li>
+              </ul>
+            :<div></div>}
+            {role_id === 5?
+              <ul className="navbar-nav ms-auto">
+              <li className="nav-item">
+                <Link className="nav-link" to="#">
+                  Home
+                </Link>
+                
+              </li>
+              <li className="nav-item">
+              <Link className="nav-link" to="/wfprofile">
+                Profile
               </Link>
             </li>
             <li className="nav-item">

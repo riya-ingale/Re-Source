@@ -61,7 +61,7 @@ export default function ViewProfileInstitute() {
     <>
     {load &&res.status===200?
     <div className='container profile-container'>
-      <div className='bg-box'>
+      <div className="institute-bg-box">
       </div>
       <div className='blur-bg'>
         <div className='inner-blur MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 css-b5x8ma'>
@@ -73,7 +73,7 @@ export default function ViewProfileInstitute() {
             </div>
             <div className='col-md-10'>
               <p>
-                <h1 className="Profile-name">Institute Name : {res.institute_data.name}</h1>
+                <h1 className="Profile-name">{res.institute_data.name}</h1>
               </p>
             </div>
           </div>
@@ -83,6 +83,7 @@ export default function ViewProfileInstitute() {
       <div className='row'>
         <div className='col-md-6'>
         <div className="card profilecards">
+        <h3 className='heading'>Profile details</h3>
             <div className="card__details">
             {/* <h3>Profile details <Link to="/"><EditIcon></EditIcon></Link></h3> */}
             <ul className="list-bullets detail-list">
@@ -100,6 +101,7 @@ export default function ViewProfileInstitute() {
         </div>
         <div className='col-md-6'>
         <div className="card profilecards workforce-list">
+          <h3 style={{textAlign: "center",fontSize: "1.5rem",fontWeight: "bold"}}>Workforce</h3>
             <div className="card__details">
             { res.workforce_data.map((item,index)=>(
               item.position==='Lab Assistant'?

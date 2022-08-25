@@ -15,9 +15,81 @@ from PIL import Image, ImageDraw
 from io import BytesIO
 from django.core.files import File
 from ReSource.utils import Check
-
+# from semantic_text_similarity.models import WebBertSimilarity
+import numpy as np
 
 razorpay_client = razorpay.Client(auth=(settings.razorpay_id , settings.razorpay_account_id))
+
+from importlib.resources import Resource
+from datetime import datetime
+# from ResourceApp.models import *
+import numpy as np
+import pandas as pd
+from apyori import apriori
+
+def create_dict(record):
+    output = {}
+    # # count = 1
+    #     for ele in record:
+    #         val = list(ele.items)
+    #         output[count] = val
+    #         count+=1
+        
+    for ele in record:
+        ords = list(ele.items)
+        # for i in range(len(ords)):
+        #     for j in range(len(ords)):
+        #         if i!=j:
+        if ords[0] in output:
+            output[ords[0]].append(ords[1])
+        else:
+            output[ords[0]] = [ords[1]]
+        
+        if ords[1] in output:
+            output[ords[1]].append(ords[0])
+        else:
+            output[ords[1]] = [ords[0]]
+    
+    with open('records.json' , 'w') as file:
+        json.dump(output , file)
+
+@csrf_exempt
+def resource_recommend(request):
+    if request.method == 'GET':
+        resource = {}
+        resources  = Resources.objects.all()
+        n = len(resources)
+        for i in range(n):
+            resource[resources[i].id] = i
+        print(resource)
+        orders = Order.objects.all()
+
+        bucket = []
+        for order in orders:
+            print("order_id :", order.id)
+            products = ProductInOrder.objects.filter(order_id = order.id)
+            ele = [0]*n
+            print("products length :", len(products))
+            for j in range(len(products)):
+                try:
+                    idx = resource[products[j].resource.id]
+                    ele[idx] = products[j].resource.id
+                    print("Resource_id :" , products[j].resource.id)
+                    #print("Ele added : ", ele)
+                except:
+                    continue
+            bucket.append(ele)
+        
+        print(bucket)
+        association_rules = apriori(bucket , min_support = 0.20, min_confidence = 0.5, min_lift = 1.2 , min_length = 2)
+        association_results = list(association_rules)
+        print(association_results)
+        create_dict(association_results)
+        return JsonResponse(data = {
+            'status':200,
+            'message':'Similar resources created'
+        })
+
 
 
 @csrf_exempt
@@ -136,8 +208,8 @@ def requesttopay(request):
             for key, value in sell_univ.items():
                 add_cost += value['cost'] * 1.18 * 0.02
       
-            gst_percent = 0.18
-            order.finalcost = ((final_price * (1 + gst_percent)) + add_cost) * 1.02041
+            service_charges = 0.18
+            order.finalcost = (final_price * (1 + service_charges)* (1.02 + 0.02*count))
 
             print(order.finalcost)
             
@@ -170,7 +242,7 @@ def payment(request):
             "status":401
         })
     user_id = info['user_id']
-    role_id = data['role_id']
+    role_id = info['role_id']
 
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -191,7 +263,7 @@ def payment(request):
 
             print(razorpay_order['id'])
             order.razorpay_order_id = razorpay_order['id']
-            order.request_status=  1 
+            
             order.save()
 
             sell_univ = {}
@@ -214,7 +286,7 @@ def payment(request):
                 transaction = Transaction.objects.create(order = order,
                 tid = date_time+str(count), buyer = user.institute.id,
                 # seller = Institutes.objects.get(id = key), finalcost = value['cost'] * 1.02 + order.finalcost * 0.02),
-                seller = Institutes.objects.get(id = key), finalcost = value['cost']*1.18)
+                seller = Institutes.objects.get(id = key), finalcost = value['cost'])
                 # transaction.order_items.add(*value['id'])
                 transaction.save()
             
@@ -283,6 +355,7 @@ def paymentold(request):
 
             print(razorpay_order['id'])
             order.razorpay_order_id = razorpay_order['id']
+            order.request_status=  1 
             order.save()
             now = datetime.now()
             date_time = now.strftime('%m%YODR%H%M')
@@ -341,9 +414,12 @@ def handlerequest(request):
             })
         order.razorpay_payment_id = payment_id
         order.razorpay_signature = signature
+        
         try:
             util = razorpay.Utility(razorpay_client)
             util.verify_payment_signature(params_dict)
+            order.payment_status = 1
+            order.request_status =1
         except:
             order.payment_status = -1
             order.save()
@@ -352,14 +428,14 @@ def handlerequest(request):
         # result = razorpay_client.utility.verify_payment_signature(params_dict)
         # amount = order.finalcost * 100
         # razorpay_client.payment.capture(payment_id , amount)
-        order.payment_status = 1
+        
         order.save()
         
         items = ProductInOrder.objects.filter(order_id = order.id).all()
         for item in items:
-            start_time = order.start_time
+            start_time = item.start_time
             start_time = start_time.strftime("%H:%M:%S")
-            end_time = order.end_time
+            end_time = item.end_time
             end_time = end_time.strftime("%H:%M:%S")
             db = Book_slots(resource = item.resource, date = item.date, start_time = start_time[0:2] , end_time = end_time[0:2], lab = item.resource.lab.id, units = item.units, approved = 1)
             db.save()
