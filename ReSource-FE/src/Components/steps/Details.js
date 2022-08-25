@@ -63,7 +63,7 @@ export default function Details() {
             onChange={handleChange}
             value={userData["Weight"] || ""}
             name="Weight"
-            placeholder="Weight"
+            placeholder="Weight in Kg"
             type="number"
             className="p-1 px-2 appearance-none outline-none w-full text-gray-800"
           />
