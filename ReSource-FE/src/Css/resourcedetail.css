@@ -369,7 +369,7 @@
     width: 100px;
     height: 30px;
     font-size: 16px;
-    background: transparent;
+    background: #1ca9c9;
     border: none;
     position: relative;
     color: #f0f0f0;
@@ -383,9 +383,10 @@
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
+    border-radius: 20px;
   }
   
-  .button-86::after,
+  /* .button-86::after,
   .button-86::before {
     content: '';
     position: absolute;
@@ -393,9 +394,9 @@
     right: 0;
     z-index: -99999;
     transition: all .4s;
-  }
+  } */
   
-  .button-86::before {
+  /* .button-86::before {
     transform: translate(0%, 0%);
     width: 100%;
     height: 100%;
@@ -429,7 +430,7 @@
   .button-86:active::after {
     transition: 0s;
     transform: translate(0, 5%);
-  }
+  } */
 
   .pagination-div{
     margin-bottom: 30px;
