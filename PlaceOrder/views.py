@@ -1,4 +1,3 @@
-from unicodedata import name
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http.response import JsonResponse
@@ -11,11 +10,12 @@ from ReSource import settings
 from datetime import datetime
 from django.http import HttpResponse
 import pandas as pd
-import qrcode
-from PIL import Image, ImageDraw
+from PIL import Image, ImageFont, ImageDraw
 from io import BytesIO
 from django.core.files import File
 from ReSource.utils import Check
+from io import StringIO
+
 # from semantic_text_similarity.models import WebBertSimilarity
 import numpy as np
 
@@ -162,8 +162,55 @@ def resource_recommend(request):
 #             # buffer = BytesIO()
 #             # canvas.sasve(buffer , 'PNG')
 
-def generate_card():
-    pass
+# def generate_card():
+#     print("Hellooooo")
+#     # logo_file = "myqr.png"
+#     # logoIm = Image.open(logo_file)
+#     # im = Image.open("2.jpeg")
+#     # logoIm = logoIm.resize((350, 350))
+#     # logoWidth, logoHeight = logoIm.size
+#     # print(logoWidth, logoHeight)
+#     # im.paste(logoIm, (610, 120))
+#     # im.save(os.path.join("qr.jpg"))
+
+#     im = Image.open("qr.jpg")
+#     draw = ImageDraw.Draw(im)
+
+#     extra_bold = ImageFont.truetype('Raleway-ExtraBold.ttf', size=45)
+#     black = ImageFont.truetype('Raleway-Black.ttf', size=25)
+#     light = ImageFont.truetype('Raleway-Light.ttf', size=20)
+
+#     (x, y) = (50, 90)
+#     message = "ID - CARD"
+#     color = 'rgb(58,175,169)'
+#     draw.text((x, y), message, fill=color, font=extra_bold)
+
+#     (x, y) = (50, 170)
+#     name = 'Student - '+"Riya Ingale"
+#     color = 'rgb(23,37,40)'
+#     draw.text((x, y), name, fill=color, font=black)
+
+#     (x, y) = (50, 250)
+#     name = 'Mobile - '+"8692931133"
+#     color = 'rgb(23,37,40)'
+#     draw.text((x, y), name, fill=color, font=light)
+#     (x, y) = (50, 300)
+#     resource = 'Resource - '+"Resource"
+#     color = 'rgb(23,37,40)'
+#     draw.text((x, y), resource, fill=color, font=light)
+#     (x, y) = (50, 350)
+#     resource = 'Lab - '+"Lab Name"
+#     color = 'rgb(23,37,40)'
+#     draw.text((x, y), resource, fill=color, font=light)
+#     (x, y) = (50, 400)
+#     resource = 'Slot - '+"Start Time - End Time"
+#     color = 'rgb(23,37,40)'
+#     draw.text((x, y), resource, fill=color, font=light)
+#     im.save('greeting_card.png')
+#     return "ID CARD saved"
+
+# generate_card()
+
 def send_email():
     pass
 
