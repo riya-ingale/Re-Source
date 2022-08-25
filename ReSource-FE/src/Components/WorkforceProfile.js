@@ -96,11 +96,10 @@ const handleadd = (e,id) =>{
             <h3>Today's Booked Slots</h3>
             {res.today_slots.map((item,index)=>(
     
-    <article class="leaderboard__profile">
-      <span class="slottime">Timings {item.start_time}:00 - {item.end_time}:00 Hrs.</span>
-
-      <span class="slottime">Lab Name:{res.today_names[index].lab_name}</span>
-      <span class="slottime">Resource: {res.today_names[index].resource_name}</span>
+    <article class="labwf__profile ">
+      <span class="slottime">{item.start_time}:00 - {item.end_time}:00 Hrs.</span><br></br>
+      <span class="slottime">{res.today_names[index].lab_name}</span><br></br>
+      <span class="slottime">{res.today_names[index].resource_name}</span><br></br>
     </article>
     ))}
             </div>

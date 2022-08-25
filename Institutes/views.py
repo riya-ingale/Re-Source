@@ -54,8 +54,9 @@ def paster(imgs):
         #     print("media/"+img[0])
         #     temp = cv2.imread("/media/"+img[0])
         #     print(temp +"error idhar hai")
-        img_name = "media/media/resource_images/"+img[0].split('/')[-1]
-        temp = cv2.imread(img_name)
+        else:
+            img_name = "media/media/resource_images/"+img[0].split('/')[-1]
+            temp = cv2.imread(img_name)
         cv2.imwrite("./ReSource-FE/src/temp_images/temp"+str(leng+1)+".jpeg", temp)
         # file_name.append("../temp_images/temp"+str(leng+1)+"."+str(img[0].split('.')[-1]))
         leng+=1
