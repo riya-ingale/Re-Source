@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'ResourceApp.apps.ResourceappConfig',
     'rest_framework',
     'LabApp.apps.LabappConfig',
-    'PlaceOrder.apps.PlaceorderConfig'
+    'PlaceOrder.apps.PlaceorderConfig',
+    'login'
 
 ]
 
@@ -57,6 +58,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '1/day',
+        'user': '2/day'
+    }
+}
 
 ROOT_URLCONF = 'ReSource.urls'
 
@@ -138,6 +150,17 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000"
 ]
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/1",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient"
+#         },
+#         "KEY_PREFIX": "example"
+#     }
+# }
 
 DEBUG = True
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

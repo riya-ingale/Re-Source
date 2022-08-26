@@ -16,8 +16,16 @@ from django.conf import settings
 from datetime import datetime, timedelta
 import json
 import jwt
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.core.cache import cache
+from rest_framework.throttling import UserRateThrottle,AnonRateThrottle
+from rest_framework import throttling
+from rest_framework.decorators import api_view, throttle_classes
 from ReSource import settings
 from ReSource.utils import Check
+from login.models import Anomaly
+
 # Create your views here.
 # @csrf_exempt
 # def send_mail_after_registration(request):
@@ -33,6 +41,30 @@ from ReSource.utils import Check
 #         send_mail(subject, message , email_from ,recipient_list ,fail_silently=False)
 #     except Exception as e:
 #         print(e)
+
+# CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
+# def get_client_ip(request):
+#     x_forwarded_for = request.META.get("HTTP_X_FORWARD_FOR")
+#     if x_forwarded_for:
+#         ip = x_forwarded_for.split(',')[-1].strip()
+#     else:
+#         ip = request.META.get('REMOTE_ADDR')
+#     return ip
+
+# def rate_limiting(request):
+#     current_ip = get_client_ip(request)
+
+#     if cache.get(current_ip):
+#         total_calls = cache.get(current_ip)
+#         if total_calls>=5:
+#             return JsonResponse({'status':501, 'message': "You have exhausted the calls" , 'total_calls':total_calls})
+#         else:
+#             cache.set(current_ip , total_calls +1)
+#             return JsonResponse({'status':200, 'message':'You called this api'})
+#     cache.set(current_ip , 1 , timeout = 60)
+#     return JsonResponse({'status':200 , 'ip':get_client_ip(request)})
+
 
 @csrf_exempt
 def register(request,id=0):
@@ -73,7 +105,40 @@ def register(request,id=0):
         else:
             return HttpResponse("Registration FAILED")
 
+class CustomUserThrottle(throttling.UserRateThrottle):
+    def allow_request(self,request, view):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        
+        # add in db
+        return JsonResponse(data = {
+            'status':401,
+            'message': 'You have exhausted your limits'
+        })
+        
+class CustomAnoThrottle(throttling.AnonRateThrottle):
+    def allow_request(self,request, view):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        
+        # add in db
+        db = Anomaly(ip = ip)
+        return JsonResponse(data = {
+            'status':401,
+            'message': 'You have exhausted your limits'
+        })
+
 @csrf_exempt
+@api_view(['GET', 'POST'])
+@throttle_classes([CustomUserThrottle ,CustomAnoThrottle ])
 def signup(request,id):
      if request.method == "POST":
         print('HI')
