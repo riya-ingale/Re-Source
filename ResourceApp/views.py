@@ -1,4 +1,5 @@
 from importlib.abc import ResourceReader
+from urllib import request
 from ResourceApp.serializers import ResourcesSerializer, CartSerializer
 from django.http.response import JsonResponse
 from Institutes.models import *
@@ -9,7 +10,7 @@ import base64
 from django.core.files.base import ContentFile
 import string
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 import base64
 import cv2
 from django.core.paginator import Paginator
@@ -714,7 +715,45 @@ def addslots(request):
                 "status":401,
                 "message":"Unauthorized for you role",
             })
-        
+
+@csrf_exempt     
+def add_software():
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    role_id = info['role_id']
+    user_id = info['user_id']
+    if request.method == "POST":
+        if role_id == 4:
+            user = WorkForce.objects.get(id = user_id)
+            data = json.loads(request.body)
+            r_id = data['r_id']
+            resource = Resources.objects.get(id = r_id)
+            date = datetime.today().date + timedelta(15)
+            db = Cart(workforce = user, buyer_institute = user.institute, seller_institute = resource.lab.institute,resource = resource, cost = resource.cost, is_approved=0, date = date)
+            db.save()
+            return JsonResponse(data = {
+                    "status":200,
+                    "message":"Software sucessfully added to the cart",
+                })
+        else:
+            return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+
+
+
 @require_http_methods(["GET"])
 def cart(request):
     if request.method == "GET":
