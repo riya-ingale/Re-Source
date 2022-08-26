@@ -28,27 +28,27 @@ export default function Services() {
             <ServiceBoxWrapper>
               <ServiceBox
                 icon="browser"
-                title="Resource Allocation"
-                subtitle="All can practice real-life science and gain practical knowledge."
+                title="Smart Booking"
+                subtitle="Systematic slot based booking to elimante scheduling hazards and book multiple resources of different institutes in one visit."
               />
             </ServiceBoxWrapper>
             <ServiceBoxWrapper>
               <ServiceBox
                 icon="monitor"
-                title="Interactive UI"
-                subtitle="A simple yet effetive interface that conveys all information to all users ."
+                title="Recommendation"
+                subtitle="Apriori algorithm uses market basket analysis to analyse buying patterns of users for recommendation "
               />
             </ServiceBoxWrapper>
             <ServiceBoxWrapper >
               <ServiceBox
                 icon="hierarchy"
                 title="Role Based Hierarchy"
-                subtitle="Making system more secure and optimal for all users. "
+                subtitle="Making system more secure and optimal for all users.Clear lines of authority and a defined structute for communication"
               />
             </ServiceBoxWrapper>
-             {/* <ServiceBoxWrapper>
-              <ServiceBox icon="printer" title="Secure ID Card" subtitle="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor." />
-            </ServiceBoxWrapper>  */}
+             <ServiceBoxWrapper>
+              <ServiceBox icon="printer" title="Payment Gateway" subtitle="A swift and seemless checkout experience providing secure transactions." />
+            </ServiceBoxWrapper> 
           </ServiceBoxRow>
         </div>
         <div className="lightBg">

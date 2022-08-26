@@ -38,7 +38,7 @@ export default function ServiceBox({icon, title, subtitle}) {
     <Wrapper className="flex flexColumn">
       <IconStyle>{getIcon}</IconStyle>
       <TitleStyle className="font20 extraBold">{title}</TitleStyle>
-      <SubtitleStyle className="font15 semiBold">{subtitle}</SubtitleStyle>
+      <SubtitleStyle className="font20 Bold">{subtitle}</SubtitleStyle>
     </Wrapper>
   );
 }
@@ -64,4 +64,5 @@ const SubtitleStyle = styled.p`
   width: 100%;
   max-width: 300px;
   margin: 0 auto;
+  color:black;
 `;

@@ -29,6 +29,14 @@ def DownloadPDF(self,type,filename):
         response = HttpResponse(pdfFile.read())
         response['Content-Disposition'] = 'attachment'
         return response
+    elif type=='invoice':
+        path_to_file = "/PlaceOrder/templates/invoice.pdf"
+    
+        f = open(path_to_file, 'rb')
+        pdfFile = File(f)
+        response = HttpResponse(pdfFile.read())
+        response['Content-Disposition'] = 'attachment'
+        return response
     else:
         path_to_file = MEDIA_ROOT +"/sop"+ "/"+filename
         

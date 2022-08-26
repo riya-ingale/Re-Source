@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+  </head>
+  <body>
+    <h2>INVOICE</h2>
+    <h4>Buyer Details</h4>
+    Invoice Id - {{order.id}},
+    <br />
+    Razorpay_order_id - {{order.razorpay_order_id}},
+    <br />
+    Razorpay_payment_id - {{order.razorpay_payment_id}},
+    <br />
+
+    Total Cost - {{order.finalcost}},
+    <br />
+
+    Buyer Name - {{order.workforce.name}},
+    <br />
+    Buyer Institute - {{order.workforce.institute.name}},
+    <br />
+    Buyer_email - {{order.workforce.email_id}},
+    <br />
+    Buyer_phone_no - {{order.workforce.phone_no}},
+    <br />
+    Buyer_position - {{order.workforce.position}}
+    <br />
+
+    <h4>Items Purchased</h4>
+    {% for prod in products %} Resource = {{prod.resource.name}}
+    <br />
+    Seller Institute Name = {{prod.resource.lab.institute.name}}
+    <br />
+    Quantity = {{prod.units}}
+    <br />
+    Rate = {{prod.cost}}
+    <br />
+    <hr />
+    {% endfor %}
+  </body>
+</html>
