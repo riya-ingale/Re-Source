@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import {Routes, Route, useNavigate, useLocation} from 'react-router-dom';
 
 import img1 from "../Images/microscope.jpg"
+import { height } from "@mui/system";
 const Container = styled.div``;
 
 const Wrapper = styled.div`
@@ -59,23 +60,26 @@ const Product = styled.div`
 `;
 
 const ProductDetail = styled.div`
-  flex: 2;
+  flex : 4;
+  
   display: flex;
   ${mobile({ flexDirection: "column" })}
+  ${mobile({ lineHeight: "24 px" })}
+  ${mobile({ display: "auto" })}
 `;
 
 const Image = styled.img`
-  width: 200px;
+  width: 50%;
   padding-bottom : 10px;
-  ${mobile({ flexDirection: "coloumn" })}
+  ${mobile({width:"100%"})}
 `;
 
 const Details = styled.div`
-  padding: 20px;
+  padding: 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  ${mobile({ flexDirection: "row" })}
+  ${mobile({ flexDirection: "column" })}
 `;
 
 const ProductName = styled.span`
