@@ -17,7 +17,8 @@ export default function Final() {
     const username = sessionStorage.getItem("username")
     const req_approval = 0;
     const role_id = sessionStorage.getItem("role_id")
-    const logindata = {name,specification,subject,dimension,details,quantity,cost,req_approval,img,role_id,is_important};
+    const is_software = sessionStorage.getItem("domain")
+    const logindata = {name,specification,subject,dimension,details,quantity,is_software,cost,req_approval,img,role_id,is_important};
     console.log(logindata);
     const lab_id = sessionStorage.getItem("lab_id")
     const url = 'http://127.0.0.1:8000/resource/add/'+lab_id;
