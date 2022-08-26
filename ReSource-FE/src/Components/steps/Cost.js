@@ -86,7 +86,17 @@ export default function Cost() {
           </div>
           
         </div>
+        <div className="bg-white my-2 p-1 flex ">
+        <div className="font-bold h-6 mt-3 text-gray-500 text-xs leading-8 uppercase">
+          <span className="px-2 my-2"><input  className="p-1 px-2 py-2 appearance-none outline-none text-gray-800 form-check-input" style={{marginTop:"6px"}} type="radio" name="flexRadioDefault" id="SoftwareDefault12"   onChange={handleChange}></input>
+          </span>
+          Software
+          </div>
+          
+        </div>
       </div>
+
+      
 
     </div>
   );

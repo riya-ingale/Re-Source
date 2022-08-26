@@ -65,45 +65,73 @@ from login.models import Anomaly
 #     cache.set(current_ip , 1 , timeout = 60)
 #     return JsonResponse({'status':200 , 'ip':get_client_ip(request)})
 
-
 @csrf_exempt
-def register(request,id=0):
-    if request.method == 'POST':    
+def register(request , id):
+    if request.method == "POST":
         registerdata = json.loads(request.body)
         college = registerdata['institute']
         email = registerdata['username']
         password = registerdata['password']
-        print(registerdata,id)
-        if id in [1,2,3,7,8]:
-            try:
-                t = Institutes.objects.get(email = email)
-                return JsonResponse({'status':409,"message":"User Exists"})
-            except:
-                db = Institutes(email= email ,password= password,name = college,role_id = id)
-                db.save()
-                return JsonResponse({'status':200,'username':email})
-        elif id in [4,5]:
-            try: 
-                t = WorkForce.objects.get(email_id = email)
-                return JsonResponse({'status':409,"message":"User Exists"})
-            except:
+        role_id = registerdata['role_id']
+        try:
+            user = Usser.objects.get(email = email)
+        except:
+            db = Usser.objects.create(email = email, password = password , institute = college, role_id = role_id)
+            db.save()
+            if role_id in [1,2,3]:
+                ins = Institutes(email= email ,password= password,name = college,role_id = role_id)
+                ins.save()
+            elif role_id in [4,7,8,9]:
                 clg_obj = Institutes.objects.get(name = college)
-                print(clg_obj)
-                db = WorkForce(email_id= email ,password= password,role_id=id,institute = clg_obj)
-                db.save()
-                return JsonResponse({'status':200,'username':email})
-        elif id == 6:
-            try: 
-                t = Students.objects.get(email = email)
-                return JsonResponse({'status':409,"message":"User Exists"})
-            except:
-                clg_obj = Institutes.objects.get(name = college)
-                print(clg_obj)
-                db = Students(email= email ,password= password,institute_id = clg_obj)
-                db.save()
-                return JsonResponse({'status':200,'username':email})
-        else:
-            return HttpResponse("Registration FAILED")
+                wf = WorkForce(email_id= email ,password= password,role_id=id,institute = clg_obj)
+                wf.save()
+            
+            return JsonResponse({'status':200,'username':email})
+        return JsonResponse(data = {
+            'status': 409,
+            'message': 'User Exists'})
+
+        
+
+
+# @csrf_exempt
+# def register(request,id=0):
+#     if request.method == 'POST':    
+#         registerdata = json.loads(request.body)
+#         college = registerdata['institute']
+#         email = registerdata['username']
+#         password = registerdata['password']
+#         print(registerdata,id)
+#         if id in [1,2,3,7,8]:
+#             try:
+#                 t = Institutes.objects.get(email = email)
+#                 return JsonResponse({'status':409,"message":"User Exists"})
+#             except:
+#                 db = Institutes(email= email ,password= password,name = college,role_id = id)
+#                 db.save()
+#                 return JsonResponse({'status':200,'username':email})
+#         elif id in [4,5]:
+#             try: 
+#                 t = WorkForce.objects.get(email_id = email)
+#                 return JsonResponse({'status':409,"message":"User Exists"})
+#             except:
+#                 clg_obj = Institutes.objects.get(name = college)
+#                 print(clg_obj)
+#                 db = WorkForce(email_id= email ,password= password,role_id=id,institute = clg_obj)
+#                 db.save()
+#                 return JsonResponse({'status':200,'username':email})
+#         elif id == 6:
+#             try: 
+#                 t = Students.objects.get(email = email)
+#                 return JsonResponse({'status':409,"message":"User Exists"})
+#             except:
+#                 clg_obj = Institutes.objects.get(name = college)
+#                 print(clg_obj)
+#                 db = Students(email= email ,password= password,institute_id = clg_obj)
+#                 db.save()
+#                 return JsonResponse({'status':200,'username':email})
+#         else:
+#             return HttpResponse("Registration FAILED")
 
 # class CustomUserThrottle(throttling.UserRateThrottle):
 #     def allow_request(self,request, view):
@@ -139,7 +167,7 @@ def register(request,id=0):
 @csrf_exempt
 # @api_view(['GET', 'POST'])
 # @throttle_classes([UserRateThrottle ,AnonRateThrottle ])
-def signup(request,id):
+def signup(request , id):
      if request.method == "POST":
         print('HI')
         print(id)
@@ -147,6 +175,14 @@ def signup(request,id):
             logindata = json.loads(request.body)
             username = logindata['username']
             password = logindata['password']
+            try:
+                user = Usser.objects.get(email = username , password = password)
+            except:
+                return JsonResponse(data = {
+                    'status':403,
+                    'message':'User not exists'
+                })
+            id = user.role_id
             if id in [1,2,3]:
                 print('HII')
                 try:
