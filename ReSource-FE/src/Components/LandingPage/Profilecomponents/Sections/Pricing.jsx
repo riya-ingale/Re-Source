@@ -9,26 +9,23 @@ export default function Pricing() {
       <div className="whiteBg">
         <div className="landing-page-container">
           <HeaderInfo>
-            <h1 className="font40 extraBold">Check Our Pricing</h1>
+            <h1 className="font30 extraBold">Check Our Pricing</h1>
             <p className="font13">
-              Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-              <br />
-              labore et dolore magna aliquyam erat, sed diam voluptua.
+              
             </p>
           </HeaderInfo>
           <TablesWrapper className="flexSpaceNull">
             <TableBox>
               <PricingTable
                 icon="roller"
-                price="$29,99/mo"
+                price="2999/mo"
                 title="Starter"
-                text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor."
+                text="1 Month"
                 offers={[
                   { name: "Product Offer", cheked: true },
                   { name: "Offer", cheked: true },
                   { name: "Product Offer #2", cheked: false },
-                  { name: "Product", cheked: false },
-                  { name: "Product Offer", cheked: false },
+                  
                 ]}
                 action={() => alert("clicked")}
               />
@@ -36,15 +33,14 @@ export default function Pricing() {
             <TableBox>
               <PricingTable
                 icon="monitor"
-                price="$49,99/mo"
+                price="4999/mo"
                 title="Basic"
-                text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor."
+                text="3 Month"
                 offers={[
                   { name: "Product Offer", cheked: true },
                   { name: "Offer", cheked: true },
                   { name: "Product Offer #2", cheked: true },
-                  { name: "Product", cheked: true },
-                  { name: "Product Offer", cheked: false },
+                  
                 ]}
                 action={() => alert("clicked")}
               />
@@ -52,15 +48,14 @@ export default function Pricing() {
             <TableBox>
               <PricingTable
                 icon="browser"
-                price="$59,99/mo"
+                price="5999/mo"
                 title="Golden"
-                text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor."
+                text="6 Month"
                 offers={[
                   { name: "Product Offer", cheked: true },
                   { name: "Offer", cheked: true },
                   { name: "Product Offer #2", cheked: true },
-                  { name: "Product", cheked: true },
-                  { name: "Product Offer", cheked: true },
+                  
                 ]}
                 action={() => alert("clicked")}
               />

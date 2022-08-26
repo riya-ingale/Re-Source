@@ -1,0 +1,19 @@
+.container-add-student{
+    margin-top: 130px;
+    margin-bottom: 30px;
+    padding: 5px;
+}
+.card-add-student {
+    border-radius: 10px;
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+    padding: 20px;
+    height: max-content;
+
+}
+.prod-name {
+    font-size: 22px;
+    font-weight: bold;
+}
+.product-resource-details {
+    font-size: 22px;
+}

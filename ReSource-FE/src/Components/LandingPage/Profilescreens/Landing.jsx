@@ -5,6 +5,7 @@ import Header from "../Profilecomponents/Sections/Header";
 import Services from "../Profilecomponents/Sections/Services";
 import Projects from "../Profilecomponents/Sections/Projects";
 import Contact from "../Profilecomponents/Sections/Contact";
+import Pricing from "../Profilecomponents/Sections/Pricing";
 
 export default function Landing() {
   return (
@@ -13,6 +14,7 @@ export default function Landing() {
       <Header />
       <Services />
       <Projects />
+      
       <Contact />
     </>
   );

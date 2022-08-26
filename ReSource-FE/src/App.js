@@ -38,6 +38,9 @@ import ViewLabAssistantProfile from "./Components/ViewLabAssistantProfile";
 import UGCStaffform from "./Components/UGCStaffform";
 import Error404 from "./Components/Error404";
 import Error503 from "./Components/Error503";
+import AddStudent from "./Components/AddStudent";
+import Pricing from "./Components/LandingPage/Profilecomponents/Sections/Pricing";
+// import ReactPDF from "./Components/ReactPDF"
 
 function App() {
   return (
@@ -80,8 +83,12 @@ function App() {
           {/* Extra Lab Detail Routes */}
           <Route exact path="/labdetail" element = {<><Header/><LabDetail/><Footer/></>}/>
           <Route exact path="/ugcstaffform" element = {<><Header/><UGCStaffform/><Footer/></>}/>
-          <Route exact path="/error404" element = {<Error404/>}/>    
+          <Route exact path="/addstudent" element = {<><Header/><AddStudent/><Footer/></>}/>
+          <Route exact path="/pricing" element = {<><Header/><Pricing/><Footer/></>}/>
+          <Route exact path="*" element = {<Error404/>}/>    
           <Route exact path="/error503" element = {<Error503/>}/>
+
+          {/* <Route exact path="/reactpdf" element = {<ReactPDF/>}/> */}
         </Routes>
     </Router>
   );

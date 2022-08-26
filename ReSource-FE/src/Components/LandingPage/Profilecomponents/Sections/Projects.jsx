@@ -80,13 +80,13 @@ export default function Projects() {
           </div>
         </div>
       </div>
-      <div className="lightBg" style={{marginTop: "30px"}}>
+      <div className="lightBg" style={{marginTop: "50px"}}>
         <div className="landing-page-container">
           <Advertising className="flexSpaceCenter">
             <AddLeft>
               <AddLeftInner>
                 <ImgWrapper className="flexCenter">
-                  <img className="radius8" src={AddImage2} alt="add" />
+                  <img className="radius8" src={AddImage2} alt="add" style={{marginTop:"40px"}} />
                 </ImgWrapper>
               </AddLeftInner>
             </AddLeft>

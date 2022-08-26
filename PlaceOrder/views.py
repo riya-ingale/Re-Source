@@ -10,11 +10,12 @@ from ReSource import settings
 from datetime import datetime
 from django.http import HttpResponse
 import pandas as pd
-import qrcode
-from PIL import Image, ImageDraw
+from PIL import Image, ImageFont, ImageDraw
 from io import BytesIO
 from django.core.files import File
 from ReSource.utils import Check
+from io import StringIO
+
 # from semantic_text_similarity.models import WebBertSimilarity
 import numpy as np
 
@@ -26,6 +27,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 from apyori import apriori
+
 
 def create_dict(record):
     output = {}
@@ -160,8 +162,55 @@ def resource_recommend(request):
 #             # buffer = BytesIO()
 #             # canvas.sasve(buffer , 'PNG')
 
-def generate_card():
-    pass
+# def generate_card():
+#     print("Hellooooo")
+#     # logo_file = "myqr.png"
+#     # logoIm = Image.open(logo_file)
+#     # im = Image.open("2.jpeg")
+#     # logoIm = logoIm.resize((350, 350))
+#     # logoWidth, logoHeight = logoIm.size
+#     # print(logoWidth, logoHeight)
+#     # im.paste(logoIm, (610, 120))
+#     # im.save(os.path.join("qr.jpg"))
+
+#     im = Image.open("qr.jpg")
+#     draw = ImageDraw.Draw(im)
+
+#     extra_bold = ImageFont.truetype('Raleway-ExtraBold.ttf', size=45)
+#     black = ImageFont.truetype('Raleway-Black.ttf', size=25)
+#     light = ImageFont.truetype('Raleway-Light.ttf', size=20)
+
+#     (x, y) = (50, 90)
+#     message = "ID - CARD"
+#     color = 'rgb(58,175,169)'
+#     draw.text((x, y), message, fill=color, font=extra_bold)
+
+#     (x, y) = (50, 170)
+#     name = 'Student - '+"Riya Ingale"
+#     color = 'rgb(23,37,40)'
+#     draw.text((x, y), name, fill=color, font=black)
+
+#     (x, y) = (50, 250)
+#     name = 'Mobile - '+"8692931133"
+#     color = 'rgb(23,37,40)'
+#     draw.text((x, y), name, fill=color, font=light)
+#     (x, y) = (50, 300)
+#     resource = 'Resource - '+"Resource"
+#     color = 'rgb(23,37,40)'
+#     draw.text((x, y), resource, fill=color, font=light)
+#     (x, y) = (50, 350)
+#     resource = 'Lab - '+"Lab Name"
+#     color = 'rgb(23,37,40)'
+#     draw.text((x, y), resource, fill=color, font=light)
+#     (x, y) = (50, 400)
+#     resource = 'Slot - '+"Start Time - End Time"
+#     color = 'rgb(23,37,40)'
+#     draw.text((x, y), resource, fill=color, font=light)
+#     im.save('greeting_card.png')
+#     return "ID CARD saved"
+
+# generate_card()
+
 def send_email():
     pass
 
@@ -518,7 +567,8 @@ def handlerequest(request):
                 
                 #========sending invoice via email===============
                 # result = BytesIO()
-                # pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)#, link_callback=fetch_resources)
+                # pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+                #, link_callback=fetch_resources)
                 # pdf = result.getvalue()
                 # filename = 'Invoice_' + data['order_id'] + '.pdf'
 
@@ -574,7 +624,7 @@ def settle_transaction(request):
             "status":401
         })
     user_id = info['user_id']
-    role_id = data['role_id']
+    role_id = info['role_id']
     
     if request.method == "POST":
         #authenticate role_id from jwt
@@ -593,8 +643,56 @@ def settle_transaction(request):
             'message':'Money will be credited',
         })
 
-
+@csrf_exempt
+def invoice(request, order_id):
+    if request.method == "GET":
+        try:
+            token = request.headers['Authorization']
+        except:
+            return JsonResponse(data= {
+                "message":"Unauthorized Access, Please Login",
+                "status":401
+            })
+        info = Check.check_auth(token)
+        if info['status'] == 0:
+            return JsonResponse(data= {
+                "message":"Unauthorized Access, Please Login",
+                "status":401
+            })
+        user_id = info['user_id']
+        role_id = info['role_id']
     
+        count = 1
+        items = []
+        products = ProductInOrder.objects.filter(order_id = order_id).all()
+        for prod in products:
+            d = dict()
+            d['sno'] = count
+            d['resource'] = prod.resource.name
+            d['institute_name'] = prod.resource.lab.institute.name
+            d['qty'] = prod.units
+            d['rate'] = prod.cost
+            items.append(d)
+        order = Order.objects.get(id = order_id, payment_status = 1)
+        data = {
+            "order_id":order.id,
+            "razorpay_order_id":order.razorpay_order_id,
+            "razorpay_payment_id":order.razorpay_payment_id,
+
+            "final_cost":order.finalcost,
+
+            "buyer_name":order.workforce.name,
+            "buyer_institute": order.workforce.institute.name,
+            "buyer_email":order.workforce.email_id,
+            "buyer_phone_no":order.workforce.phone_no,
+            "buyer_position":order.workforce.position,
+            "items":items
+        }
+        return JsonResponse(data = {
+            "data":data
+        })
+
+
 
 
 

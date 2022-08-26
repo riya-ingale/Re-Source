@@ -11,6 +11,7 @@
   import Select from '@mui/material/Select';
   
   // // Assets
+  import logo from "../../../../Images/logo.png"
   // import LogoIcon from "../../assets/svg/Logo";
   import BurgerIcon from "../../Profileassets/svg/BurgerIcon";
   
@@ -40,7 +41,10 @@
           <NavInner className="landing-page-container flexSpaceCenter">
             <Link className="pointer flexNullCenter" to="home" smooth={true}>
               {/* <LogoIcon /> */}
-              
+
+              <Link className="navbar-brand" to="/">
+                <img className="logo" src={logo}/>
+              </Link>
               <h1 style={{ marginLeft: "15px" }} className="font20 extraBold">
                 Re-Source
               </h1>
