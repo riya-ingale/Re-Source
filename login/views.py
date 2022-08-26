@@ -105,40 +105,40 @@ def register(request,id=0):
         else:
             return HttpResponse("Registration FAILED")
 
-class CustomUserThrottle(throttling.UserRateThrottle):
-    def allow_request(self,request, view):
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+# class CustomUserThrottle(throttling.UserRateThrottle):
+#     def allow_request(self,request, view):
+#         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
+#         if x_forwarded_for:
+#             ip = x_forwarded_for.split(',')[0]
+#         else:
+#             ip = request.META.get('REMOTE_ADDR')
         
-        # add in db
-        return JsonResponse(data = {
-            'status':401,
-            'message': 'You have exhausted your limits'
-        })
+#         # add in db
+#         return JsonResponse(data = {
+#             'status':401,
+#             'message': 'You have exhausted your limits'
+#         })
         
-class CustomAnoThrottle(throttling.AnonRateThrottle):
-    def allow_request(self,request, view):
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+# class CustomAnoThrottle(throttling.AnonRateThrottle):
+#     def allow_request(self,request, view):
+#         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
+#         if x_forwarded_for:
+#             ip = x_forwarded_for.split(',')[0]
+#         else:
+#             ip = request.META.get('REMOTE_ADDR')
         
-        # add in db
-        db = Anomaly(ip = ip)
-        return JsonResponse(data = {
-            'status':401,
-            'message': 'You have exhausted your limits'
-        })
+#         # add in db
+#         db = Anomaly(ip = ip)
+#         return JsonResponse(data = {
+#             'status':401,
+#             'message': 'You have exhausted your limits'
+#         })
 
 @csrf_exempt
-@api_view(['GET', 'POST'])
-@throttle_classes([CustomUserThrottle ,CustomAnoThrottle ])
+# @api_view(['GET', 'POST'])
+# @throttle_classes([UserRateThrottle ,AnonRateThrottle ])
 def signup(request,id):
      if request.method == "POST":
         print('HI')

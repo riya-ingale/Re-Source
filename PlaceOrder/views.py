@@ -1,20 +1,24 @@
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.shortcuts import render
 from django.http.response import JsonResponse
 from ResourceApp.models import *
 from Institutes.models import *
+from django.template.loader import get_template, render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from ResourceApp.serializers import CartSerializer, TransactionSerializer
 import razorpay
 from ReSource import settings
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.http import HttpResponse
+import pdfkit
 import pandas as pd
 from PIL import Image, ImageFont, ImageDraw
 from io import BytesIO
 from django.core.files import File
 from ReSource.utils import Check
-from io import StringIO
+import requests
+from PlaceOrder.models import UserPlan
 
 # from semantic_text_similarity.models import WebBertSimilarity
 import numpy as np
@@ -211,8 +215,11 @@ def resource_recommend(request):
 
 # generate_card()
 
-def send_email():
-    pass
+def send_mail(mail, subj, body):
+	url = 'https://prod-23.centralus.logic.azure.com/workflows/d7697b6b72694b37bcd28fe4f12ae001/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=dtiC7QiKn8BMJIPzLF-Oo35FGEpCaB6Zpuu2PNFDAuE'
+	myobj = {'email': mail, 'subject': subj, 'body':body}
+	x = requests.post(url, json = myobj)
+
 
 @csrf_exempt
 def addstudents(request, order_id):
@@ -233,13 +240,24 @@ def addstudents(request, order_id):
         info['start_time'] = data['start_time']
         info['end_time'] = data['end_time']
         info['date'] = data['date']
+        info['workforce'] = data['workforce']
         for ele in ids:
             info['email'] = ele['email']
             info['name'] = ele['name']
-            info['workforce'] = ele['workforce']
-            generate_card()
+            # generate_card()
             try:
-                send_email()
+                mail = info['email']
+                subj = "Re-Source - Lab Access ID CARD"
+                body = """Here is your ID Card to Acess while you visit the institute.\n\n
+Student Name - {0}\n
+Email - {1}\n
+Resource - {2}\n
+Lab - {3}\n
+Date - {4}\n
+Slot - {5} - {6}\n
+                """.format(info['name'], info['email'], info['resource'], info['lab'], info['date'],info['start_time'], info['end_time'])
+                print(body)
+                send_mail(mail, subj, body)
             except:
                 return JsonResponse(
                     data = {
@@ -533,7 +551,7 @@ def handlerequest(request):
             util = razorpay.Utility(razorpay_client)
             util.verify_payment_signature(params_dict)
             order.payment_status = 1
-            order.request_status =1
+            order.request_status +=1
         except:
             order.payment_status = -1
             order.save()
@@ -544,17 +562,29 @@ def handlerequest(request):
         # razorpay_client.payment.capture(payment_id , amount)
         
         order.save()
-        
-        items = ProductInOrder.objects.filter(order_id = order.id).all()
-        for item in items:
-            start_time = item.start_time
-            start_time = start_time.strftime("%H:%M:%S")
-            end_time = item.end_time
-            end_time = end_time.strftime("%H:%M:%S")
-            db = Book_slots(resource = item.resource, date = item.date, start_time = start_time[0:2] , end_time = end_time[0:2], lab = item.resource.lab.id, units = item.units, approved = 1)
-            db.save()
+        if order.request_status == 11:
+            plandb = UserPlan.objects.get(id = order.id)
+            plandb.is_active = True
+            plandb.start_date = datetime.now()
+            if plandb.plan_id == 1:
+                plandb.end_date = datetime.now()+timedelta(days = 30)
+            elif plandb.plan_id == 2:
+                plandb.end_date = datetime.now()+timedelta(days = 90)
+            else:
+                plandb.end_date = datetime.now()+timedelta(days = 180)
+            plandb.save()
+
+        else:
+            items = ProductInOrder.objects.filter(order_id = order.id).all()
+            for item in items:
+                start_time = item.start_time
+                start_time = start_time.strftime("%H:%M:%S")
+                end_time = item.end_time
+                end_time = end_time.strftime("%H:%M:%S")
+                db = Book_slots(resource = item.resource, date = item.date, start_time = start_time[0:2] , end_time = end_time[0:2], lab = item.resource.lab.id, units = item.units, approved = 1)
+                db.save()
         print('PaymentDone')
-            ## send emails to students
+            ## send emails to students and students
     
         data = {
             "message": "PAYMENT DONE",
@@ -659,43 +689,89 @@ def invoice(request, order_id):
                 "message":"Unauthorized Access, Please Login",
                 "status":401
             })
-        user_id = info['user_id']
-        role_id = info['role_id']
-    
-        count = 1
-        items = []
         products = ProductInOrder.objects.filter(order_id = order_id).all()
-        for prod in products:
-            d = dict()
-            d['sno'] = count
-            d['resource'] = prod.resource.name
-            d['institute_name'] = prod.resource.lab.institute.name
-            d['qty'] = prod.units
-            d['rate'] = prod.cost
-            items.append(d)
         order = Order.objects.get(id = order_id, payment_status = 1)
-        data = {
-            "order_id":order.id,
-            "razorpay_order_id":order.razorpay_order_id,
-            "razorpay_payment_id":order.razorpay_payment_id,
-
-            "final_cost":order.finalcost,
-
-            "buyer_name":order.workforce.name,
-            "buyer_institute": order.workforce.institute.name,
-            "buyer_email":order.workforce.email_id,
-            "buyer_phone_no":order.workforce.phone_no,
-            "buyer_position":order.workforce.position,
-            "items":items
+        template = get_template("invoice.html")
+        html = template.render({'order':order, 'products':products})
+        options = {
+            'page-size': 'Letter',
+            'encoding': "UTF-8",
         }
-        return JsonResponse(data = {
-            "data":data
+        pdf = pdfkit.from_string(html, False, options)
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="pperson_list_pdf.pdf"'
+        return response    
+
+
+def pay_resource_plan(request, plan_id):
+    try:
+        token = request.headers['Authorization']
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
         })
+    info = Check.check_auth(token)
+    if info['status'] == 0:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    user_id = info['user_id']
+    role_id = info['role_id']
+    db = UserPlan(plan_id = plan_id, )
 
 
+@csrf_exempt
+def buyplan(request):
+    try:
+        token = request.headers['Authorization']
 
+    except:
+        return JsonResponse(data= {
+            "message":"Unauthorized Access, Please Login",
+            "status":401
+        })
+    
+    info = Check.check_auth(token)
+    if info['status']==0:
+        return JsonResponse(data = {
+            'status':401,
+            'message':"Unauthorized Access, Please Login"
+        })
+    user_id = info['user_id']
+    role_id = info['role_id']
+    if request.method == "POST":
+    
+        if role_id not in [4,5]:
+            return JsonResponse(data = {
+                'status': 401,
+                'message': "This role has no access"
+            })
+        data = json.loads(request.body)
+        r_id = data['r_id']
+        cost = data['cost']
+        plan_id = data['plan_id']
+        if plan_id == 1:
+            cost*=9.136
+        elif plan_id == 2:
+            cost*=64.26
+        else:
+            cost*=82.24
+        workforce = WorkForce.objects.get(id = user_id)
+        db = Order.objects.create(workforce = workforce , 
+        institute = workforce.institute, finalcost = cost, request_status = 10 )
 
-
-
-
-        
+        plandb = UserPlan.objects.create(
+        order_id = db.id,
+        plan_id = plan_id ,# 1 for monthly, 2 for 3 months and 3 for 6 months
+        is_active = False,
+        resource_id = Resources.objects.get(id = r_id),
+        user_id = workforce,
+        cost = cost)
+        plandb.save()
+        db.save()
+        return JsonResponse(data = {
+            'status':200,
+            'message':"Plan order created"
+        })
