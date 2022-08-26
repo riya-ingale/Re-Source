@@ -138,7 +138,8 @@ def profile(request):
             selltransactions = Transaction.objects.filter(seller_id = institute.id, is_paid = 1)  #Credit
 
             pen_or = []
-            pending_orders = Order.objects.filter(institute = institute.id , request_status = 0).all()
+            print(institute.id)
+            pending_orders = Order.objects.filter(institute = institute.id , request_status = 10).all()
             pserializer = OrderSerializer(pending_orders, many = True)
             
             insti_data  = Institutes.objects.filter(id = institute.id)
@@ -146,6 +147,7 @@ def profile(request):
             print(insti_data)
             for po in pserializer.data:
                 dict(po)   
+                print(po)
                 order_id = po['id']
                 workforce_id = po['workforce']
                 po['workforce_name'] = WorkForce.objects.get(id = workforce_id).name

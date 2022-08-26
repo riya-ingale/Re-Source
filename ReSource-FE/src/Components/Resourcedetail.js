@@ -1,7 +1,8 @@
 import React,{useEffect, useState} from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-// import img1 from ".././Images/chem-quip.jpg";
-// import img2 from "../Images/microscope.jpg";
+import styled from "styled-components";
+// Components
+import PricingTable from "./LandingPage/Profilecomponents/Elements/PricingTable";
 // import img3 from "../Images/chem-quip.jpg";
 import "../Css/resourcedetail.css";
 import Card from '@mui/material/Card';
@@ -14,6 +15,29 @@ import chem from "../Images/chem-quip.jpg";
 import bio from "../Images/images.jpg";
 import phy from "../Images/microscope.jpg";
 
+const Wrapper = styled.section`
+width: 100%;
+padding: 50px 0;
+`;
+const HeaderInfo = styled.div`
+margin-bottom: 50px;
+@media (max-width: 860px) {
+  text-align: center;
+}
+`;
+const TablesWrapper = styled.div`
+@media (max-width: 860px) {
+  flex-direction: column;
+}
+`;
+const TableBox = styled.div`
+width: 31%;
+@media (max-width: 860px) {
+  width: 100%;
+  max-width: 370px;
+  margin: 0 auto
+}
+`;
 export default function Resourcedetail() {
   // const images = require.context('../../../', true);
 //   var data = {};
@@ -79,7 +103,14 @@ const image_fetcher = (num) => {
   console.log(image_arr)
   // setImage(image_arr)
 }
-
+const handlesubs = (e,id) =>{
+  fetch('http://127.0.0.1:8000/placeorder/buyplan/',{
+  method: "POST",
+  headers: { "Content-Type": "application/json", 'Authorization':sessionStorage.getItem('token') },
+  body: JSON.stringify({'r_id':data.data.id,'cost':data.data.cost,'plan_id':id}),
+  }).then((t) => t.json())
+  console.log(id)
+}
 if(users !== undefined && data['updated']===0){
   data = users;
   data['updated'] = 1;
@@ -376,9 +407,72 @@ if(slots !== '' && slots!== undefined){
           ))}
           </div>
  
-       
+       <div>
+       <Wrapper id="pricing">
+      <div className="whiteBg">
+        <div className="landing-page-container">
+          <HeaderInfo>
+            <h1 className="font30 extraBold">Check Our Pricing</h1>
+            <p className="font13">
+              
+            </p>
+          </HeaderInfo>
+          <TablesWrapper className="flexSpaceNull">
+            <TableBox>
+              <PricingTable
+                icon="roller"
+                price="2999/mo"
+                title="Starter"
+                text="1 Month"
+                offers={[
+                  { name: "Product Offer", cheked: true },
+                  { name: "Offer", cheked: true },
+                  { name: "Product Offer #2", cheked: false },
+                  
+                ]}
+                action={event => handlesubs(event,1)}
+              />
+            </TableBox>
+            <TableBox>
+              <PricingTable
+                icon="monitor"
+                price="4999/mo"
+                title="Basic"
+                text="3 Month"
+                offers={[
+                  { name: "Product Offer", cheked: true },
+                  { name: "Offer", cheked: true },
+                  { name: "Product Offer #2", cheked: true },
+                  
+                ]}
+                action={event => handlesubs(event,2)}
+              />
+            </TableBox>
+            <TableBox>
+              <PricingTable
+                icon="browser"
+                price="5999/mo"
+                title="Golden"
+                text="6 Month"
+                offers={[
+                  { name: "Product Offer", cheked: true },
+                  { name: "Offer", cheked: true },
+                  { name: "Product Offer #2", cheked: true },
+                  
+                ]}
+                action={event => handlesubs(event,3)}
+              />
+            </TableBox>
+          </TablesWrapper>
+        </div>
       </div>
+    </Wrapper>
+       </div>
+      </div>
+      
       :<div></div>}
     </>
   );
+  
+
 }
