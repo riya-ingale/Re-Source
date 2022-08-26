@@ -40,6 +40,7 @@ import Error404 from "./Components/Error404";
 import Error503 from "./Components/Error503";
 import AddStudent from "./Components/AddStudent";
 import Pricing from "./Components/LandingPage/Profilecomponents/Sections/Pricing";
+import InstituteAnalytics from "./Components/InstituteAnalytics";
 // import ReactPDF from "./Components/ReactPDF"
 
 function App() {
@@ -52,7 +53,7 @@ function App() {
           <Route exact path="/header" element={<Header/>}/>
           <Route exact path="/footer" element={<Footer/>}/>
           <Route exact path="/viewres" element={<><Header/><ViewResources/><Footer/></>}/>
-          <Route exact path="/resdetail/:id" element={<><Header/><Resourcedetail/><Footer/></>}/>
+          <Route exact path="/resdetail/:id" element={<><Header/><Resourcedetail/><Pricing/><Footer/></>}/>
           <Route exact path="/cart" element={<><Header/><Cart/><Footer/></>}/>
           <Route exact path="/instituteProfile" element={<><Header/><InstituteProfile/><Footer/></>}/>{/* Pending */}
           <Route exact path="/addlab" element={<><Header/><Addlab/><Footer/></>}/>
@@ -87,7 +88,7 @@ function App() {
           <Route exact path="/pricing" element = {<><Header/><Pricing/><Footer/></>}/>
           <Route exact path="*" element = {<Error404/>}/>    
           <Route exact path="/error503" element = {<Error503/>}/>
-
+          <Route exact path="/institute-analytics" element = {<InstituteAnalytics/>}/>
           {/* <Route exact path="/reactpdf" element = {<ReactPDF/>}/> */}
         </Routes>
     </Router>
