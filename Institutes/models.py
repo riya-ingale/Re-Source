@@ -65,6 +65,7 @@ class Resources(models.Model):
     dimension = models.CharField(max_length = 500)
     details = models.CharField(max_length = 500)
     quantity = models.IntegerField(default = 1)
+    is_software = models.IntegerField(default = 0)
     mrp = models.FloatField(null = True)
     is_approved = models.IntegerField(default = 0)
     under_maintenance = models.IntegerField(default = 0)
